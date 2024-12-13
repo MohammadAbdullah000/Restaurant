@@ -1,0 +1,103 @@
+
+.heading{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.heading h2{
+    margin-top: 1rem;
+    font-size: 2rem;
+}
+.heading p{
+    margin-block: 1rem;
+    font-size: 1rem;
+}
+.addDish button{
+    box-shadow: 5px 5px gray;
+    transition: all 0.3s;
+    color: black;
+    background-color: var(--accent-color);
+}
+.addDish button:hover{
+    background-color: var(--background-color);
+    color: white;
+}
+.cardForm {
+    background: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    max-width: 400px;
+    margin: 20px auto;
+    opacity: 0; /* Initial state */
+    transform: translateY(-20px); /* Initial state */
+    transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.cardForm.animateOpen {
+    opacity: 1; /* Final state */
+    transform: translateY(0); /* Final state */
+}
+
+  
+  .cardForm h3 {
+    text-align: center;
+    margin-bottom: 20px;
+  }
+  
+  .formGroupdish {
+    margin-bottom: 15px;
+  }
+  
+  .formGroupdish label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+  }
+  
+  .formGroupdish input {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+  }
+  
+  .buttonGroup {
+    display: flex;
+    justify-content: space-between;
+  }
+  
+  .buttonGroup button,.addDish button {
+    padding: 10px 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  .buttonGroup button:first-child {
+    background: #28a745;
+    color: #fff;
+  }
+  
+  .buttonGroup button:last-child {
+    background: #dc3545;
+    color: #fff;
+  }
+  .tableContainer{
+    margin: 20px;
+   text-align: center;
+}
+.tableContainer h3{
+    font-size: 1.5rem;
+}
+.searchContainer input{
+      width: 100%;
+    margin-bottom: 20px;
+    padding: 10px;
+  }
+
+  .datatable{
+    font-size: 30px;
+  }

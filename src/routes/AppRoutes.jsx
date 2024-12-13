@@ -5,6 +5,11 @@ import LoginSignup from '../pages/LoginSignup/LoginSignup'
 import AboutUs from '../components/AboutUs/AboutUs'
 import ContactUs from '../components/ContactUs/ContactUs'
 import ForgotPassword from '../pages/ForgotPassword/ForgotPassword'
+import Dashboard from '../pages/Dashboard/Dashboard'
+import Inventory from '../components/Inventory/Inventory'
+import Sidebar from '../layouts/Sidebar/Sidebar'
+import Menu from '../components/Menu/Menu'
+import Dish from '../components/Dish/Dish'
 const router = createBrowserRouter([
   {
     path:'/',
@@ -32,7 +37,30 @@ element:<LoginSignup/>
   {
     path:'/forgotpassword',
     element:<ForgotPassword/>
-  }
+  },
+  {
+    path: "/dashboard",
+    element: <Sidebar />, // Sidebar as the layout for admin pages
+    children: [
+      {
+        index: true, // Default route under /dashboard
+        element: <Dashboard />,
+      },
+      {
+        path: "inventory", // Correctly nested route for /dashboard/inventory
+        element: <Inventory />,
+      },
+      {
+        path: "menu", // Correctly nested route for /dashboard/inventory
+        element: <Menu />,
+      },
+      {
+        path: "dish", // Correctly nested route for /dashboard/inventory
+        element: <Dish/>,
+      },
+    ],
+  },
+  
  
  
  

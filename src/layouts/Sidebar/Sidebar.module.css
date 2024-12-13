@@ -1,0 +1,119 @@
+/* .sideBar{
+    width: 25%;
+    background-color: antiquewhite;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    line-height: 3rem;
+}
+.sideBar a{
+    font-size: 1.5rem;
+    text-decoration: none;
+    color: var(--accent-color);
+} */
+
+.adminDashboard {
+    display: flex;
+    height: 100vh;
+  }
+  
+  .sidebar {
+    width: 250px;
+    background: #2c3e50;
+    color: #ecf0f1;
+    position: fixed;
+    height: 100%;
+    transform: translateX(-100%);
+    transition: transform 0.3s ease;
+    z-index: 10;
+  }
+  
+  .sidebar.open {
+    transform: translateX(0);
+  }
+  
+  .sidebarHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    background: #34495e;
+  }
+  
+  .sidebarHeader h3 {
+    margin: 0;
+  }
+  
+  .sidebarHeader .closeBtn {
+    background: none;
+    border: none;
+    color: #ecf0f1;
+    font-size: 20px;
+    cursor: pointer;
+  }
+  
+  .sidebarMmenu {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  
+  .sidebarMenu li {
+    padding: 15px 20px;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+  }
+  .sidebarMenu li i{
+    color: var(--accent-color);
+  }
+  .sidebarMenu li:hover {
+    background: #34495e;
+  }
+  
+  .sidebarMenu li span {
+    margin-left: 10px;
+    color: var(--accent-color);
+  }
+  
+  .mainContent {
+    /* margin-left: 250px; */
+    flex-grow: 1;
+    transition: margin-left 0.3s ease;
+  }
+  
+  .mainContent header {
+    display: flex;
+    position: sticky;
+    top: 0;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    background: #ecf0f1;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  
+  .mainContent .menuBtn {
+    background: none;
+    border: none;
+    font-size: 20px;
+    cursor: pointer;
+  }
+  
+  .content {
+    padding: 20px;
+  }
+  
+  @media (max-width: 768px) {
+    .mainContent {
+      margin-left: 0;
+    }
+  
+    .sidebar {
+      /* position: absolute; */
+      z-index: 1000;
+    }
+  }
+  
