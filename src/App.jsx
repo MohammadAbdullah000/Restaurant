@@ -1,10 +1,13 @@
+import { UserProvider } from './Contexts/UserContext.jsx'
 import AppRoutes from './routes/AppRoutes'
 
 function App() {
 
   return (
     <>
-      <AppRoutes/>
+       <UserProvider>
+    <AppRoutes />
+  </UserProvider>
     </>
   )
 }
