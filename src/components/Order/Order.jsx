@@ -7,6 +7,8 @@ const Order = () => {
       { name: "Veg Biryani", price: 80 },
       { name: "Chicken Biryani", price: 150 },
       { name: "Mutton Biryani", price: 200 },
+      { name: "Mutton Biryani", price: 200 },
+      { name: "Mutton Biryani", price: 200 },
     ],
     roti: [
       { name: "Plain Roti", price: 10 },
@@ -20,7 +22,7 @@ const Order = () => {
     ],
   };
 
-  const [selectedCategory, setSelectedCategory] = useState(null);
+  const [selectedCategory, setSelectedCategory] = useState('biryani');
   const [addedItems, setAddedItems] = useState([]);
 
   const handleCategoryClick = (category) => {
@@ -80,12 +82,12 @@ const Order = () => {
       <div
         style={{
           width: "15%",
-          backgroundColor: "#f8f9fa",
+          backgroundColor: "#1A1A1A",
           padding: "20px",
           borderRight: "1px solid #ddd",
         }}
       >
-        <h3>Categories</h3>
+        {/* <h3>Categories</h3> */}
         <ul style={{ listStyleType: "none", padding: 0 }}>
           {Object.keys(menuData).map((category) => (
             <li
@@ -94,6 +96,7 @@ const Order = () => {
                 padding: "10px",
                 cursor: "pointer",
                 backgroundColor: selectedCategory === category ? "#e0e0e0" : "transparent",
+                color: selectedCategory === category ? "#1A1A1A" : "#fff",
                 marginBottom: "5px",
               }}
               onClick={() => handleCategoryClick(category)}
@@ -112,19 +115,21 @@ const Order = () => {
           backgroundColor: "#f8f9fa",
         }}
       >
-        <h3>Subcategories</h3>
+        {/* <h3>Subcategories</h3> */}
         {selectedCategory ? (
-          <ul style={{ listStyleType: "none", padding: "20px" }}>
+          <ul style={{ listStyleType: "none", padding: "20px",borderWidth:1 ,display:"flex",flexDirection:"row",flexWrap:"wrap",}}>
             {menuData[selectedCategory].map((subcategory) => (
               <li
                 key={subcategory.name}
                 style={{
-                  padding: "10px 0",
                   cursor: "pointer",
+                  height:80,
+                backgroundColor:"#1A1A1A",marginTop:15,
+                width:"27%",color:"#1A1A1A",fontSize:20,marginLeft:20,fontWeight:"400",justifyContent:"center",alignItems:"center"
                 }}
                 onClick={() => handleSubCategoryClick(subcategory)}
               >
-                {subcategory.name} - ₹{subcategory.price}
+                <h4 style={{backgroundColor:"#e0e0e0",height:"92%",width:"100%",marginTop:"2.5%",padding:10}}>{subcategory.name}</h4>
               </li>
             ))}
           </ul>
@@ -138,7 +143,7 @@ const Order = () => {
         style={{
           width: "45%",
           padding: "20px",
-          backgroundColor: "#f8f9fa",
+          backgroundColor: "#FFF",
         }}
       >
         {/* Display Added Items */}

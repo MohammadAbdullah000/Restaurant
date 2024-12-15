@@ -17,7 +17,7 @@ const Dish = () => {
 
   function handleAddDish() {
     // Add the new dish to the dishes list
-    setDishes([...dishes, { name: dishName, price: dishPrice, quantity: dishQuantity,category:dishCategory }]);
+    setDishes([...dishes, { name: dishName, price: dishPrice, quantity: dishQuantity, category: dishCategory }]);
 
     // Clear the input fields after adding
     setDishName("");
@@ -62,7 +62,7 @@ const Dish = () => {
       },
     },
   };
-  
+
   // Filtered dishes based on the search term
   const filteredDishes = dishes.filter(dish =>
     dish.name.toLowerCase().includes(searchTerm.toLowerCase())
@@ -70,14 +70,14 @@ const Dish = () => {
 
   return (
     <>
-    <div className={style.heading}>
-      <h2>Welcome to the Dish Section</h2>
-      <p>Here you can manage your Dishes.</p>
+      <div className={style.heading}>
+        <h2>Welcome to the Dish Section</h2>
+        <p>Here you can manage your Dishes.</p>
 
-      <div className={style.addDish}>
-        <button onClick={toggleAddDish}>Add New Dish</button>
+        <div className={style.addDish}>
+          <button onClick={toggleAddDish}>Add New Dish</button>
+        </div>
       </div>
-    </div>
       {addDishIsOpen && (
         <div className={`${style.cardForm} ${addDishIsOpen ? style.animateOpen : ""}`}>
           <h3>Add New Dish</h3>
@@ -131,7 +131,6 @@ const Dish = () => {
       )}
 
       <div className={style.tableContainer}>
-        <h3>Dish List</h3>
         <div className={style.searchContainer}>
           <input
             type="text"
@@ -141,13 +140,13 @@ const Dish = () => {
           />
         </div>
         <DataTable
-  className={style.datatable}
-  columns={columns}
-  data={filteredDishes}
-  pagination
-  highlightOnHover
-  customStyles={customStyles}
-/>
+          className={style.datatable}
+          columns={columns}
+          data={filteredDishes}
+          pagination
+          highlightOnHover
+          customStyles={customStyles}
+        />
 
       </div>
     </>
