@@ -8,6 +8,7 @@ const Dish = () => {
   const [dishName, setDishName] = useState("");
   const [dishPrice, setDishPrice] = useState("");
   const [dishQuantity, setDishQuantity] = useState("");
+  const [dishCategory, setDishCategory] = useState("");
   const [dishes, setDishes] = useState([]);
 
   function toggleAddDish() {
@@ -16,7 +17,7 @@ const Dish = () => {
 
   function handleAddDish() {
     // Add the new dish to the dishes list
-    setDishes([...dishes, { name: dishName, price: dishPrice, quantity: dishQuantity }]);
+    setDishes([...dishes, { name: dishName, price: dishPrice, quantity: dishQuantity,category:dishCategory }]);
 
     // Clear the input fields after adding
     setDishName("");
@@ -40,6 +41,11 @@ const Dish = () => {
     {
       name: 'Quantity',
       selector: row => row.quantity,
+      sortable: true,
+    },
+    {
+      name: 'Category',
+      selector: row => row.category,
       sortable: true,
     },
   ];
@@ -103,6 +109,16 @@ const Dish = () => {
                 id="dishQuantity"
                 value={dishQuantity}
                 onChange={(e) => setDishQuantity(e.target.value)}
+                required
+              />
+            </div>
+            <div className={style.formGroupdish}>
+              <label htmlFor="dishCategory">Dish Category:</label>
+              <input
+                type="text"
+                id="dishCategory"
+                value={dishCategory}
+                onChange={(e) => setDishCategory(e.target.value)}
                 required
               />
             </div>

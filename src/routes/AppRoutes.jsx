@@ -10,6 +10,7 @@ import Inventory from '../components/Inventory/Inventory'
 import Sidebar from '../layouts/Sidebar/Sidebar'
 import Menu from '../components/Menu/Menu'
 import Dish from '../components/Dish/Dish'
+import Order from '../components/Order/Order'
 const router = createBrowserRouter([
   {
     path:'/',
@@ -57,6 +58,10 @@ element:<LoginSignup/>
       {
         path: "dish", // Correctly nested route for /dashboard/inventory
         element: <Dish/>,
+      },
+      {
+        path: "order", // Correctly nested route for /dashboard/inventory
+        element: <Order/>,
       },
     ],
   },
