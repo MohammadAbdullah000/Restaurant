@@ -69,7 +69,7 @@ const Dish = () => {
   );
 
   return (
-    <>
+    <div className={style.nunito500}>
       <div className={style.heading}>
         <h2>Welcome to the Dish Section</h2>
         <p>Here you can manage your Dishes.</p>
@@ -139,6 +139,8 @@ const Dish = () => {
             onChange={(e) => setSearchTerm(e.target.value)}
           />
         </div>
+        <div className={style.tableWrapper}>
+
         <DataTable
           className={style.datatable}
           columns={columns}
@@ -147,9 +149,10 @@ const Dish = () => {
           highlightOnHover
           customStyles={customStyles}
         />
+        </div>
 
       </div>
-    </>
+    </div>
   );
 };
 

@@ -86,8 +86,8 @@
   
   .mainContent header {
     display: flex;
-    position: sticky;
-    top: 0;
+    /* position: sticky;
+    top: 0; */
     justify-content: space-between;
     align-items: center;
     padding: 20px;
@@ -102,9 +102,6 @@
     cursor: pointer;
   }
   
-  .content {
-    padding: 20px;
-  }
   
   @media (max-width: 768px) {
     .mainContent {

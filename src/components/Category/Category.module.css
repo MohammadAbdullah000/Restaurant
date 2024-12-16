@@ -1,0 +1,133 @@
+.nunito500 {
+    font-family: "Nunito", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 500;
+    font-style: normal;
+  }
+  
+  .cinzel500 {
+    font-family: "Cinzel", serif;
+    font-optical-sizing: auto;
+    font-weight: 500;
+    font-style: normal;
+  }
+  
+  .heading{
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      
+  }
+  
+  .heading h2{
+      margin-top: 1rem;
+      font-size: 2rem;
+  }
+  .heading p{
+      margin-block: 1rem;
+      font-size: 1rem;
+  }
+  .addDish button{
+      /* box-shadow: 5px 5px gray; */
+      transition: all 0.3s;
+      color: black;
+      background-color: var(--accent-color);
+  }
+  .addDish button:hover{
+      background-color: var(--background-color);
+      color: white;
+  }
+  .cardForm {
+      background: var(--primary-color);
+      color: white;
+      
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 10px 10px 10px rgba(0, 0, 0, 0.3);
+      max-width: 500px;
+      margin: 20px auto;
+      opacity: 0; /* Initial state */
+      transform: translateY(-20px); /* Initial state */
+      transition: opacity 0.3s ease, transform 0.3s ease;
+      display: flex;
+      flex-direction: row;
+      flex-wrap: wrap;
+  }
+  
+  .cardForm.animateOpen {
+      opacity: 1; /* Final state */
+      transform: translateY(0); /* Final state */
+  }
+  
+    
+    .cardForm h3 {
+      text-align: center;
+      margin-bottom: 20px;
+      width: 100%;
+    }
+    
+    .formGroupdish {
+      margin-bottom: 15px;
+      width: 100%;
+    }
+    
+    .formGroupdish label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: bold;
+    }
+    
+    .formGroupdish input {
+      width: 100%;
+      padding: 8px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+    }
+    
+    .buttonGroup {
+      display: flex;
+      justify-content: space-between;
+    }
+    
+    .buttonGroup button {
+      padding: 10px 15px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    .addDish button {
+      cursor: pointer; 
+      border-radius: 5px;
+      padding: 10px 15px;
+    border: none;
+    }
+    
+    .buttonGroup button:first-child {
+      background: #28a745;
+      color: #fff;
+    }
+    
+    .buttonGroup button:last-child {
+      background: #dc3545;
+      color: #fff;
+    }
+    .tableContainer{
+      margin: 20px;
+     text-align: center;
+  }
+  .tableContainer h3{
+      font-size: 1.5rem;
+  }
+  .searchContainer input{
+        width: 100%;
+        /* margin-left: 70%; */
+      margin-bottom: 20px;
+      margin-top: 50px;
+      padding: 10px;
+    }
+  
+    .datatable{
+      font-size: 30px;
+    }

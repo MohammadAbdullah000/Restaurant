@@ -11,6 +11,7 @@ import Sidebar from '../layouts/Sidebar/Sidebar'
 import Menu from '../components/Menu/Menu'
 import Dish from '../components/Dish/Dish'
 import Order from '../components/Order/Order'
+import Category from '../components/Category/Category'
 const router = createBrowserRouter([
   {
     path:'/',
@@ -54,6 +55,10 @@ element:<LoginSignup/>
       {
         path: "menu", // Correctly nested route for /dashboard/inventory
         element: <Menu />,
+      },
+      {
+        path: "category", // Correctly nested route for /dashboard/inventory
+        element: <Category />,
       },
       {
         path: "dish", // Correctly nested route for /dashboard/inventory

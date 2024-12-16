@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-
+import style from './Order.module.css' 
 const Order = () => {
   // Categories, subcategories, and prices
   const menuData = {
@@ -82,7 +82,7 @@ const Order = () => {
       <div
         style={{
           width: "15%",
-          backgroundColor: "#1A1A1A",
+          backgroundColor: "#2C3E50",
           padding: "20px",
           borderRight: "1px solid #ddd",
         }}
@@ -124,7 +124,7 @@ const Order = () => {
                 style={{
                   cursor: "pointer",
                   height:80,
-                backgroundColor:"#1A1A1A",marginTop:15,
+                backgroundColor:"#2C3E50",marginTop:15,
                 width:"27%",color:"#1A1A1A",fontSize:20,marginLeft:20,fontWeight:"400",justifyContent:"center",alignItems:"center"
                 }}
                 onClick={() => handleSubCategoryClick(subcategory)}
@@ -148,6 +148,10 @@ const Order = () => {
       >
         {/* Display Added Items */}
         <h3 style={{ marginTop: "20px" }}>Added Items</h3>
+        <div className={style.firstbuttons}>
+          <button>Dine</button>
+          <button>Parcel</button>
+        </div>
         {addedItems.length > 0 ? (
           <ul style={{ listStyleType: "none", padding: 0 }}>
             {addedItems.map((item) => (
@@ -217,7 +221,15 @@ const Order = () => {
           <p>No items added.</p>
         )}
         {/* Total Price */}
+<div className={style.lastbuttons}>
+        <button>Save</button>
+        <button>Print</button>
+        <button>Download</button>
+        <button>Share</button>
       </div>
+      </div>
+      
+
     </div>
   );
 };

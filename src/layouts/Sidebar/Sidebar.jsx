@@ -38,6 +38,12 @@ const sidebar = () => {
             </Link>
           </li>
           <li>
+            <Link to="category" onClick={closeSidebar}>
+              <i className="fas fa-box"></i>
+              <span>Add Category</span>
+            </Link>
+          </li>
+          <li>
             <Link to="dish" onClick={closeSidebar}>
               <i className="fas fa-box"></i>
               <span>Dish</span>

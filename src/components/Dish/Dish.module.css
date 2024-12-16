@@ -1,8 +1,23 @@
+.nunito500 {
+  font-family: "Nunito", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 500;
+  font-style: normal;
+}
+
+.cinzel500 {
+  font-family: "Cinzel", serif;
+  font-optical-sizing: auto;
+  font-weight: 500;
+  font-style: normal;
+}
 
 .heading{
     display: flex;
     flex-direction: column;
     justify-content: center;
+    align-items: center;
+    
 }
 
 .heading h2{
@@ -14,7 +29,7 @@
     font-size: 1rem;
 }
 .addDish button{
-    box-shadow: 5px 5px gray;
+    /* box-shadow: 5px 5px gray; */
     transition: all 0.3s;
     color: black;
     background-color: var(--accent-color);
@@ -24,12 +39,14 @@
     color: white;
 }
 .cardForm {
-    background: #fff;
+    background: var(--primary-color);
+    color: white;
+    
     padding: 20px;
     border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    width: 800px;
-    /* margin: 20px auto; */
+    box-shadow: 10px 10px 10px rgba(0, 0, 0, 0.3);
+    max-width: 500px;
+    margin: 20px auto;
     opacity: 0; /* Initial state */
     transform: translateY(-20px); /* Initial state */
     transition: opacity 0.3s ease, transform 0.3s ease;
@@ -79,17 +96,15 @@
     border-radius: 5px;
     cursor: pointer;
   }
-  .addDish {
-    width: 100%;
-  }
+
   .addDish button {
-    width: 10%;
+    /* width: 10%; */
     border: #28a745;
     padding: 10px 15px;
     border: none;
     border-radius: 5px;
     cursor: pointer;
-    margin-left: 88.5%;
+    /* margin-left: 88.5%; */
   }
   
   .buttonGroup button:first-child {
@@ -109,12 +124,20 @@
     font-size: 1.5rem;
 }
 .searchContainer input{
-      width: 30%;
-      margin-left: 70%;
+      width: 100%;
+      /* margin-left: 70%; */
     margin-bottom: 20px;
+    margin-top: 50px;
     padding: 10px;
   }
 
   .datatable{
     font-size: 30px;
+  }
+  
+  @media (max-width:786px){
+    .datatable{
+      font-size: 20px;
+    }
+    
   }
