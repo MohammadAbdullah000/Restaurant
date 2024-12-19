@@ -1,0 +1,12 @@
+.separatebtn{
+    padding: 10px 15px;
+    background-color: var(--primary-color);
+    border-radius: 5px;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+.firstbuttons button:nth-child(1){
+
+    margin-right: 10px;
+}

@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import DataTable from 'react-data-table-component';
-import style from './Category.module.css';
+import style from './Designation.module.css';
 
-const Category = () => {
+const Designation = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [addDishIsOpen, setAddDishIsOpen] = useState(false);
   const [dishName, setDishName] = useState('');
@@ -10,9 +10,9 @@ const Category = () => {
 
   // Fetch categories on component mount
   useEffect(() => {
-    async function fetchCategories() {
+    async function fetchDesignation() {
       try {
-        const response = await fetch('https://letzbim.com/Restaurent/dish_categories_fetch_Api.php');
+        const response = await fetch('https://letzbim.com/Restaurent/designation_fetch_Api.php');
         if (response.ok) {
           const data = await response.json();
           console.log('API Response:', data); // Log the API response to see its structure
@@ -20,6 +20,8 @@ const Category = () => {
           // Ensure data is an array
           if (Array.isArray(data)) {
             setDishes(data);
+            console.log('s',dishes);
+            
           } else {
             console.error('API did not return an array. Received:', data);
             setDishes([]); // Fallback to an empty array
@@ -34,7 +36,7 @@ const Category = () => {
       }
     }
   
-    fetchCategories();
+    fetchDesignation();
   }, []);
   
 
@@ -44,13 +46,13 @@ const Category = () => {
 
   async function handleAddDish() {
     try {
-      const response = await fetch('https://letzbim.com/Restaurent/dishes_create_Api.php', {
+      const response = await fetch('https://letzbim.com/Restaurent/designation_create_Api.php', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded',
         },
         body: new URLSearchParams({
-          dishname: dishName,
+          designation_name: dishName,
         }),
       });
 
@@ -59,16 +61,17 @@ const Category = () => {
       if (result.successmessage === 'success') {
         setDishes((prevDishes) => [
           ...prevDishes,
-          { dishcat_name: dishName, dishcat_id: result.new_id },
+          { designation_name: dishName, dishcat_id: result.new_id },
         ]);
+        console.log('successsss')
         setDishName('');
         toggleAddDish();
       }
       else {
-        alert(result.message || 'Failed to add category.');
+        alert(result.errmessage || 'Failed to add category.');
       }
     } catch (error) {
-      console.error('Error adding category:', error);
+      console.error('Error adding category:', result.errmessage);
       alert('An error occurred while adding the category.');
     }
   }
@@ -76,13 +79,13 @@ const Category = () => {
   // Handle delete category
   const handleDelete = async (dishId) => {
     try {
-      const response = await fetch('https://letzbim.com/Restaurent/dish_category_delete_Api.php', {
+      const response = await fetch('https://letzbim.com/Restaurent/Designation_Delete_Api.php', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded',
         },
         body: new URLSearchParams({
-          dishcat: dishId,
+          desigID: dishId,
         }),
       });
 
@@ -90,7 +93,7 @@ const Category = () => {
 
       if (result.successmessage === 'success') {
         // Remove deleted dish from local state
-        setDishes(dishes.filter((dish) => dish.dishcat_id !== dishId));
+        setDishes(dishes.filter((dish) => dish.id !== dishId));
       } else {
         alert(result.message || 'Failed to delete category.');
       }
@@ -104,7 +107,7 @@ const Category = () => {
   const columns = [
     {
       name: 'Category Name',
-      selector: (row) => row.dishcat_name,
+      selector: (row) => row.designation_name,
       sortable: true,
     },
     {
@@ -112,7 +115,7 @@ const Category = () => {
       cell: (row) => (
         <button
           className={style.deleteButton}
-          onClick={() => handleDelete(row.dishcat_id)}
+          onClick={() => handleDelete(row.id)}
         >
           Delete
         </button>
@@ -121,7 +124,6 @@ const Category = () => {
       allowoverflow: true,
       button: true,
     },
-   
   ];
 
   const customStyles = {
@@ -141,28 +143,28 @@ const Category = () => {
   // Filtered dishes based on the search term
   const filteredDishes = Array.isArray(dishes)
   ? dishes.filter((dish) =>
-      dish.dishcat_name?.toLowerCase().includes(searchTerm.toLowerCase())
+      dish.designation_name?.toLowerCase().includes(searchTerm.toLowerCase())
     )
   : [];
 
 
   return (
-     <div className={`${style.nunito500} ${style.dish}`}>
+    <div className={`${style.nunito500} ${style.dish}`}>
       <div className={style.heading}>
-        <h2>Welcome to the Category Section</h2>
-        <p>Here you can manage your Category.</p>
+        <h2>Welcome to the Designation Section</h2>
+        <p>Here you can manage your Designation.</p>
 
         <div className={style.addDish}>
-          <button onClick={toggleAddDish}>Add New Category</button>
+          <button onClick={toggleAddDish}>Add New Designation</button>
         </div>
       </div>
       <div>
-          {addDishIsOpen && (
-                    <div
-                      className={style.overlay}
-                      onClick={toggleAddDish} // Clicking on the overlay closes the form
-                    ></div>
-                  )}
+         {addDishIsOpen && (
+            <div
+              className={style.overlay}
+              onClick={toggleAddDish} // Clicking on the overlay closes the form
+            ></div>
+          )}
       {addDishIsOpen && (
         <div className={`${style.cardForm} ${addDishIsOpen ? style.animateOpen : ''}`}>
           <h3>Add New Category</h3>
@@ -213,4 +215,4 @@ const Category = () => {
   );
 };
 
-export default Category;
+export default Designation;

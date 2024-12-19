@@ -1,0 +1,13 @@
+.orderbtn{
+    padding: 10px;
+    font-size: 1rem;
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+.heading{
+    display: flex;
+    justify-content: space-between;
+}

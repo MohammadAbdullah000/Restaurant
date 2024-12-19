@@ -46,7 +46,7 @@
   position: absolute;
   /* top: 50%;
   transform: translate(-50%, -50%); Ensure proper centering */
-  top: 20%;
+  top: 10%;
   left: 33.7%;
   background: var(--primary-color);
   color: white;

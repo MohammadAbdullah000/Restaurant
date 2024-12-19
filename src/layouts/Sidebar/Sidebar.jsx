@@ -55,6 +55,18 @@ const sidebar = () => {
               <span>Menu</span>
             </Link>
           </li>
+          <li>
+            <Link to="designation" onClick={closeSidebar}>
+              <i className="fas fa-clipboard-list"></i>
+              <span>Add Designation</span>
+            </Link>
+          </li>
+          <li>
+            <Link to="employee" onClick={closeSidebar}>
+              <i className="fas fa-clipboard-list"></i>
+              <span>Add Employee</span>
+            </Link>
+          </li>
         </ul>
       </aside>
 

@@ -1,70 +1,88 @@
-import React, { useState } from "react";
-import style from './Order.module.css' 
+import React, { useState, useEffect } from "react";
+import style from './Order.module.css';
+
 const Order = () => {
-  // Categories, subcategories, and prices
-  const menuData = {
-    biryani: [
-      { name: "Veg Biryani", price: 80 },
-      { name: "Chicken Biryani", price: 150 },
-      { name: "Mutton Biryani", price: 200 },
-      { name: "Mutton Biryani", price: 200 },
-      { name: "Mutton Biryani", price: 200 },
-    ],
-    roti: [
-      { name: "Plain Roti", price: 10 },
-      { name: "Butter Roti", price: 15 },
-      { name: "Garlic Naan", price: 25 },
-    ],
-    beverages: [
-      { name: "Tea", price: 20 },
-      { name: "Coffee", price: 30 },
-      { name: "Cold Drink", price: 40 },
-    ],
-  };
-
-  const [selectedCategory, setSelectedCategory] = useState('biryani');
+  const [categories, setCategories] = useState([]);
+  const [selectedCategory, setSelectedCategory] = useState(null);
+  const [subcategories, setSubcategories] = useState([]);
   const [addedItems, setAddedItems] = useState([]);
+  const [noDishesMessage, setNoDishesMessage] = useState("");
 
-  const handleCategoryClick = (category) => {
-    setSelectedCategory(category);
+  useEffect(() => {
+    // Fetch categories from API
+    fetch("https://letzbim.com/Restaurent/dish_categories_fetch_Api.php")
+      .then((res) => res.json())
+      .then((data) => {
+        setCategories(data);
+        if (data.length > 0) setSelectedCategory(data[0].dishcat_id); // Set default category
+      })
+      .catch((err) => console.error("Error fetching categories:", err));
+  }, []);
+
+  useEffect(() => {
+    if (selectedCategory) {
+      // Fetch subcategories when category is selected
+      fetch(`https://letzbim.com/Restaurent/dishes_fetch_Api.php?dishCatID=${selectedCategory}`)
+        .then((res) => res.json())
+        .then((data) => {
+          // if(!data.length){
+          //   setNoDishesMessage("No Dishes Added"); // Show the message
+      
+          // }
+          
+          // const filteredSubcategories = data.filter(
+          //   (dish) => dish.dishcat_id === selectedCategory
+          // );
+          // if(!data.length){
+          //   setNoDishesMessage("No Dishes Added"); // Show the message
+      
+          // }
+          setSubcategories(data);
+          // console.log(data)
+          // console.log('sub',subcategories);
+
+          
+        })
+        .catch((err) => console.error("Error fetching subcategories:", err));
+    }
+  }, [selectedCategory]);
+
+  const handleCategoryClick = (categoryId) => {
+    setSelectedCategory(categoryId);
   };
 
-  const handleSubCategoryClick = (subcategory) => {
-    handleAddItem(subcategory);
-  };
-
-  const handleAddItem = (subcategory) => {
+  const handleAddItem = (dish) => {
     setAddedItems((prevItems) => {
-      const existingItem = prevItems.find((item) => item.name === subcategory.name);
+      const existingItem = prevItems.find((item) => item.dish_id === dish.dish_id);
       if (existingItem) {
         return prevItems.map((item) =>
-          item.name === subcategory.name ? { ...item, quantity: item.quantity + 1 } : item
+          item.dish_id === dish.dish_id ? { ...item, quantity: item.quantity + 1 } : item
         );
       } else {
-        return [...prevItems, { ...subcategory, quantity: 1 }];
+        return [...prevItems, { ...dish, quantity: 1 }];
       }
     });
   };
 
-  const handleRemoveItem = (itemName) => {
+  const handleRemoveItem = (dishId) => {
     setAddedItems((prevItems) =>
-      prevItems.filter((item) => item.name !== itemName)
+      prevItems.filter((item) => item.dish_id !== dishId)
     );
   };
 
-  const incrementQuantity = (itemName) => {
+  const incrementQuantity = (dishId) => {
     setAddedItems((prevItems) =>
       prevItems.map((item) =>
-        item.name === itemName ? { ...item, quantity: item.quantity + 1 } : item
+        item.dish_id === dishId ? { ...item, quantity: item.quantity + 1 } : item
       )
     );
   };
 
-  const decrementQuantity = (itemName) => {
+  const decrementQuantity = (dishId) => {
     setAddedItems((prevItems) =>
       prevItems
         .map((item) =>
-          item.name === itemName && item.quantity > 1
+          item.dish_id === dishId && item.quantity > 1
             ? { ...item, quantity: item.quantity - 1 }
             : item
         )
@@ -73,11 +91,11 @@ const Order = () => {
   };
 
   const calculateTotalPrice = () => {
-    return addedItems.reduce((total, item) => total + item.price * item.quantity, 0);
+    return addedItems.reduce((total, item) => total + item.dist_rate * item.quantity, 0);
   };
 
   return (
-    <div style={{ display: "flex", height: "100vh" }}>
+    <div style={{ display: "flex", minHeight: "90vh" }}>
       {/* Left Sidebar */}
       <div
         style={{
@@ -87,58 +105,88 @@ const Order = () => {
           borderRight: "1px solid #ddd",
         }}
       >
-        {/* <h3>Categories</h3> */}
         <ul style={{ listStyleType: "none", padding: 0 }}>
-          {Object.keys(menuData).map((category) => (
+         {!categories.length?(
+          <p style={{fontSize:'20px', color:'white',marginTop:10}}>No Categories Added</p>
+         ):(
+          categories.map((category) => (
             <li
-              key={category}
+              key={category.dishcat_id}
               style={{
                 padding: "10px",
                 cursor: "pointer",
-                backgroundColor: selectedCategory === category ? "#e0e0e0" : "transparent",
-                color: selectedCategory === category ? "#1A1A1A" : "#fff",
+                backgroundColor:
+                  selectedCategory === category.dishcat_id ? "#e0e0e0" : "transparent",
+                color: selectedCategory === category.dishcat_id ? "#1A1A1A" : "#fff",
                 marginBottom: "5px",
               }}
-              onClick={() => handleCategoryClick(category)}
+              onClick={() => handleCategoryClick(category.dishcat_id)}
             >
-              {category.charAt(0).toUpperCase() + category.slice(1)}
+              {category.dishcat_name}
             </li>
-          ))}
+          ))
+         )}
         </ul>
       </div>
 
       {/* Subcategories */}
-      <div
-        style={{
-          width: "40%",
-          padding: "20px",
-          backgroundColor: "#f8f9fa",
-        }}
-      >
-        {/* <h3>Subcategories</h3> */}
-        {selectedCategory ? (
-          <ul style={{ listStyleType: "none", padding: "20px",borderWidth:1 ,display:"flex",flexDirection:"row",flexWrap:"wrap",}}>
-            {menuData[selectedCategory].map((subcategory) => (
+                  
+      <div style={{overflowY:'scroll', width: "40%", backgroundColor: "#f8f9fa",height:'90vh' }}>
+        {subcategories.length > 0 ? (
+          <ul
+            style={{
+              listStyleType: "none",
+              paddingBottom: "20px", 
+              display: "flex",
+              flexWrap: "wrap",
+            }}
+          >
+            {subcategories.map((dish) => (
               <li
-                key={subcategory.name}
+                key={dish.dish_id}
                 style={{
                   cursor: "pointer",
-                  height:80,
-                backgroundColor:"#2C3E50",marginTop:15,
-                width:"27%",color:"#1A1A1A",fontSize:20,marginLeft:20,fontWeight:"400",justifyContent:"center",alignItems:"center"
+                  // height: 80,
+                  backgroundColor: "#2C3E50",
+                  marginTop: 15,
+                  width: "27%",
+                  color: "#1A1A1A",
+                  fontSize: 20,
+                  marginLeft: 20,
+                  fontWeight: "400",
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
                 }}
-                onClick={() => handleSubCategoryClick(subcategory)}
+                onClick={() => handleAddItem(dish)}
               >
-                <h4 style={{backgroundColor:"#e0e0e0",height:"92%",width:"100%",marginTop:"2.5%",padding:10}}>{subcategory.name}</h4>
+                <h4
+                  style={{
+                    backgroundColor: "#e0e0e0",
+                    height: "92%",
+                    width: "100%",
+                    marginTop: "2.5%",
+                    padding: 10,
+                    textAlign: "center",
+                  }}
+                >
+                  {dish.dish_name}
+                </h4>
               </li>
             ))}
           </ul>
         ) : (
-          <p>Select a category to view subcategories.</p>
+          <p style={{
+            fontSize: 20,
+            display:'flex',
+            justifyContent: 'center',
+            marginTop:30
+            // alignContent:'center',
+          }}>No Added Dishes.</p>
         )}
       </div>
 
-      {/* Selected Subcategory and Add Item */}
+      {/* Selected Items */}
       <div
         style={{
           width: "45%",
@@ -147,89 +195,156 @@ const Order = () => {
         }}
       >
         {/* Display Added Items */}
-        <h3 style={{ marginTop: "20px" }}>Added Items</h3>
-        <div className={style.firstbuttons}>
-          <button>Dine</button>
-          <button>Parcel</button>
-        </div>
-        {addedItems.length > 0 ? (
-          <ul style={{ listStyleType: "none", padding: 0 }}>
-            {addedItems.map((item) => (
-              <li
-                key={item.name}
+        <div
+  style={{
+    display: "flex",
+    flexDirection: "column",
+    minHeight: "100%", // Ensures content fits naturally
+  }}
+>
+  {/* Header Section */}
+  <h3 style={{ marginTop: "20px" }}>Added Items</h3>
+  <div className={style.firstbuttons}>
+    <button className={style.separatebtn}>Dine</button>
+    <button className={style.separatebtn}>Parcel</button>
+  </div>
+
+  {/* Items Section */}
+  <div style={{ flex: "1" }}>
+    {addedItems.length > 0 ? (
+      <ul style={{ listStyleType: "none", padding: 0 }}>
+        {addedItems.map((item) => (
+          <li
+            key={item.dish_id}
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              padding: "10px",
+              borderBottom: "1px solid #ddd",
+            }}
+          >
+            {/* Item Name - 40% */}
+            <span
+              style={{
+                flexBasis: "40%",
+                overflow: "hidden",
+                whiteSpace: "nowrap",
+                textOverflow: "ellipsis",
+              }}
+            >
+              {item.dish_name}
+            </span>
+
+            {/* Item Price - 10% */}
+            <span style={{ flexBasis: "10%", textAlign: "center" }}>
+              ₹{item.dist_rate}
+            </span>
+
+            {/* Quantity Controls - 20% */}
+            <div
+              style={{
+                flexBasis: "20%",
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+              <button
+                onClick={() => decrementQuantity(item.dish_id)}
                 style={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  alignItems: "center",
-                  padding: "10px",
-                  borderBottom: "1px solid #ddd",
+                  backgroundColor: "#e0e0e0",
+                  border: "none",
+                  cursor: "pointer",
+                  padding: "5px 10px",
+                  marginRight: "5px",
                 }}
               >
-                <span>
-                  {item.name} - ₹{item.price}
-                </span>
-                <div style={{ display: "flex", alignItems: "center" }}>
-                  <button
-                    onClick={() => decrementQuantity(item.name)}
-                    style={{
-                      backgroundColor: "#e0e0e0",
-                      border: "none",
-                      cursor: "pointer",
-                      padding: "5px 10px",
-                      marginRight: "5px",
-                    }}
-                  >
-                    -
-                  </button>
-                  <span style={{ margin: "0 10px" }}>{item.quantity}</span>
-                  <button
-                    onClick={() => incrementQuantity(item.name)}
-                    style={{
-                      backgroundColor: "#e0e0e0",
-                      border: "none",
-                      cursor: "pointer",
-                      padding: "5px 10px",
-                    }}
-                  >
-                    +
-                  </button>
-                  <span
-                  style={{
-                     
-                      padding: "5px 10px",
-                    }}>₹{item.price * item.quantity}</span>
-                </div>
-                <button
-                  onClick={() => handleRemoveItem(item.name)}
-                  style={{
-                    backgroundColor: "red",
-                    color: "white",
-                    border: "none",
-                    cursor: "pointer",
-                    padding: "5px 10px",
-                    marginLeft: "10px",
-                  }}
-                >
-                  Remove
-                </button>
-              </li>
+                -
+              </button>
+              <span style={{ margin: "0 10px" }}>{item.quantity}</span>
+              <button
+                onClick={() => incrementQuantity(item.dish_id)}
+                style={{
+                  backgroundColor: "#e0e0e0",
+                  border: "none",
+                  cursor: "pointer",
+                  padding: "5px 10px",
+                }}
+              >
+                +
+              </button>
+            </div>
 
-            ))}
-        <h3 style={{ marginTop: "20px" }}>Total Price: ₹{calculateTotalPrice()}</h3>
-          </ul>
-        ) : (
-          <p>No items added.</p>
-        )}
-        {/* Total Price */}
-<div className={style.lastbuttons}>
-        <button>Save</button>
-        <button>Print</button>
-        <button>Download</button>
-        <button>Share</button>
-      </div>
-      </div>
-      
+            {/* Subtotal - 20% */}
+            <span style={{ flexBasis: "20%", textAlign: "center" }}>
+              ₹{item.dist_rate * item.quantity}
+            </span>
 
+            {/* Delete Button - 10% */}
+            <button
+              onClick={() => handleRemoveItem(item.dish_id)}
+              style={{
+                flexBasis: "10%",
+                backgroundColor: "red",
+                color: "white",
+                border: "none",
+                cursor: "pointer",
+                padding: "5px 10px",
+                textAlign: "center",
+              }}
+            >
+              Remove
+            </button>
+          </li>
+        ))}
+      </ul>
+    ) : (
+      <p style={{fontSize:20,textAlign:'center'}}>No items added.</p>
+    )}
+  </div>
+
+  {/* Bottom Section (Total Price and Buttons) */}
+  <div
+    style={{
+      display: "flex",
+      flexDirection: "column",
+      justifyContent: "flex-end",
+      backgroundColor: "#f9f9f9",
+      borderTop: "1px solid #ddd",
+    }}
+  >
+    {/* Total Price */}
+    <h3
+      style={{
+        margin: "0",
+        textAlign: "right",
+        padding: "10px",
+      }}
+    >
+      Total Price: ₹{calculateTotalPrice()}
+    </h3>
+
+    {/* Last Buttons */}
+    <div
+      className={style.lastbuttons}
+      style={{
+        display: "flex",
+        justifyContent: "flex-end",
+        gap: "10px",
+        padding: "10px",
+      }}
+    >
+      <button className={style.separatebtn}>Save</button>
+      <button className={style.separatebtn}>Print</button>
+      <button className={style.separatebtn}>Download</button>
+      <button className={style.separatebtn}>Share</button>
+    </div>
+  </div>
+</div>
+
+
+      </div>
     </div>
   );
 };

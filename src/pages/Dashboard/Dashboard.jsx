@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import { Link  } from "react-router-dom";
+import style from './Dashboard.module.css'
+
 const Dashboard = () => {
   const [searchTerm, setSearchTerm] = useState("");
 
@@ -26,9 +28,14 @@ const Dashboard = () => {
 
   return (
     <div style={{ padding: "20px" }}>
+    <div className={style.heading}>
+    <div className={style.text}>
       <h2>Welcome to the Admin Dashboard</h2>
       <p>Here you can manage your application effectively.</p>
-          <Link to='order'><button>Order</button></Link>
+    </div>
+          <Link to='order'><button className={style.orderbtn}>Order</button></Link>
+    </div>
+    
 
       <input
         type="text"
