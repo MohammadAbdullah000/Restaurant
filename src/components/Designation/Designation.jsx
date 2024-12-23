@@ -5,7 +5,7 @@ import style from './Designation.module.css';
 const Designation = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [addDishIsOpen, setAddDishIsOpen] = useState(false);
-  const [dishName, setDishName] = useState('');
+  const [designationName, setdesignationName] = useState('');
   const [dishes, setDishes] = useState([]);
 
   // Fetch categories on component mount
@@ -52,7 +52,7 @@ const Designation = () => {
           'Content-Type': 'application/x-www-form-urlencoded',
         },
         body: new URLSearchParams({
-          designation_name: dishName,
+          designation_name: designationName,
         }),
       });
 
@@ -61,18 +61,18 @@ const Designation = () => {
       if (result.successmessage === 'success') {
         setDishes((prevDishes) => [
           ...prevDishes,
-          { designation_name: dishName, dishcat_id: result.new_id },
+          { designation_name: designationName, dishcat_id: result.new_id },
         ]);
         console.log('successsss')
-        setDishName('');
+        setdesignationName('');
         toggleAddDish();
       }
       else {
-        alert(result.errmessage || 'Failed to add category.');
+        alert(result.errmessage || 'Failed to add Designation.');
       }
     } catch (error) {
-      console.error('Error adding category:', result.errmessage);
-      alert('An error occurred while adding the category.');
+      console.error('Error adding Designation:', result.errmessage);
+      alert('An error occurred while adding the Designation.');
     }
   }
 
@@ -95,18 +95,18 @@ const Designation = () => {
         // Remove deleted dish from local state
         setDishes(dishes.filter((dish) => dish.id !== dishId));
       } else {
-        alert(result.message || 'Failed to delete category.');
+        alert(result.message || 'Failed to delete Designation.');
       }
     } catch (error) {
-      console.error('Error deleting category:', error);
-      alert('An error occurred while deleting the category.');
+      console.error('Error deleting Designation:', error);
+      alert('An error occurred while deleting the Designation.');
     }
   };
 
   // Columns for the data table
   const columns = [
     {
-      name: 'Category Name',
+      name: 'Desingation Name',
       selector: (row) => row.designation_name,
       sortable: true,
     },
@@ -151,12 +151,10 @@ const Designation = () => {
   return (
     <div className={`${style.nunito500} ${style.dish}`}>
       <div className={style.heading}>
-        <h2>Welcome to the Designation Section</h2>
-        <p>Here you can manage your Designation.</p>
+        {/* <h2>Welcome to the Designation Section</h2>
+        <p>Here you can manage your Designation.</p> */}
 
-        <div className={style.addDish}>
-          <button onClick={toggleAddDish}>Add New Designation</button>
-        </div>
+      
       </div>
       <div>
          {addDishIsOpen && (
@@ -167,25 +165,32 @@ const Designation = () => {
           )}
       {addDishIsOpen && (
         <div className={`${style.cardForm} ${addDishIsOpen ? style.animateOpen : ''}`}>
-          <h3>Add New Category</h3>
+          <button 
+              className={style.closeButton} 
+              onClick={toggleAddDish} 
+              aria-label="Close"
+            >
+              &times;
+            </button>
+          <h3>Add New Designation</h3>
           <form onSubmit={(e) => e.preventDefault()}>
             <div className={style.formGroupdish}>
-              <label htmlFor="dishName">Dish Name:</label>
+              <label htmlFor="designation">Designation Name:</label>
               <input
                 type="text"
-                id="dishName"
-                value={dishName}
-                onChange={(e) => setDishName(e.target.value)}
+                id="designation"
+                value={designationName}
+                onChange={(e) => setdesignationName(e.target.value)}
                 required
               />
             </div>
             <div className={style.buttonGroup}>
               <button type="button" onClick={handleAddDish}>
-                Add Category
+                Submit
               </button>
-              <button type="button" onClick={toggleAddDish}>
+              {/* <button type="button" onClick={toggleAddDish}>
                 Cancel
-              </button>
+              </button> */}
             </div>
           </form>
         </div>
@@ -194,14 +199,20 @@ const Designation = () => {
 
 
       <div className={style.tableContainer}>
+      <div className={style.searchbutton}>
+
         <div className={style.searchContainer}>
           <input
             type="text"
-            placeholder="Search by Category Name..."
+            placeholder="Search by Designation Name..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />
         </div>
+        <div className={style.addDish}>
+          <button onClick={toggleAddDish}>Add New Designation</button>
+        </div>
+      </div>
         <DataTable
           className={style.datatable}
           columns={columns}

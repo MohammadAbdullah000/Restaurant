@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from "react";
 import style from './Order.module.css';
+import Receipt from "../Receipt";
 
 const Order = () => {
   const [categories, setCategories] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [subcategories, setSubcategories] = useState([]);
   const [addedItems, setAddedItems] = useState([]);
+  const [dineOrParcel,setDineOrParcel] = useState('Dine In')
   const [noDishesMessage, setNoDishesMessage] = useState("");
 
   useEffect(() => {
@@ -18,7 +20,9 @@ const Order = () => {
       })
       .catch((err) => console.error("Error fetching categories:", err));
   }, []);
-
+  const handleDine = () => {
+    setDineOrParcel("Dine In");
+  };
   useEffect(() => {
     if (selectedCategory) {
       // Fetch subcategories when category is selected
@@ -62,6 +66,7 @@ const Order = () => {
         return [...prevItems, { ...dish, quantity: 1 }];
       }
     });
+    
   };
 
   const handleRemoveItem = (dishId) => {
@@ -94,6 +99,27 @@ const Order = () => {
     return addedItems.reduce((total, item) => total + item.dist_rate * item.quantity, 0);
   };
 
+
+  const handlePrint=()=>{
+    let count = 0
+    // addedItems.forEach((item)=>{
+    //   console.log('Dish Name:',item.dish_name);
+    //   console.log('Dish Rate:',item.dist_rate);
+    //   console.log('Dish Quantity:',item.quantity);
+    //   console.log('Dish qnty:',item.dish_qnty);
+    //   console.log('Dish Subtotal:',item.dist_rate * item.quantity)
+    //   // console.log(item.dish_name);
+      
+    // })
+    console.log(addedItems)
+    const Total = calculateTotalPrice()
+    console.log('Total:',Total);
+    const coupon =  Math.floor(Math.random()*100)
+    console.log('Coupon:',coupon);
+  }
+const handleParcel=()=>{
+  setDineOrParcel('Parcel')
+}
   return (
     <div style={{ display: "flex", minHeight: "90vh" }}>
       {/* Left Sidebar */}
@@ -153,7 +179,7 @@ const Order = () => {
                   color: "#1A1A1A",
                   fontSize: 20,
                   marginLeft: 20,
-                  fontWeight: "400",
+                  fontWeight: 400,
                   display: "flex",
                   justifyContent: "center",
                   alignItems: "center",
@@ -190,7 +216,7 @@ const Order = () => {
       <div
         style={{
           width: "45%",
-          padding: "20px",
+          padding: "0 20px",
           backgroundColor: "#FFF",
         }}
       >
@@ -203,10 +229,24 @@ const Order = () => {
   }}
 >
   {/* Header Section */}
-  <h3 style={{ marginTop: "20px" }}>Added Items</h3>
+  {/* <h3 style={{ marginTop: "20px" }}>Added Items</h3> */}
   <div className={style.firstbuttons}>
-    <button className={style.separatebtn}>Dine</button>
-    <button className={style.separatebtn}>Parcel</button>
+  <button
+        className={`${style.separatebtn} ${
+          dineOrParcel === "Dine In" ? style.active : ""
+        }`}
+        onClick={handleDine}
+      >
+        Dine
+      </button>
+      <button
+        className={`${style.separatebtn} ${
+          dineOrParcel === "Parcel" ? style.active : ""
+        }`}
+        onClick={handleParcel}
+      >
+        Parcel
+      </button>
   </div>
 
   {/* Items Section */}
@@ -221,6 +261,8 @@ const Order = () => {
               justifyContent: "space-between",
               alignItems: "center",
               padding: "10px",
+              fontSize:"18px",
+              marginTop:"10px",
               borderBottom: "1px solid #ddd",
             }}
           >
@@ -233,7 +275,7 @@ const Order = () => {
                 textOverflow: "ellipsis",
               }}
             >
-              {item.dish_name}
+              {item.dish_name}             
             </span>
 
             {/* Item Price - 10% */}
@@ -331,12 +373,15 @@ const Order = () => {
       style={{
         display: "flex",
         justifyContent: "flex-end",
+        width:"100%",
         gap: "10px",
         padding: "10px",
       }}
     >
       <button className={style.separatebtn}>Save</button>
-      <button className={style.separatebtn}>Print</button>
+      <button className={style.separatebtn} onClick={handlePrint}><Receipt dineOrParcel={dineOrParcel} addedItems={addedItems} /></button>
+    
+
       <button className={style.separatebtn}>Download</button>
       <button className={style.separatebtn}>Share</button>
     </div>

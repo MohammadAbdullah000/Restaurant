@@ -149,12 +149,10 @@ const Category = () => {
   return (
      <div className={`${style.nunito500} ${style.dish}`}>
       <div className={style.heading}>
-        <h2>Welcome to the Category Section</h2>
-        <p>Here you can manage your Category.</p>
+        {/* <h2>Welcome to the Category Section</h2>
+        <p>Here you can manage your Category.</p> */}
 
-        <div className={style.addDish}>
-          <button onClick={toggleAddDish}>Add New Category</button>
-        </div>
+       
       </div>
       <div>
           {addDishIsOpen && (
@@ -165,10 +163,17 @@ const Category = () => {
                   )}
       {addDishIsOpen && (
         <div className={`${style.cardForm} ${addDishIsOpen ? style.animateOpen : ''}`}>
+          <button 
+                      className={style.closeButton} 
+                      onClick={toggleAddDish} 
+                      aria-label="Close"
+                    >
+                      &times;
+                    </button>
           <h3>Add New Category</h3>
           <form onSubmit={(e) => e.preventDefault()}>
             <div className={style.formGroupdish}>
-              <label htmlFor="dishName">Dish Name:</label>
+              <label htmlFor="dishName">Category Name:</label>
               <input
                 type="text"
                 id="dishName"
@@ -179,11 +184,11 @@ const Category = () => {
             </div>
             <div className={style.buttonGroup}>
               <button type="button" onClick={handleAddDish}>
-                Add Category
+                Submit
               </button>
-              <button type="button" onClick={toggleAddDish}>
+              {/* <button type="button" onClick={toggleAddDish}>
                 Cancel
-              </button>
+              </button> */}
             </div>
           </form>
         </div>
@@ -192,6 +197,7 @@ const Category = () => {
 
 
       <div className={style.tableContainer}>
+            <div className={style.searchbutton}>
         <div className={style.searchContainer}>
           <input
             type="text"
@@ -200,6 +206,11 @@ const Category = () => {
             onChange={(e) => setSearchTerm(e.target.value)}
           />
         </div>
+        <div className={style.addDish}>
+          <button onClick={toggleAddDish}>Add New Category</button>
+        </div>
+      </div>
+      
         <DataTable
           className={style.datatable}
           columns={columns}

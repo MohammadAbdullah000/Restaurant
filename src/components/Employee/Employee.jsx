@@ -13,12 +13,12 @@ const Dish = () => {
   const [employeeID, setEmployeeID] = useState("");
   const [employeeEmail, setEmployeeEmail] = useState("");
   const [employeeSalary, setEmployeeSalary] = useState("");
-  const [dishes, setDishes] = useState([]);
-  const [dishCategory, setDishCategory] = useState([]);
-  const [categories, setCategories] = useState([]);
+  const [employees, setEmployees] = useState([]);
+  const [desginationID, setdesginationID] = useState([]);
+  const [Designations, setDesignations] = useState([]);
   const [activeCategory, setActiveCategory] = useState(null);
-  const [noDishesMessage, setNoDishesMessage] = useState("");
-  // Fetch dishes
+  const [noEmployeesMessage, setNoEmployeesMessage] = useState("");
+  // Fetch Employees
   // useEffect(() => {
     async function fetchEmployee(desigId) {
       try {
@@ -29,11 +29,11 @@ const Dish = () => {
           console.log("API Response:", data); // Log the full API response
           console.log("Length of data:", data.length); // Log the length
     if(!data.length){
-      setNoDishesMessage("No Dishes Added"); // Show the message
+      setNoEmployeesMessage("No Employee Added"); // Show the message
 
     }
           {
-            const formattedDishes = data.map((dish) => ({
+            const formattedEmployees = data.map((dish) => ({
               EmployeesIDS: dish.emp_card_id,
               FullName: dish.emp_name,
               Email: dish.emp_email,
@@ -42,16 +42,16 @@ const Dish = () => {
               Salary: dish.emp_salary,
               ids:dish.emp_id
             }));
-            setDishes(formattedDishes);
-            console.log('h',formattedDishes);
+            setEmployees(formattedEmployees);
+            console.log('h',formattedEmployees);
             
-            setNoDishesMessage(""); // Clear the message
+            setNoEmployeesMessage(""); // Clear the message
           }
         } else {
-          console.error("Failed to fetch dishes:", response.statusText);
+          console.error("Failed to fetch employees:", response.statusText);
         }
       } catch (error) {
-        console.error("Error fetching dishes:", error);
+        console.error("Error fetching employees:", error);
       }
     }
     
@@ -60,9 +60,9 @@ const Dish = () => {
     // }, []);
     
     
-    // Fetch categories
+    // Fetch Designations
     useEffect(() => {
-      async function fetchCategories() {
+      async function fetchDesignations() {
         try {
           const response = await fetch(
             "https://letzbim.com/Restaurent/designation_fetch_Api.php"
@@ -70,25 +70,25 @@ const Dish = () => {
           if (response.ok) {
             const data = await response.json();
             console.log('aaa',data);
-            setCategories(data);
+            setDesignations(data);
             
-            console.log('ca',categories);
+            console.log('ca',Designations);
             
   
             // Set the first category as the default active category
             if (data.length > 0) {
               setActiveCategory(data[0].id);
-              fetchEmployee(data[0].id); // Fetch dishes for the default category
+              fetchEmployee(data[0].id); // Fetch Employees for the default category
             }
           } else {
-            console.error("Failed to fetch categories:", response.statusText);
+            console.error("Failed to fetch Designations:", response.statusText);
           }
         } catch (error) {
-          console.error("Error fetching categories:", error);
+          console.error("Error fetching Designations:", error);
         }
       }
   
-      fetchCategories();
+      fetchDesignations();
     }, []);
   
   
@@ -113,7 +113,7 @@ const Dish = () => {
     };
 
     fetchUniqueID();
-  }, []);
+  }, [employees]);
 
   async function handleAddDish() {
     const formData = new URLSearchParams();
@@ -123,7 +123,7 @@ const Dish = () => {
     formData.append("Mobile", employeeMobile);
     formData.append("Address", employeeAddress);
     formData.append("Salary", employeeSalary);
-    formData.append("DesigId", dishCategory);
+    formData.append("DesigId", desginationID);
   
     try {
       const response = await fetch("https://letzbim.com/Restaurent/employee_create_Api.php", {
@@ -139,8 +139,8 @@ const Dish = () => {
         console.log(result);
         if (result.successmessage) {
           // Add the new dish to the state directly
-          setDishes((prevDishes) => [
-            ...prevDishes,
+          setEmployees((prevEmployees) => [
+            ...prevEmployees,
             {
               EmployeesIDS: employeeID,
               FullName: employeeName,
@@ -148,8 +148,8 @@ const Dish = () => {
               Mobile: employeeMobile,
               Address: employeeAddress,
               Salary: employeeSalary,
-              // Designation: dishCategory
-              DesigId: categories.find((cat) => cat.DesigId === dishCategory)?.designation_name || "",
+              // Designation: desginationID
+              DesigId: Designations.find((cat) => cat.DesigId === desginationID)?.designation_name || "",
             },
           ]);
   
@@ -160,13 +160,13 @@ const Dish = () => {
           setEmployeeMobile("");
           setEmployeeEmail("");
           setEmployeeSalary("");
-          setDishCategory("")
+          setdesginationID("")
   
           // Close the form
           toggleAddDish();
   
-          // Fetch dishes again to update the table
-          fetchEmployee(activeCategory); // Ensure we fetch dishes for the active category
+          // Fetch Employees again to update the table
+          fetchEmployee(activeCategory); // Ensure we fetch Employees for the active category
           console.log('success')
         } else {
           alert("Failed to add dish: " + result.errmessage);
@@ -183,7 +183,7 @@ const Dish = () => {
   
   const handleCategoryClick = (dishCatID) => {
     setActiveCategory(dishCatID);
-    fetchEmployee(dishCatID); // Fetch dishes for the selected category
+    fetchEmployee(dishCatID); // Fetch Employees for the selected category
   };
 
   const handleDelete = async (empID) => {
@@ -200,7 +200,7 @@ const Dish = () => {
       // console.log('ffffffff',desigId)
   
       if (result.successmessage === "success") {
-        setDishes((prevDishes) => prevDishes.filter((dish) => dish.EmployeesIDS !== empID));
+        setEmployees((prevEmployees) => prevEmployees.filter((dish) => dish.EmployeesIDS !== empID));
         console.log('aa',activeCategory);
         
         fetchEmployee(activeCategory);
@@ -245,18 +245,16 @@ const Dish = () => {
     },
   };
 
-  const filteredDishes = dishes.filter((dish) =>
+  const filteredEmployees = employees.filter((dish) =>
     dish.FullName?.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   return (
     <div className={`${style.nunito500} ${style.dish}`}>
       <div className={style.heading}>
-        <h2>Welcome to the Employee Section</h2>
-        <p>Here you can manage your Employee.</p>
-        <div className={style.addDish}>
-          <button onClick={toggleAddDish}  style={{ display: !categories.length ? 'none' : 'block' }}>Add New Employee</button>
-        </div>
+        {/* <h2>Welcome to the Employee Section</h2> */}
+        {/* <p>Here you can manage your Employee.</p> */}
+       
       </div>
       <div>
   {/* Overlay */}
@@ -270,6 +268,13 @@ const Dish = () => {
   {/* Card Form */}
   {addDishIsOpen && (
     <div className={`${style.cardForm} ${addDishIsOpen ? style.animateOpen : ""}`}>
+    <button 
+          className={style.closeButton} 
+          onClick={toggleAddDish} 
+          aria-label="Close"
+        >
+          &times;
+        </button>
       <h3>Add New Employee</h3>
       <form onSubmit={(e) => e.preventDefault()}>
       <div className={style.formGroupdish}>
@@ -337,15 +342,15 @@ const Dish = () => {
                   <label htmlFor="designation">Designation:</label>
                   <select
                     id="designation"
-                    value={dishCategory}
-                    onChange={(e) => setDishCategory(e.target.value)}
+                    value={desginationID}
+                    onChange={(e) => setdesginationID(e.target.value)}
                     required
                   >
                     <option value="">Select a category</option>
                    
                    
                    
-                    {categories.map((category) => (
+                    {Designations.map((category) => (
                       <option key={category.id} value={category.id}>
                         {category.designation_name}
                       </option>
@@ -354,11 +359,11 @@ const Dish = () => {
                 </div>
         <div className={style.buttonGroup}>
           <button type="button" onClick={handleAddDish}>
-            Add Dish
+            Submit
           </button>
-          <button type="button" onClick={toggleAddDish}>
+          {/* <button type="button" onClick={toggleAddDish}>
             Cancel
-          </button>
+          </button> */}
         </div>
       </form>
     </div>
@@ -376,12 +381,30 @@ const Dish = () => {
           />
         </div> */}
 
+        
+
+      <div className={style.tableContainer}>
+      <div className={style.searchbutton}>
+        <div className={style.searchContainer}>
+          <input
+            type="text"
+            placeholder="Search by Dish Name..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+          />
+        </div>
+        <div className={style.addDish}>
+          <button onClick={toggleAddDish}  style={{ display: !Designations.length ? 'none' : 'block' }}>Add New Employee</button>
+        </div>
+        </div>
+
+        <div className={style.tableWrapper}>
         <div className={style.categoryTabs}>
-  {!categories.length?(
-    <p style={{fontSize:'30px', color:'red'}}>Please add Designation first</p>
+  {!Designations.length?(
+    <p style={{fontSize:'30px', color:'red',margin:'auto'}}>Please add Designation first</p>
   ):(
 
-    categories.map((category) => (
+    Designations.map((category) => (
     <button
       key={category.id}
       className={`${style.tabButton} ${
@@ -393,25 +416,14 @@ const Dish = () => {
     </button>
   )))}
 </div>
-
-      <div className={style.tableContainer}>
-        <div className={style.searchContainer}>
-          <input
-            type="text"
-            placeholder="Search by Dish Name..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-          />
-        </div>
-        <div className={style.tableWrapper}>
 <div>
-  {noDishesMessage ? (
-    <p className={style.noDishesMessage}>{noDishesMessage}</p>
+  {noEmployeesMessage ? (
+    <p className={style.noEmployeesMessage}>{noEmployeesMessage}</p>
   ) : (
     <DataTable
       className={style.datatable}
       columns={columns}
-      data={filteredDishes}
+      data={filteredEmployees}
       pagination
       highlightOnHover
       customStyles={customStyles}

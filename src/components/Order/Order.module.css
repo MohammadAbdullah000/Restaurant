@@ -1,12 +1,21 @@
 .separatebtn{
-    padding: 10px 15px;
+    padding: 10px;
     background-color: var(--primary-color);
     border-radius: 5px;
     color: white;
     border: none;
     cursor: pointer;
+    font-size: 16px;
+    width: 49%;
+    
+}
+.firstbuttons{
+    margin-top: 15px;
 }
 .firstbuttons button:nth-child(1){
 
     margin-right: 10px;
+}
+.active {
+  background-color: #2C3E50; /* Active color */
 }

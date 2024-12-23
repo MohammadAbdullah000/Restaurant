@@ -205,12 +205,12 @@ const Dish = () => {
   return (
     <div className={`${style.nunito500} ${style.dish}`}>
       <div className={style.heading}>
-        <h2>Welcome to the Dish Section</h2>
-        <p>Here you can manage your Dishes.</p>
-        <div className={style.addDish}>
-          <button onClick={toggleAddDish} style={{display: !categories.length ?'none' :'block'}}>Add New Dish</button>
-        </div>
+        {/* <h3>Dish Section</h3> */}
+        {/* <p>Here you can manage your Dishes.</p> */}
+        
       </div>
+           
+
       <div>
   {/* Overlay */}
   {addDishIsOpen && (
@@ -223,7 +223,15 @@ const Dish = () => {
   {/* Card Form */}
   {addDishIsOpen && (
     <div className={`${style.cardForm} ${addDishIsOpen ? style.animateOpen : ""}`}>
+    <button 
+      className={style.closeButton} 
+      onClick={toggleAddDish} 
+      aria-label="Close"
+    >
+      &times;
+    </button>
       <h3>Add New Dish</h3>
+
       <form onSubmit={(e) => e.preventDefault()}>
         <div className={style.formGroupdish}>
           <label htmlFor="dishName">Dish Name:</label>
@@ -273,11 +281,11 @@ const Dish = () => {
         </div>
         <div className={style.buttonGroup}>
           <button type="button" onClick={handleAddDish}>
-            Add Dish
+            Submit
           </button>
-          <button type="button" onClick={toggleAddDish}>
+          {/* <button type="button" onClick={toggleAddDish}>
             Cancel
-          </button>
+          </button> */}
         </div>
       </form>
     </div>
@@ -295,9 +303,27 @@ const Dish = () => {
           />
         </div> */}
 
-        <div className={style.categoryTabs}>
+
+      <div className={style.tableContainer}>
+      <div className={style.searchbutton}>
+
+        <div className={style.searchContainer}>
+          <input
+            type="text"
+            placeholder="Search by Dish Name..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+          />
+        </div>
+        <div className={style.addDish}>
+          <button onClick={toggleAddDish} style={{display: !categories.length ?'none' :'block'}}>Add New Dish</button>
+        </div>
+      </div>
+
+        <div className={style.tableWrapper}>
+         <div className={style.categoryTabs}>
  {!categories.length?(
-  <p style={{fontSize:'30px', color:'red'}}>Please add Category first</p>
+  <p style={{fontSize:'30px', color:'red',margin:'auto'}}>Please add Category first</p>
  ):(
   categories.map((category) => (
     <button
@@ -312,17 +338,6 @@ const Dish = () => {
   ))
  )}
 </div>
-
-      <div className={style.tableContainer}>
-        <div className={style.searchContainer}>
-          <input
-            type="text"
-            placeholder="Search by Dish Name..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-          />
-        </div>
-        <div className={style.tableWrapper}>
 <div>
   {noDishesMessage ? (
     <p className={style.noDishesMessage}>{noDishesMessage}</p>

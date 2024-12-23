@@ -1,11 +1,13 @@
-import React, { useState,useContext } from "react";
-import { Link, Outlet } from "react-router-dom";
+import React, { useState, useContext } from "react";
+import { Link, Outlet, useLocation } from "react-router-dom";
 import style from "./Sidebar.module.css";
 import "@fortawesome/fontawesome-free/css/all.min.css";
 import { UserContext } from "../../Contexts/UserContext.jsx";
 
-const sidebar = () => {
+const Sidebar = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  // const { user } = useContext(UserContext);
+  const location = useLocation(); // Get the current location
 
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
@@ -13,7 +15,15 @@ const sidebar = () => {
   const closeSidebar = () => {
     setIsSidebarOpen(false);
   };
-  const { user } = useContext(UserContext);
+
+  // Extract the last segment of the URL
+  const getLastPathSegment = (path) => {
+    const segments = path.split("/").filter(Boolean); // Split and remove empty segments
+    return segments[segments.length - 1] || "Dashboard"; // Fallback to "Dashboard" if root
+  };
+
+  const lastSegment = getLastPathSegment(location.pathname);
+
   return (
     <div className={style.adminDashboard}>
       {/* Sidebar */}
@@ -76,16 +86,14 @@ const sidebar = () => {
           <button className={style.menuBtn} onClick={toggleSidebar}>
             <i className="fas fa-bars"></i>
           </button>
-          <h1>Welcome {user?.full_name || "User"}</h1>
-
+          <h2>{lastSegment.charAt(0).toUpperCase() + lastSegment.slice(1)} Section</h2>
         </header>
         <section className={style.content}>
           <Outlet />
-          
         </section>
       </div>
     </div>
   );
 };
 
-export default sidebar;
+export default Sidebar;
