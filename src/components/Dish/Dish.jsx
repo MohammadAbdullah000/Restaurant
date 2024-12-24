@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import DataTable from "react-data-table-component";
 import style from "./Dish.module.css";
-
+import axios from "axios";
 const Dish = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [addDishIsOpen, setAddDishIsOpen] = useState(false);
@@ -13,6 +13,9 @@ const Dish = () => {
   const [categories, setCategories] = useState([]);
   const [activeCategory, setActiveCategory] = useState(null);
   const [noDishesMessage, setNoDishesMessage] = useState("");
+    const [editDishIsOpen, setEditDishIsOpen] = useState(false);
+    const [editDish,setEditDish] = useState([])
+  
   // Fetch dishes
   // useEffect(() => {
     async function fetchDishes(dishCatID) {
@@ -85,7 +88,9 @@ const Dish = () => {
   function toggleAddDish() {
     setAddDishIsOpen(!addDishIsOpen);
   }
-
+  function toggleEditDish() {
+    setEditDishIsOpen(!editDishIsOpen);
+  }
   async function handleAddDish() {
     const formData = new URLSearchParams();
     formData.append("dish_id", dishCategory);
@@ -168,11 +173,54 @@ const Dish = () => {
       alert('An error occurred while deleting the dish.');
     }
   };
+
+  const handleEdit = async (dish_id) => {
+    try {
+      // Construct the API URL with the given dishcat_id
+      const apiUrl = `https://letzbim.com/Restaurent/Dishes_Edit_Fetch_Api.php?dish_id=${dish_id}`;
+  
+      // Make the GET request to fetch the category details
+      const response = await axios.get(apiUrl);
+  
+      // Check if the response is successful
+      if (response.data) {
+        setEditDish(response.data)
+  
+        // Handle the fetched data (e.g., open a form with pre-filled data)
+        console.log('Category Data:', response.data);
+        // Add your logic here to display or use the fetched data
+        // For example, you can set the data in a state to pre-fill a form
+      } else {
+        // console.error('Failed to fetch category details:', response.data);
+        alert('Failed to fetch category details. Please try again.');
+      }
+    } catch (error) {
+      console.error('Error fetching category details:', error);
+      alert('An error occurred while fetching the category details.');
+    }
+  };
+  
   
   const columns = [
     { name: "Dish Name", selector: (row) => row.name, sortable: true },
     { name: "Price", selector: (row) => `₹ ${row.price}`, sortable: true },
     { name: "Quantity", selector: (row) => row.quantity, sortable: true },
+    {  name: '',
+      cell: (row) => (
+        <button
+          className={style.deleteButton}
+          onClick={() => {
+        handleEdit(row. id);
+        toggleEditDish();
+      }}
+        >
+          Edit
+        </button>
+      ),
+      ignoreRowClick: true,
+      allowoverflow: true,
+      button: true,
+    },
     {  name: 'Actions',
       cell: (row) => (
         <button
@@ -201,7 +249,9 @@ const Dish = () => {
   const filteredDishes = dishes.filter((dish) =>
     dish.name?.toLowerCase().includes(searchTerm.toLowerCase())
   );
-
+  const handleInputChange = (e) => {
+    setEditDish(e.target.value); // Update the value as user types
+  };
   return (
     <div className={`${style.nunito500} ${style.dish}`}>
       <div className={style.heading}>
@@ -268,6 +318,84 @@ const Dish = () => {
           <select
             id="dishCategory"
             value={dishCategory}
+            onChange={(e) => setDishCategory(e.target.value)}
+            required
+          >
+            <option value="">Select a category</option>
+            {categories.map((category) => (
+              <option key={category.dishcat_id} value={category.dishcat_id}>
+                {category.dishcat_name}
+              </option>
+            ))}
+          </select>
+        </div>
+        <div className={style.buttonGroup}>
+          <button type="button" onClick={handleAddDish}>
+            Submit
+          </button>
+          {/* <button type="button" onClick={toggleAddDish}>
+            Cancel
+          </button> */}
+        </div>
+      </form>
+    </div>
+  )}
+
+  {editDishIsOpen && (
+    <div
+      className={style.overlay}
+      onClick={toggleEditDish} // Clicking on the overlay closes the form
+    ></div>
+  )}
+
+  {/* Card Form */}
+  {editDishIsOpen && (
+    <div className={`${style.cardForm} ${editDishIsOpen ? style.animateOpen : ""}`}>
+    <button 
+      className={style.closeButton} 
+      onClick={toggleEditDish} 
+      aria-label="Close"
+    >
+      &times;
+    </button>
+      <h3>Add New Dish</h3>
+
+      <form onSubmit={(e) => e.preventDefault()}>
+        <div className={style.formGroupdish}>
+          <label htmlFor="dishName">Dish Name:</label>
+          <input
+            type="text"
+            id="dishName"
+            value={editDish.dish_name}
+            onChange={(e) => setDishName(e.target.value)}
+            required
+          />
+        </div>
+        <div className={style.formGroupdish}>
+          <label htmlFor="dishPrice">Price:</label>
+          <input
+            type="number"
+            id="dishPrice"
+            value={editDish.dist_rate}
+            onChange={(e) => setDishPrice(e.target.value)}
+            required
+          />
+        </div>
+        <div className={style.formGroupdish}>
+          <label htmlFor="dishQuantity">Quantity:</label>
+          <input
+            type="text"
+            id="dishQuantity"
+            value={editDish.dish_qnty}
+            onChange={(e) => setDishQuantity(e.target.value)}
+            required
+          />
+        </div>
+        <div className={style.formGroupdish}>
+          <label htmlFor="dishCategory">Dish Category:</label>
+          <select
+            id="dishCategory"
+            value={editDish.dish_cat_id}
             onChange={(e) => setDishCategory(e.target.value)}
             required
           >

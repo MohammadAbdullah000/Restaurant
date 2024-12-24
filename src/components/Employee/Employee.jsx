@@ -18,6 +18,8 @@ const Dish = () => {
   const [Designations, setDesignations] = useState([]);
   const [activeCategory, setActiveCategory] = useState(null);
   const [noEmployeesMessage, setNoEmployeesMessage] = useState("");
+    const [editDishIsOpen, setEditDishIsOpen] = useState(false);
+      const [editEmp,setEditEmp] = useState([])
   // Fetch Employees
   // useEffect(() => {
     async function fetchEmployee(desigId) {
@@ -96,7 +98,9 @@ const Dish = () => {
   function toggleAddDish() {
     setAddDishIsOpen(!addDishIsOpen);
   }
-
+  function toggleEditDish() {
+    setEditDishIsOpen(!editDishIsOpen);
+  }
   useEffect(() => {
     // Fetch unique number from the API when the component mounts
     const fetchUniqueID = async () => {
@@ -115,6 +119,33 @@ const Dish = () => {
     fetchUniqueID();
   }, [employees]);
 
+
+  const handleEdit = async (emp_id) => {
+    try {
+      // Construct the API URL with the given dishcat_id
+      const apiUrl = `https://letzbim.com/Restaurent/employee_Profile_Edit_Fetch_Api.php?emp_id=${emp_id}`;
+  
+      // Make the GET request to fetch the category details
+      const response = await axios.get(apiUrl);
+  
+      // Check if the response is successful
+      if (response.data) {
+        setEditEmp(response.data)
+  
+        // Handle the fetched data (e.g., open a form with pre-filled data)
+        console.log('Category Data:', response.data);
+        // Add your logic here to display or use the fetched data
+        // For example, you can set the data in a state to pre-fill a form
+      } else {
+        // console.error('Failed to fetch category details:', response.data);
+        alert('Failed to fetch category details. Please try again.');
+      }
+    } catch (error) {
+      console.error('Error fetching category details:', error);
+      alert('An error occurred while fetching the category details.');
+    }
+  };
+  
   async function handleAddDish() {
     const formData = new URLSearchParams();
     formData.append("EmployeesIDS", employeeID);
@@ -156,6 +187,7 @@ const Dish = () => {
           // Clear form fields
           setEmployeeID("")
           setEmployeeName("");
+          setEmployeeAddress("");
           setEmployeeEmail("");
           setEmployeeMobile("");
           setEmployeeEmail("");
@@ -220,6 +252,22 @@ const Dish = () => {
     { name: "Mobile", selector: (row) => row.Mobile, sortable: true },
     { name: "Address", selector: (row) => row.Address, sortable: true },
     { name: "Salary", selector: (row) => row.Salary, sortable: true },
+     {  name: '',
+          cell: (row) => (
+            <button
+              className={style.deleteButton}
+              onClick={() => {
+        handleEdit(row. ids);
+        toggleEditDish();
+      }}
+            >
+              Edit
+            </button>
+          ),
+          ignoreRowClick: true,
+          allowoverflow: true,
+          button: true,
+        },
      {  name: 'Actions',
           cell: (row) => (
             <button
@@ -249,6 +297,16 @@ const Dish = () => {
     dish.FullName?.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
+  useEffect(() => {
+    if (editEmp) {
+      setEmployeeName(editEmp.emp_name || '');
+      setEmployeeEmail(editEmp.emp_email || '');
+      setEmployeeMobile(editEmp.emp_mobile || '');
+      setEmployeeSalary(editEmp.emp_salary || '');
+      setEmployeeAddress(editEmp.emp_address || '');
+      setdesginationID(editEmp.desigID || '');
+    }
+  }, [editEmp]);
   return (
     <div className={`${style.nunito500} ${style.dish}`}>
       <div className={style.heading}>
@@ -283,6 +341,116 @@ const Dish = () => {
             type="number"
             id="id"
             value={employeeID}
+            readOnly 
+            // onChange={(e) => setEmployeeID(e.target.value)}
+            required
+          />
+        </div>
+        <div className={style.formGroupdish}>
+          <label htmlFor="fullName">Full Name:</label>
+          <input
+            type="text"
+            id="fullName"
+            value={employeeName}
+            onChange={(e) => handleInputChange("emp_name", e.target.value)}
+            required
+          />
+        </div>
+        <div className={style.formGroupdish}>
+          <label htmlFor="email">Email:</label>
+          <input
+            type="text"
+            id="email"
+            value={employeeEmail}
+            onChange={(e) => handleInputChange("emp_email", e.target.value)}
+            required
+          />
+        </div>
+        <div className={style.formGroupdish}>
+          <label htmlFor="mobile">Mobile:</label>
+          <input
+            type="number"
+            id="mobile"
+            value={employeeMobile}
+            onChange={(e) => handleInputChange("emp_mobile", e.target.value)}
+            required
+          />
+        </div>
+        <div className={style.formGroupdish}>
+          <label htmlFor="address">Address:</label>
+          <input
+            type="text"
+            id="address"
+            value={employeeAddress}
+            onChange={(e) => handleInputChange("emp_address", e.target.value)}
+            required
+          />
+        </div>
+        <div className={style.formGroupdish}>
+          <label htmlFor="salary">Salary:</label>
+          <input
+            type="text"
+            id="salary"
+            value={employeeSalary}
+            onChange={(e) => handleInputChange("emp_salary", e.target.value)}
+            required
+          />
+        </div>
+        <div className={style.formGroupdish}>
+                  <label htmlFor="designation">Designation:</label>
+                  <select
+                    id="designation"
+                    value={desginationID}
+                    onChange={(e) => handleInputChange("desigID", e.target.value)}
+                    required
+                  >
+                    <option value="">Select a category</option>
+                   
+                   
+                   
+                    {Designations.map((category) => (
+                      <option key={category.id} value={category.id}>
+                        {category.designation_name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+        <div className={style.buttonGroup}>
+          <button type="button" onClick={handleAddDish}>
+            Submit
+          </button>
+          {/* <button type="button" onClick={toggleAddDish}>
+            Cancel
+          </button> */}
+        </div>
+      </form>
+    </div>
+  )}
+  {editDishIsOpen && (
+    <div
+      className={style.overlay}
+      onClick={toggleEditDish} // Clicking on the overlay closes the form
+    ></div>
+  )}
+
+  {/* Card Form */}
+  {editDishIsOpen && (
+    <div className={`${style.cardForm} ${editDishIsOpen ? style.animateOpen : ""}`}>
+    <button 
+          className={style.closeButton} 
+          onClick={toggleEditDish} 
+          aria-label="Close"
+        >
+          &times;
+        </button>
+      <h3>Add New Employee</h3>
+      <form onSubmit={(e) => e.preventDefault()}>
+      <div className={style.formGroupdish}>
+          <label htmlFor="id">ID:</label>
+          <input
+            type="number"
+            id="id"
+            value={editEmp.emp_card_id}
             readOnly 
             // onChange={(e) => setEmployeeID(e.target.value)}
             required

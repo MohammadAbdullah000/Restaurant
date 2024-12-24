@@ -1,6 +1,7 @@
 import React, { useState } from "react";
-import { Link  } from "react-router-dom";
-import style from './Dashboard.module.css'
+import { Link } from "react-router-dom";
+import { FaShoppingCart, FaUsers, FaUtensils, FaMoneyBillWave, FaMoneyCheckAlt, FaCalendarAlt, FaConciergeBell, FaHamburger } from "react-icons/fa";
+import style from './Dashboard.module.css';
 
 const Dashboard = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -28,67 +29,73 @@ const Dashboard = () => {
 
   return (
     <div style={{ padding: "20px" }}>
-    <div className={style.heading}>
-    <div className={style.text}>
-      <h2>Welcome to the Admin Dashboard</h2>
-      <p>Here you can manage your application effectively.</p>
-    </div>
-          <Link to='order'><button className={style.orderbtn}>Order</button></Link>
-    </div>
-    
+      <div className={style.heading}>
+        <div className={style.text}></div>
+        <Link to="order">
+          <button className={style.orderbtn}>Order</button>
+        </Link>
+      </div>
 
-      <input
-        type="text"
-        placeholder="Search by name or email"
-        value={searchTerm}
-        onChange={(e) => setSearchTerm(e.target.value)}
-        style={{ marginBottom: "20px", padding: "10px", width: "100%" }}
-      />
+      <div className={`${style.maindashboard}  ${style.nunito500}`}>
+        <div className={style.cards}>
+          {/* Orders Card */}
+          <div className={style.card}>
+            <FaUsers className={style.icon} />
+            <div className={style.text}>
 
-      <table style={{ width: "100%", borderCollapse: "collapse" }}>
-        <thead>
-          <tr>
-            <th style={styles.th}>ID</th>
-            <th style={styles.th}>Name</th>
-            <th style={styles.th}>Email</th>
-            <th style={styles.th}>Role</th>
-            <th style={styles.th}>Status</th>
-            <th style={styles.th}>Created At</th>
-          </tr>
-        </thead>
-        <tbody>
-          {filteredData.map((row) => (
-            <tr key={row.id}>
-              <td style={styles.td}>{row.id}</td>
-              <td style={styles.td}>{row.name}</td>
-              <td style={styles.td}>{row.email}</td>
-              <td style={styles.td}>{row.role}</td>
-              <td style={styles.td}>{row.status}</td>
-              <td style={styles.td}>{row.createdAt}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+            <h3>Employees</h3>
+            <p>Total: 150</p>
+            </div>
+          </div>
 
-      {filteredData.length === 0 && (
-        <p style={{ textAlign: "center", marginTop: "20px" }}>No results found</p>
-      )}
+          {/* Customers Card */}
+          <div className={style.card}>
+            <FaConciergeBell className={style.icon} />
+            <div className={style.text}>
+            <h3>Categorys</h3>
+            <p>Total: 200</p>
+            </div>
+          </div>
+
+          {/* Menu Card */}
+          <div className={style.card}>
+            <FaHamburger  className={style.icon} />
+            <div className={style.text}>
+            <h3>Dishes</h3>
+            <p>Items: 45</p>
+            </div>
+          </div>
+
+          {/* Income Card */}
+          <div className={style.card}>
+            <FaMoneyBillWave  className={style.icon} />
+            <div className={style.text}>
+            <h3>Income</h3>
+            <p>Total: $5000</p>
+            </div>
+          </div>
+
+          {/* Outcome Card */}
+          <div className={style.card}>
+            <FaMoneyCheckAlt  className={style.icon} />
+            <div className={style.text}>
+            <h3>Outcome</h3>
+            <p>Total: $3000</p>
+            </div>
+          </div>
+
+          {/* Reservations Card */}
+          {/* <div className={style.card}>
+            <FaCalendarAlt className={style.icon} />
+            <div className={style.text}>
+            <h3>Reservations</h3>
+            <p>Total: 25</p>
+            </div>
+          </div> */}
+        </div>
+      </div>
     </div>
   );
 };
 
-const styles = {
-  th: {
-    border: "1px solid #ddd",
-    padding: "10px",
-    textAlign: "left",
-    backgroundColor: "#f4f4f4",
-  },
-  td: {
-    border: "1px solid #ddd",
-    padding: "10px",
-  },
-};
-
 export default Dashboard;
-  

@@ -77,6 +77,12 @@ const Sidebar = () => {
               <span>Add Employee</span>
             </Link>
           </li>
+          <li>
+            <Link to="expense" onClick={closeSidebar}>
+              <i className="fas fa-clipboard-list"></i>
+              <span>Add Expense</span>
+            </Link>
+          </li>
         </ul>
       </aside>
 

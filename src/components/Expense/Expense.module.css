@@ -1,0 +1,121 @@
+/* General Form Styling */
+.expenseTrackerForm form {
+    max-width: 600px;
+    margin: 20px auto;
+    padding: 20px;
+    background-color: #f7f9fc;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    font-family: Arial, sans-serif;
+  }
+  
+  /* Headings */
+  /* h2 {
+    font-size: 1.5rem;
+    color: #202c39;
+    margin-bottom: 10px;
+    text-align: center;
+    border-bottom: 2px solid #ddd;
+    padding-bottom: 5px;
+  } */
+  
+  /* Labels */
+  .expenseTrackerForm label {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 15px;
+    font-size: 0.9rem;
+    color: #333;
+  }
+  
+  /* Input Fields */
+  .expenseTrackerForm input[type="text"],
+  .expenseTrackerForm input[type="number"],
+  .expenseTrackerForm input[type="date"],
+  .expenseTrackerForm input[type="month"],
+  .expenseTrackerForm textarea,
+  .expenseTrackerForm select {
+    width: 100%;
+    padding: 10px;
+    margin-top: 5px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 0.9rem;
+    font-family: inherit;
+    box-sizing: border-box;
+    background-color: #fff;
+  }
+  
+  .expenseTrackerForm textarea {
+    resize: vertical;
+  }
+  
+  /* File Input */
+  .expenseTrackerForm input[type="file"] {
+    padding: 5px;
+    font-size: 0.9rem;
+  }
+  
+  /* Buttons */
+  .expenseTrackerForm button {
+    padding: 10px 15px;
+    font-size: 1rem;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+  
+  .expenseTrackerForm button[type="submit"] {
+    background-color: #4caf50;
+    color: white;
+    margin-right: 10px;
+  }
+  
+  .expenseTrackerForm button[type="submit"]:hover {
+    background-color: #45a049;
+  }
+  
+  .expenseTrackerForm button[type="button"] {
+    background-color: #f44336;
+    color: white;
+  }
+  
+  .expenseTrackerForm button[type="button"]:hover {
+    background-color: #d32f2f;
+  }
+  
+  /* Conditional Sections */
+  .expenseTrackerForm h2 + div {
+    margin-top: 20px;
+    padding: 15px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #f2f2f2;
+  }
+  
+  /* Select Dropdown */
+  .expenseTrackerForm select {
+    cursor: pointer;
+  }
+  
+  /* Responsive Design */
+  @media (max-width: 768px) {
+    .expenseTrackerForm form {
+      padding: 15px;
+    }
+  
+    .expenseTrackerForm h2 {
+      font-size: 1.2rem;
+    }
+  
+    .expenseTrackerForm label {
+      font-size: 0.8rem;
+    }
+  
+    .expenseTrackerForm button {
+      font-size: 0.9rem;
+    }
+  }
+  

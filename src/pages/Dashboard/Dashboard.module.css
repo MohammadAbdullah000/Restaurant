@@ -1,4 +1,4 @@
-.orderbtn{
+/* .orderbtn{
     padding: 10px;
     font-size: 1rem;
     background-color: var(--primary-color);
@@ -11,3 +11,113 @@
     display: flex;
     justify-content: space-between;
 }
+ */
+
+ .heading {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+  
+  .orderbtn {
+    background-color: #4caf50;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+  }
+  
+  .orderbtn:hover {
+    background-color: #45a049;
+  }
+  
+  .maindashboard {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+  }
+  
+  .cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+    width: 100%;
+  }
+  
+  .card {
+    background-color: #f9f9f9;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    display: flex;
+    /* flex-direction: column; */
+    align-items: center;
+    justify-content: flex-start;
+    gap: 10px;
+    transition: transform 0.3s ease;
+    cursor: pointer;
+  }
+  .text h3:nth-child(1){
+    font-size: 15px;
+    color: #666;
+  }
+  .text p:nth-child(2){
+    font-size: 20px;
+    
+  }
+
+  .nunito500 {
+    font-family: "Nunito", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 500;
+    font-style: normal;
+  }
+
+  .cinzel500 {
+    font-family: "Cinzel", serif;
+    font-optical-sizing: auto;
+    font-weight: 500;
+    font-style: normal;
+  }
+  .card:hover {
+    transform: scale(1.05);
+  }
+  
+  /* .cardContent {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+  } */
+  
+  .icon {
+    font-size: 50px;
+    color: var(--primary-color);
+    /* background-color: var(--primary-color); */
+    border-radius: 20%;
+    padding: 7px;
+  }
+  
+  /* .cardTitle {
+    font-size: 14px;
+    font-weight: 600;
+    margin: 0;
+  }
+  
+  .cardFigure {
+    font-size: 22px;
+    font-weight: bold;
+    margin: 5px 0 0 0;
+    color: #333;
+  } */
+  
+  h3,
+  p {
+    margin: 0;
+  }
+  
+
+  

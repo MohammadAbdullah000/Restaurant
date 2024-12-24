@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import DataTable from 'react-data-table-component';
 import style from './Category.module.css';
-
+import axios from 'axios';
 const Category = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [addDishIsOpen, setAddDishIsOpen] = useState(false);
+  const [editDishIsOpen, setEditDishIsOpen] = useState(false);
   const [dishName, setDishName] = useState('');
   const [dishes, setDishes] = useState([]);
+  const [editCategory,setEditCategory] = useState([])
 
   // Fetch categories on component mount
   useEffect(() => {
@@ -40,6 +42,10 @@ const Category = () => {
 
   function toggleAddDish() {
     setAddDishIsOpen(!addDishIsOpen);
+  }
+
+  function toggleEditDish() {
+    setEditDishIsOpen(!editDishIsOpen);
   }
 
   async function handleAddDish() {
@@ -100,12 +106,56 @@ const Category = () => {
     }
   };
 
+  
+const handleEdit = async (dishcat_id) => {
+  try {
+    // Construct the API URL with the given dishcat_id
+    const apiUrl = `https://letzbim.com/Restaurent/Dish_categories_Edit_fetch_Api.php?dishcat_id=${dishcat_id}`;
+
+    // Make the GET request to fetch the category details
+    const response = await axios.get(apiUrl);
+
+    // Check if the response is successful
+    if (response.data) {
+      setEditCategory(response.data)
+
+      // Handle the fetched data (e.g., open a form with pre-filled data)
+      // console.log('Category Data:', categoryData);
+      // Add your logic here to display or use the fetched data
+      // For example, you can set the data in a state to pre-fill a form
+    } else {
+      // console.error('Failed to fetch category details:', response.data);
+      alert('Failed to fetch category details. Please try again.');
+    }
+  } catch (error) {
+    console.error('Error fetching category details:', error);
+    alert('An error occurred while fetching the category details.');
+  }
+};
+
   // Columns for the data table
   const columns = [
     {
       name: 'Category Name',
       selector: (row) => row.dishcat_name,
       sortable: true,
+    },
+    {
+      name: '',
+      cell: (row) => (
+        <button
+          className={style.deleteButton}
+          onClick={() => {
+        handleEdit(row.dishcat_id);
+        toggleEditDish();
+      }}
+        >
+          Edit
+        </button>
+      ),
+      ignoreRowClick: true,
+      allowoverflow: true,
+      button: true,
     },
     {
       name: 'Actions',
@@ -144,7 +194,9 @@ const Category = () => {
       dish.dishcat_name?.toLowerCase().includes(searchTerm.toLowerCase())
     )
   : [];
-
+  const handleInputChange = (e) => {
+    setEditCategory(e.target.value); // Update the value as user types
+  };
 
   return (
      <div className={`${style.nunito500} ${style.dish}`}>
@@ -194,6 +246,44 @@ const Category = () => {
         </div>
       )}
       </div>
+      <div> {editDishIsOpen && (
+                    <div
+                      className={style.overlay}
+                      onClick={toggleEditDish} // Clicking on the overlay closes the form
+                    ></div>
+                  )}
+      {editDishIsOpen && (
+        <div className={`${style.cardForm} ${editDishIsOpen ? style.animateOpen : ''}`}>
+          <button 
+                      className={style.closeButton} 
+                      onClick={toggleEditDish} 
+                      aria-label="Close"
+                    >
+                      &times;
+                    </button>
+          <h3>Add New Category</h3>
+          <form onSubmit={(e) => e.preventDefault()}>
+            <div className={style.formGroupdish}>
+              <label htmlFor="dishName">Category Name:</label>
+              <input
+                type="text"
+                id="dishName"
+                value={editCategory.dishcat_name}
+                onChange={handleInputChange}
+                required
+              />
+            </div>
+            <div className={style.buttonGroup}>
+              <button type="button" onClick={handleAddDish}>
+                Submit
+              </button>
+              {/* <button type="button" onClick={toggleAddDish}>
+                Cancel
+              </button> */}
+            </div>
+          </form>
+        </div>
+      )}</div>
 
 
       <div className={style.tableContainer}>

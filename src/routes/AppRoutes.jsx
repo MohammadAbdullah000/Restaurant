@@ -14,6 +14,7 @@ import Order from '../components/Order/Order'
 import Category from '../components/Category/Category'
 import Designation from '../components/Designation/Designation'
 import Employee from '../components/Employee/Employee'
+import Expense from '../components/Expense/Expense'
 const router = createBrowserRouter([
   {
     path:'/',
@@ -77,6 +78,10 @@ element:<LoginSignup/>
       {
         path: "employee", // Correctly nested route for /dashboard/inventory
         element: <Employee/>,
+      },
+      {
+        path: "expense", // Correctly nested route for /dashboard/inventory
+        element: <Expense/>,
       },
     ],
   },
