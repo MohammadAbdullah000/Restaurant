@@ -120,27 +120,121 @@ const Order = () => {
 const handleParcel=()=>{
   setDineOrParcel('Parcel')
 }
-const handlesaveOrder=()=>{
-  // console.log(addedItems);
+// const handlesaveOrder=()=>{
+//   // console.log(addedItems);
+//   // Add subtotal to each item
+//   const updatedItems = addedItems.map((item) => ({
+//     ...item,
+//     subtotal: item.quantity * item.dist_rate, // Assuming each item has `quantity` and `price`
+//   }));
+//   // {item.dist_rate * item.quantity}
+//   // Log the updated items
+//   console.log("Updated Items:", updatedItems);
+//   // Calculate total price
+//   const Total = updatedItems.reduce((sum, item) => sum + item.subtotal, 0);
+//   console.log("Total:", Total); 
+// }
 
-  // Add subtotal to each item
-  const updatedItems = addedItems.map((item) => ({
-    ...item,
-    subtotal: item.quantity * item.dist_rate, // Assuming each item has `quantity` and `price`
-  }));
-  // {item.dist_rate * item.quantity}
-  // Log the updated items
-  console.log("Updated Items:", updatedItems);
+const handlesaveOrder = async () => {
+  try {
+    // Prepare the items with subtotal
+    const updatedItems = addedItems.map((item) => ({
+      dish_id: item.dish_id,
+      dish_qnty: item.dish_qnty,
+      dist_rate: item.dist_rate,
+      quantity: item.quantity,
+      subtotal: item.quantity * item.dist_rate, // Calculate subtotal
+      status: '0',
+      couponNo: '125',
+      dineNo: '8',
+    }));
 
-  // Calculate total price
-  const Total = updatedItems.reduce((sum, item) => sum + item.subtotal, 0);
+    // Calculate the total price
+    const Total = updatedItems.reduce((sum, item) => sum + item.subtotal, 0);
 
-  console.log("Total:", Total);
+    // Prepare the payload
+    const payload = {
+      items: updatedItems,
+      total: Total,
+    };
+
+    // Make the API call
+    const response = await fetch("https://letzbim.com/Restaurent/Order_Submit_Api.php", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(payload),
+    });
+
+    const result = await response.json();
+
+    if (response.ok) {
+      console.log("Order submitted successfully:", result);
+      alert("Order submitted successfully");
+    } else {
+      console.error("Error submitting order:", result.message);
+      alert(`Error: ${result.message}`);
+    }
+  } catch (error) {
+    console.error("Error in handlesaveOrder:", error);
+    alert("An error occurred while submitting the order");
+  }
+};
+
+
+  // async function handleAddExpense() {
+  //   const formData = new URLSearchParams();
+  //   formData.append("expensCat", expCategory);
+  //   formData.append("expensInfo",expDes);
+  //   formData.append("expnAmount",amountSpent);
+  //   formData.append("expensMethod",paymentMethod);
+  //   formData.append("venderName", venderName);
+  //   formData.append("date", date);
+   
+  //   try {
+  //     const response = await fetch("https://letzbim.com/Restaurent/Expenses_Add_Api.php", {
+  //       method: "POST",
+  //       headers: {
+  //         "Content-Type": "application/x-www-form-urlencoded",
+  //       },
+  //       body: formData.toString(),
+  //     });
+
+  //     if (response.ok) {
+  //       const result = await response.json();
+  //       console.log(result);
+  //       if (result.successmessage) {
+  //         // Add the new dish to the state directly
+  //          setExpenses((prevExpenses=[]) => [
+  //           ...prevExpenses,
+  //           {
+  //             expensCat: expCategory,
+  //             expensInfo: expDes,
+  //             expnAmount: amountSpent,
+  //             expensMethod: paymentMethod,
+  //             venderName: venderName,
+  //             date: date,
+  //           },
+  //         ]);
+  //         console.log('success')
+  //       } else {
+  //         alert("Failed to add dish: " + result.errmessage);
+  //         console
+  //       }
+  //     } else {
+  //       alert("API Error: " + response.statusText);
+  //     }
+  //   } catch (error) {
+  //     console.error("Error adding dish:", result.errmessage);
+  //     alert("Failed to add dish. Please try again later.");
+  //   }
+  // }
 
   // Update the state if needed
   // setAddedItems(updatedItems);
   
-}
+
   return (
     <div style={{ display: "flex", minHeight: "90vh" }}>
       {/* Left Sidebar */}

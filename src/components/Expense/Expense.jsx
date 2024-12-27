@@ -24,6 +24,7 @@ const Expense = () => {
   useEffect(() => {
     fetchExpenses()
     }, []);
+    
     async function fetchExpenses() {
       try {
         const response = await fetch("https://letzbim.com/Restaurent/Expenses_Fetch_Api.php");
