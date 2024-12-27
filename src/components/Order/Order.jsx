@@ -120,6 +120,27 @@ const Order = () => {
 const handleParcel=()=>{
   setDineOrParcel('Parcel')
 }
+const handlesaveOrder=()=>{
+  // console.log(addedItems);
+
+  // Add subtotal to each item
+  const updatedItems = addedItems.map((item) => ({
+    ...item,
+    subtotal: item.quantity * item.dist_rate, // Assuming each item has `quantity` and `price`
+  }));
+  // {item.dist_rate * item.quantity}
+  // Log the updated items
+  console.log("Updated Items:", updatedItems);
+
+  // Calculate total price
+  const Total = updatedItems.reduce((sum, item) => sum + item.subtotal, 0);
+
+  console.log("Total:", Total);
+
+  // Update the state if needed
+  // setAddedItems(updatedItems);
+  
+}
   return (
     <div style={{ display: "flex", minHeight: "90vh" }}>
       {/* Left Sidebar */}
@@ -378,7 +399,7 @@ const handleParcel=()=>{
         padding: "10px",
       }}
     >
-      <button className={style.separatebtn}>Save</button>
+      <button className={style.separatebtn} onClick={handlesaveOrder}>Save</button>
       <button className={style.separatebtn} onClick={handlePrint}><Receipt dineOrParcel={dineOrParcel} addedItems={addedItems} /></button>
     
 

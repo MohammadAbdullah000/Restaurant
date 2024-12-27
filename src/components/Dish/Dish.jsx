@@ -15,6 +15,7 @@ const Dish = () => {
   const [noDishesMessage, setNoDishesMessage] = useState("");
     const [editDishIsOpen, setEditDishIsOpen] = useState(false);
     const [editDish,setEditDish] = useState([])
+    const [singleDish,setsingledish] = useState('')
   
   // Fetch dishes
   // useEffect(() => {
@@ -31,6 +32,7 @@ const Dish = () => {
 
     }
           if (Array.isArray(data) && data.length === 0) {
+            setsingledish(data.dish_id)
             setDishes([]); // Clear dishes
           }  else {
             const formattedDishes = data.map((dish) => ({
@@ -91,59 +93,7 @@ const Dish = () => {
   function toggleEditDish() {
     setEditDishIsOpen(!editDishIsOpen);
   }
-  async function handleAddDish() {
-    const formData = new URLSearchParams();
-    formData.append("dish_id", dishCategory);
-    formData.append("dishname", dishName);
-    formData.append("dish_qnty", dishQuantity);
-    formData.append("dish_rate", dishPrice);
-  
-    try {
-      const response = await fetch("https://letzbim.com/Restaurent/create_Sub_dishesApi.php", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/x-www-form-urlencoded",
-        },
-        body: formData.toString(),
-      });
-  
-      if (response.ok) {
-        const result = await response.json();
-        if (result.successmessage) {
-          // Add the new dish to the state directly
-          setDishes((prevDishes) => [
-            ...prevDishes,
-            {
-              name: dishName,
-              price: dishPrice,
-              quantity: dishQuantity,
-              category: categories.find((cat) => cat.dishcat_id === dishCategory)?.dishcat_name || "",
-            },
-          ]);
-  
-          // Clear form fields
-          setDishName("");
-          setDishPrice("");
-          setDishQuantity("");
-          setDishCategory("");
-  
-          // Close the form
-          toggleAddDish();
-  
-          // Fetch dishes again to update the table
-          fetchDishes(activeCategory); // Ensure we fetch dishes for the active category
-        } else {
-          alert("Failed to add dish: " + result.errmessage);
-        }
-      } else {
-        alert("API Error: " + response.statusText);
-      }
-    } catch (error) {
-      console.error("Error adding dish:", result.errmessage);
-      alert("Failed to add dish. Please try again later.");
-    }
-  }
-  
+ 
   const handleCategoryClick = (dishCatID) => {
     setActiveCategory(dishCatID);
     fetchDishes(dishCatID); // Fetch dishes for the selected category
@@ -185,9 +135,12 @@ const Dish = () => {
       // Check if the response is successful
       if (response.data) {
         setEditDish(response.data)
+  console.log('handleeit',response.data.dish_rate)
+  console.log('handleeit',response.data)
   
         // Handle the fetched data (e.g., open a form with pre-filled data)
         console.log('Category Data:', response.data);
+        setsingledish(response.data.dish_id)
         // Add your logic here to display or use the fetched data
         // For example, you can set the data in a state to pre-fill a form
       } else {
@@ -195,7 +148,7 @@ const Dish = () => {
         alert('Failed to fetch category details. Please try again.');
       }
     } catch (error) {
-      console.error('Error fetching category details:', error);
+      console.error('Error fetching category details:', data.errmessage);
       alert('An error occurred while fetching the category details.');
     }
   };
@@ -252,6 +205,133 @@ const Dish = () => {
   const handleInputChange = (e) => {
     setEditDish(e.target.value); // Update the value as user types
   };
+
+
+
+
+
+
+
+
+
+  async function handleAddDish() {
+    const formData = new URLSearchParams();
+    formData.append("dish_id", dishCategory);
+    formData.append("dishname", dishName);
+    formData.append("dish_qnty", dishQuantity);
+    formData.append("dish_rate", dishPrice);
+  
+    try {
+      const response = await fetch("https://letzbim.com/Restaurent/create_Sub_dishesApi.php", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded",
+        },
+        body: formData.toString(),
+      });
+  
+      if (response.ok) {
+        const result = await response.json();
+        if (result.successmessage) {
+          // Add the new dish to the state directly
+          setDishes((prevDishes) => [
+            ...prevDishes,
+            {
+              name: dishName,
+              price: dishPrice,
+              quantity: dishQuantity,
+              category: categories.find((cat) => cat.dishcat_id === dishCategory)?.dishcat_name || "",
+            },
+          ]);
+  
+          // Clear form fields
+          setDishName("");
+          setDishPrice("");
+          setDishQuantity("");
+          setDishCategory("");
+  
+          // Close the form
+          toggleAddDish();
+  
+          // Fetch dishes again to update the table
+          fetchDishes(activeCategory); // Ensure we fetch dishes for the active category
+        } else {
+          alert("Failed to add dish: " + result.errmessage);
+        }
+      } else {
+        alert("API Error: " + response.statusText);
+      }
+    } catch (error) {
+      console.error("Error adding dish:", result.errmessage);
+      alert("Failed to add dish. Please try again later.");
+    }
+  }
+  async function handleUpdateDish() {
+    const formData = new URLSearchParams();
+  console.log('a',editDish.dish_name);
+  
+    formData.append("subdish_id", singleDish); // Replace with the actual ID
+    formData.append("dish_id", dishCategory || editDish.dish_cat_id); // Use either the selected category or the existing one
+    formData.append("dishname", dishName || editDish.dish_name); // Use updated or existing dish name
+    formData.append("dish_rate", dishPrice || editDish.dist_rate); // Use updated or existing price
+    formData.append("dish_qnty", dishQuantity || editDish.dish_qnty); // Use updated or existing quantity
+  
+    try {
+      const response = await fetch("https://letzbim.com/Restaurent/subDish_update_Api.php", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded",
+        },
+        body: formData.toString(),
+      });
+  
+      if (response.ok) {
+        const result = await response.json();
+        if (result.successmessage) {
+console.log(editDish.dish_rate);
+
+          // Update the dish in the state directly
+          setDishes((prevDishes) =>
+            prevDishes.map((dish) =>
+              dish.subdish_id === singleDish
+                ? {
+                    ...dish,
+                    name: dishName || editDish.dish_name,
+                    price: dishPrice || editDish.dist_rate,
+                    quantity: dishQuantity || editDish.dish_qnty,
+                    category:
+                      categories.find((cat) => cat.dishcat_id === (dishCategory || editDish.dish_cat_id))
+                        ?.dishcat_name || "",
+                  }
+                : dish
+            )
+          );
+  
+          // Clear form fields
+          setDishName("");
+          setDishPrice("");
+          setDishQuantity("");
+          setDishCategory("");
+  
+          // Close the form
+          toggleEditDish();
+  
+          // Fetch dishes again to update the table
+          fetchDishes(activeCategory); // Ensure we fetch dishes for the active category
+        } else {
+          alert("Failed to update dish: " + result.errmessage);
+        }
+      } else {
+        alert("API Error: " + response.statusText);
+      }
+    } catch (error) {
+      console.error("Error updating dish:", error);
+      alert("Failed to update dish. Please try again later.");
+    }
+  }
+  
+  
+
   return (
     <div className={`${style.nunito500} ${style.dish}`}>
       <div className={style.heading}>
@@ -361,63 +441,83 @@ const Dish = () => {
       <h3>Add New Dish</h3>
 
       <form onSubmit={(e) => e.preventDefault()}>
-        <div className={style.formGroupdish}>
-          <label htmlFor="dishName">Dish Name:</label>
-          <input
-            type="text"
-            id="dishName"
-            value={editDish.dish_name}
-            onChange={(e) => setDishName(e.target.value)}
-            required
-          />
-        </div>
-        <div className={style.formGroupdish}>
-          <label htmlFor="dishPrice">Price:</label>
-          <input
-            type="number"
-            id="dishPrice"
-            value={editDish.dist_rate}
-            onChange={(e) => setDishPrice(e.target.value)}
-            required
-          />
-        </div>
-        <div className={style.formGroupdish}>
-          <label htmlFor="dishQuantity">Quantity:</label>
-          <input
-            type="text"
-            id="dishQuantity"
-            value={editDish.dish_qnty}
-            onChange={(e) => setDishQuantity(e.target.value)}
-            required
-          />
-        </div>
-        <div className={style.formGroupdish}>
-          <label htmlFor="dishCategory">Dish Category:</label>
-          <select
-            id="dishCategory"
-            value={editDish.dish_cat_id}
-            onChange={(e) => setDishCategory(e.target.value)}
-            required
-          >
-            <option value="">Select a category</option>
-            {categories.map((category) => (
-              <option key={category.dishcat_id} value={category.dishcat_id}>
-                {category.dishcat_name}
-              </option>
-            ))}
-          </select>
-        </div>
-        <div className={style.buttonGroup}>
-          <button type="button" onClick={handleAddDish}>
-            Submit
-          </button>
-          {/* <button type="button" onClick={toggleAddDish}>
-            Cancel
-          </button> */}
-        </div>
-      </form>
+  <div className={style.formGroupdish}>
+    <label htmlFor="dishName">Dish Name:</label>
+    <input
+      type="text"
+      id="dishName"
+      value={editDish.dish_name || ""} // Bind to editDish state
+      onChange={(e) =>
+        setEditDish((prevDish) => ({
+          ...prevDish,
+          dish_name: e.target.value,
+        }))
+      }
+      required
+    />
+  </div>
+  <div className={style.formGroupdish}>
+  <label htmlFor="dishPrice">Price:</label>
+  <input
+    type="number"
+    id="dishPrice"
+    value={editDish.dist_rate || ""} // Correct property name
+    onChange={(e) =>
+      setEditDish((prevDish) => ({
+        ...prevDish,
+        dist_rate: e.target.value, // Use the same property name here
+      }))
+    }
+    required
+  />
+</div>
+
+  <div className={style.formGroupdish}>
+    <label htmlFor="dishQuantity">Quantity:</label>
+    <input
+      type="text"
+      id="dishQuantity"
+      value={editDish.dish_qnty || ""} // Bind to editDish state
+      onChange={(e) =>
+        setEditDish((prevDish) => ({
+          ...prevDish,
+          dish_qnty: e.target.value,
+        }))
+      }
+      required
+    />
+  </div>
+  <div className={style.formGroupdish}>
+    <label htmlFor="dishCategory">Dish Category:</label>
+    <select
+      id="dishCategory"
+      value={editDish.dish_id || ""} // Bind to editDish state
+      onChange={(e) =>
+        setEditDish((prevDish) => ({
+          ...prevDish,
+          dish_id: e.target.value,
+        }))
+      }
+      required
+    >
+      <option value="">Select a category</option>
+      {categories.map((category) => (
+        <option key={category.dishcat_id} value={category.dishcat_id}>
+          {category.dishcat_name}
+        </option>
+      ))}
+    </select>
+  </div>
+  <div className={style.buttonGroup}>
+    <button type="button" onClick={handleUpdateDish}>
+      Submit
+    </button>
+  </div>
+</form>
+
     </div>
   )}
+
 </div>
 
 

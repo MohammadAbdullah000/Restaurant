@@ -9,10 +9,10 @@ const Designation = () => {
     const [editDesignation,setEditDesignation] = useState([])
     const [editDishIsOpen, setEditDishIsOpen] = useState(false);
 
-  const [dishes, setDishes] = useState([]);
-
-  // Fetch categories on component mount
-  useEffect(() => {
+    
+    // Fetch categories on component mount
+    const [dishes, setDishes] = useState([]);
+    // useEffect(() => {
     async function fetchDesignation() {
       try {
         const response = await fetch('https://letzbim.com/Restaurent/designation_fetch_Api.php');
@@ -38,9 +38,12 @@ const Designation = () => {
         setDishes([]); // Set to empty array on error
       }
     }
+    useEffect(() => {
+      fetchDesignation();
+    },[])
   
-    fetchDesignation();
-  }, []);
+    // fetchDesignation();
+  // }, []);
   
 
   function toggleAddDish() {
@@ -71,6 +74,7 @@ const Designation = () => {
         ]);
         console.log('successsss')
         setdesignationName('');
+        fetchDesignation()
         toggleAddDish();
       }
       else {
@@ -81,7 +85,42 @@ const Designation = () => {
       alert('An error occurred while adding the Designation.');
     }
   }
+  
+async function handleUpdateDesignation() {
+  try{
+    const response = await fetch('https://letzbim.com/Restaurent/Designation_Update_APi.php',{
+      method: "POST",
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded",
+      },
+      body: new URLSearchParams({
+        desig_id: editDesignation.id,
+        designation_name: editDesignation.designation_name,
+      }),
+    })
 
+    const result = await response.json()
+    if(result.successmessage === 'success'){
+      setDishes((prevDesignations) =>
+        prevDesignations.map((designation) =>
+          designation.desig_id === editDesignation.id
+            ? { ...designation, designation_name: editDesignation.designation_name }
+            : designation
+        )
+      );
+      // setdesignationName('');
+      toggleEditDish();
+      fetchDesignation()
+    }  else {
+      alert(result.message || 'Failed to add category.');
+    }
+  } catch (error) {
+    console.error('Error adding category:', error);
+    alert('An error occurred while adding the category.');
+  }
+
+
+}
   // Handle delete category
   const handleDelete = async (dishId) => {
     try {
@@ -266,20 +305,27 @@ const handleEdit = async (desigId) => {
             >
               &times;
             </button>
-          <h3>Add New Designation</h3>
+          <h3>Edit Designation</h3>
           <form onSubmit={(e) => e.preventDefault()}>
             <div className={style.formGroupdish}>
               <label htmlFor="designation">Designation Name:</label>
               <input
                 type="text"
                 id="designation"
-                value={editDesignation.designation_name}
-                onChange={handleInputChange}
+                value={editDesignation.designation_name||''}
+                onChange={(e) =>
+            setEditDesignation((prev) => ({
+              ...prev,
+              designation_name: e.target.value,
+            }))
+          }
                 required
               />
             </div>
             <div className={style.buttonGroup}>
-              <button type="button" onClick={handleAddDish}>
+              <button type="button" onClick=
+              {()=>{fetchDesignation()
+              handleUpdateDesignation()}}>
                 Submit
               </button>
               {/* <button type="button" onClick={toggleAddDish}>
