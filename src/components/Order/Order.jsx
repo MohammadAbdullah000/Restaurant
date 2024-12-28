@@ -9,7 +9,7 @@ const Order = () => {
   const [addedItems, setAddedItems] = useState([]);
   const [dineOrParcel, setDineOrParcel] = useState('Dine In')
   const [noDishesMessage, setNoDishesMessage] = useState("");
-const [coupon,setCoupon] = useState('')
+  const [coupon, setCoupon] = useState('')
   useEffect(() => {
     // Fetch categories from API
     fetch("https://letzbim.com/Restaurent/dish_categories_fetch_Api.php")
@@ -43,7 +43,7 @@ const [coupon,setCoupon] = useState('')
           // }
           setSubcategories(data);
           // console.log(data)
-          console.log('sub',subcategories);
+          console.log('sub', subcategories);
 
 
         })
@@ -53,7 +53,7 @@ const [coupon,setCoupon] = useState('')
 
   const handleCategoryClick = (categoryId) => {
     // console.log(subcategories());
-    
+
     setSelectedCategory(categoryId);
   };
 
@@ -100,11 +100,11 @@ const [coupon,setCoupon] = useState('')
   const calculateTotalPrice = () => {
     return addedItems.reduce((total, item) => total + item.dist_rate * item.quantity, 0);
   };
-useEffect(()=>{
-  const coupon = Math.floor(Math.random() * 100)
+  useEffect(() => {
+    const coupon = Math.floor(Math.random() * 100)
     setCoupon(coupon)
     console.log('Coupon:', coupon);
-},[])
+  }, [])
 
   const handlePrint = () => {
     let count = 0
@@ -242,8 +242,60 @@ useEffect(()=>{
   // setAddedItems(updatedItems);
 
 
+
+  const [PendingTable, setPendingTable] = useState([])
+  useEffect(() => {
+    // Fetch categories from API
+    fetch("https://letzbim.com/Restaurent/Pending_Order_Table_Fetch.php")
+      .then((res) => res.json())
+      .then((data) => {
+        // setCategories(data);
+        console.log('pending table show ' + data[0].tableno)
+        setPendingTable(data)
+        // if (data.length > 0) setSelectedCategory(data[0].dishcat_id); // Set default category
+      })
+      .catch((err) => console.error("Error fetching Pending table :", err));
+  }, []);
+
+
+  const [selectedTable, setSelectedTable] = useState(null); // To store the selected table number
+  const [isModalOpen, setIsModalOpen] = useState(false); // Modal visibility state
+  const [activeTable, setActiveTable] = useState(null); // Track active table
+
+  const handleTableClick = (tableNo) => {
+    setSelectedTable(tableNo); // Set the selected table number
+    setActiveTable(tableNo); // Set active table
+    setIsModalOpen(true); // Open the modal
+  };
+
+  const [PendingTableOrder, setPendingTableOrder] = useState([])
+  
+ // Function to close the modal
+ const handleClose = () => {
+  setActiveTable(null); // Reset active table
+  setPendingTableOrder([]); // Clear pending orders
+};
+
+
+useEffect(() => {
+  if (activeTable !== null) {
+    fetch(
+      `https://letzbim.com/Restaurent/Table_Order_Fetch_Api.php?tableNo=${activeTable}`
+    )
+      .then((res) => res.json())
+      .then((data) => {
+        console.log("Pending table order:" + activeTable + ' ' + data);
+        setPendingTableOrder(data);
+      })
+      .catch((err) =>
+        console.error("Error fetching Pending table Order:", err)
+      );
+  }
+}, [activeTable]);
+
+
   return (
-    <div style={{ display: "flex", minHeight: "90vh" }} className={style.nunito500}>
+    <div style={{ display: "flex", minHeight: "90vh", }} className={style.nunito500}>
       {/* Left Sidebar */}
       <div
         style={{
@@ -279,182 +331,417 @@ useEffect(()=>{
 
       {/* Subcategories */}
 
-  {/* Column for Half Quantity */}
-  {
-    Array.isArray(subcategories)?(
-      <>
-      <div
-  style={{
-    display: "flex",
-    width: "50%",
-    backgroundColor: "#f8f9fa",
-    height: "90vh",
-  }}
->
- <div
-    style={{
-      width: "50%",
-      overflowY: "scroll",
-      padding: "10px",
-      borderRight: "1px solid #ddd",
-    }}
-  >
-    <h3 style={{ textAlign: "center", color: "#2C3E50",marginTop:'0.5rem' }}className={style.cinzel500}>Half Quantity</h3>
-  
-    {subcategories.filter((dish) => dish.dish_qnty === "Half").length > 0 ? (
-      <ul
-        style={{
-          listStyleType: "none",
-          marginTop:'1.5rem',
-          paddingBottom: "20px",
-        }}
-      >
-        {subcategories
-          .filter((dish) => dish.dish_qnty === "Half")
-          .map((dish) => (
-            <li
-              key={dish.dish_id}
+      {/* Column for Half Quantity */}
+      {
+        Array.isArray(subcategories) ? (
+          <>
+            <div
               style={{
-                cursor: "pointer",
-                backgroundColor: "#2C3E50",
-                marginTop: 15,
-                color: "#1A1A1A",
-                fontSize: 15,
-                marginLeft: "auto",
-                marginRight: "auto",
-                fontWeight: 400,
-                width: "90%",
                 display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
+                width: "50%",
+                backgroundColor: "#f8f9fa",
+                height: "70vh",
+                flexWrap: "wrap"
               }}
-              onClick={() => handleAddItem(dish)}
             >
               <div
                 style={{
-                  backgroundColor: "#e0e0e0",
-                  height: "100%",
                   width: "100%",
-                  marginBottom:'3px',
-                  padding: 10,
-                  textAlign: "center",
+                  overflowY: "scroll",
+                  padding: "10px",
+                  borderRight: "1px solid #ddd",
+                  height: "100%"
                 }}
               >
-                <h4>{dish.dish_name}</h4>
+                <h3 style={{ textAlign: "center", color: "#2C3E50", marginTop: '0.5rem' }} className={style.cinzel500}>Half Quantity</h3>
+                {/* filter((dish) => dish.dish_qnty === "Half"). */}
+                {subcategories.length > 0 ? (
+                  <ul
+                    style={{
+                      listStyleType: "none",
+                      marginTop: '1.5rem',
+                      paddingBottom: "20px",
+                      display:"flex",flexDirection:"row",flexWrap:"wrap"
+                    }}
+                  >
+                    {subcategories
+                      .map((dish) => (
+                        <li
+                          key={dish.dish_id}
+                          style={{
+                            cursor: "pointer",
+                            backgroundColor: "#2C3E50",
+                            marginTop: 15,
+                            color: "#1A1A1A",
+                            fontSize: 15,
+                            marginLeft: "auto",
+                            marginRight: "auto",
+                            fontWeight: 400,
+                            width: "30%",height:60,
+                            display: "flex",
+                            justifyContent: dish.dish_qnty === "Half" ? "flex-start":"center",
+                            alignItems:  dish.dish_qnty === "Half" ? "flex-start":"center",
+                          }}
+                          onClick={() => handleAddItem(dish)}
+                        >
+                          <div
+                            style={{
+                              backgroundColor: "#e0e0e0",
+                              height: dish.dish_qnty === "Half" ? "90%" : "80%",
+                              width: "100%",
+                              textAlign: "center",
+                              justifyContent:"center",alignItems:"center",paddingTop:12
+                            }}
+                          >
+                            <h4>{dish.dish_name}</h4>
+                          </div>
+                        </li>
+                      ))}
+                  </ul>
+                ) : (
+                  <p
+                    style={{
+                      fontSize: 18,
+                      display: "flex",
+                      justifyContent: "center",
+                      marginTop: 30,
+                    }}
+                  >
+                    No Half Quantity Dishes.
+                  </p>
+                )}
               </div>
-            </li>
-          ))}
-      </ul>
-    ) : (
-      <p
-        style={{
-          fontSize: 18,
-          display: "flex",
-          justifyContent: "center",
-          marginTop: 30,
-        }}
-      >
-        No Half Quantity Dishes.
-      </p>
-    )}
-  </div>
 
-  {/* Column for Full Quantity */}
-  <div
-    style={{
-      width: "50%",
-      overflowY: "scroll",
-      padding: "10px",
-    }}
-  >
-        
-    <h3 style={{ textAlign: "center", color: "#2C3E50",marginTop:'0.5rem' }} className={style.cinzel500} >Full Quantity</h3>
-    {subcategories.filter((dish) => dish.dish_qnty === "Full").length > 0 ? (
-      <ul
-        style={{
-          listStyleType: "none",
-          paddingBottom: "20px",
-          marginTop:'1.5rem',
-        }}
-      >
-        {subcategories
-          .filter((dish) => dish.dish_qnty === "Full")
-          .map((dish) => (
-            <li
-              key={dish.dish_id}
-              style={{
-                cursor: "pointer",
-                backgroundColor: "#2C3E50",
-                marginTop: 15,
-                color: "#1A1A1A",
-                fontSize: 15,
-                marginLeft: "auto",
-                marginRight: "auto",
-                fontWeight: 400,
-                width: "90%",
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-              }}
-              onClick={() => handleAddItem(dish)}
-            >
-              <div
+
+
+              {/* Column for Full Quantity */}
+              {/* <div
                 style={{
-                  backgroundColor: "#e0e0e0",
-                  height: "100%",
-                  marginBottom:'3px',
-                  width: "100%",
-                  padding: 10,
-                  textAlign: "center",
+                  width: "50%",
+                  overflowY: "scroll",
+                  padding: "10px",
+                  height: "100%"
                 }}
               >
-                <h4>{dish.dish_name}</h4>
+
+                <h3 style={{ textAlign: "center", color: "#2C3E50", marginTop: '0.5rem' }} className={style.cinzel500} >Full Quantity</h3>
+                {subcategories.filter((dish) => dish.dish_qnty === "Full").length > 0 ? (
+                  <ul
+                    style={{
+                      listStyleType: "none",
+                      paddingBottom: "20px",
+                      marginTop: '1.5rem',
+                    }}
+                  >
+                    {subcategories
+                      .filter((dish) => dish.dish_qnty === "Full")
+                      .map((dish) => (
+                        <li
+                          key={dish.dish_id}
+                          style={{
+                            cursor: "pointer",
+                            backgroundColor: "#2C3E50",
+                            marginTop: 15,
+                            color: "#1A1A1A",
+                            fontSize: 15,
+                            marginLeft: "auto",
+                            marginRight: "auto",
+                            fontWeight: 400,
+                            width: "90%",
+                            display: "flex",
+                            justifyContent: "center",
+                            alignItems: "center",
+                          }}
+                          onClick={() => handleAddItem(dish)}
+                        >
+                          <div
+                            style={{
+                              backgroundColor: "#e0e0e0",
+                              height: "100%",
+                              marginBottom: '3px',
+                              width: "100%",
+                              padding: 10,
+                              textAlign: "center",
+                            }}
+                          >
+                            <h4>{dish.dish_name}</h4>
+                          </div>
+                        </li>
+                      ))}
+                  </ul>
+                ) : (
+                  <p
+                    style={{
+                      fontSize: 18,
+                      display: "flex",
+                      justifyContent: "center",
+                      marginTop: 30,
+                    }}
+                  >
+                    No Full Quantity Dishes.
+                  </p>
+                )}
+
+              </div> */}
+
+
+              <div style={{ borderWidth: 1, height: "20vh", backgroundColor: "#ddd", width: "100%", padding: 30 }}>
+                {PendingTable.length > 0 ? (
+                  PendingTable.map((item, index) => (
+                    <a key={index} onClick={() => handleTableClick(item.tableno)} style={{ padding: 20, backgroundColor: "red", color: "white", marginRight: 20 }}>{item.tableno}</a>
+                  ))
+                ) : (
+                  <tr>
+                    <h3 >
+                      No Pending Orders
+                    </h3>
+                  </tr>
+                )}
               </div>
-            </li>
-          ))}
-      </ul>
-    ) : (
-      <p
-        style={{
-          fontSize: 18,
-          display: "flex",
-          justifyContent: "center",
-          marginTop: 30,
-        }}
-      >
-        No Full Quantity Dishes.
-      </p>
-    )}
-  </div>
-</div>
+            </div>
 
 
-      </>
-    ):(
-      <div
-  style={{
-    display: "flex",
-    width: "50%",
-    backgroundColor: "#f8f9fa",
-    height: "90vh",
-  }}
->
-  <p
-        style={{
-          fontSize: 18,
-          margin: 'auto',
-        }}
-      >
-        No Dish Is Added.
-      </p>
-  </div>
-    )
-  }
- 
+          </>
+        ) : (
+          <div
+            style={{
+              display: "flex",
+              width: "50%",
+              backgroundColor: "#f8f9fa",
+              height: "90vh",
+            }}
+          >
+            <p
+              style={{
+                fontSize: 18,
+                margin: 'auto',
+              }}
+            >
+              No Dish Is Added.
+            </p>
+          </div>
+        )
+      }
 
 
-      {/* Selected Items */}
-      <div
+      {/* Modal */}
+      {/* {isModalOpen && (
+        <div
+          style={{
+            position: "fixed",
+            // top: "50%",
+            left: "59%",
+            // transform: "translate(-50%, -50%)",
+            backgroundColor: "white",
+            padding: 20,
+            borderRadius: 10,
+            boxShadow: "0 0 10px rgba(0, 0, 0, 0.3)",
+            zIndex: 1000,
+            width: "40%",
+            height:"80%"
+          }}
+        >
+          <h3>Details for Table No: {selectedTable}</h3>
+          <p>Additional information for table {selectedTable} can be shown here.</p>
+          <button onClick={closeModal} style={{ padding: 10, marginTop: 20 }}>
+            Close
+          </button>
+        </div>
+      )} */}
+
+      {/* Modal Overlay */}
+      {/* {isModalOpen && (
+        <div
+          onClick={closeModal}
+          style={{
+            position: "fixed",
+            top: 0,
+            left: 0,
+            width: "100%",
+            height: "100%",
+            backgroundColor: "rgba(0, 0, 0, 0.5)",
+            zIndex: 999,
+          }}
+        ></div>
+      )} */}
+
+
+{activeTable !== null ? (
+     <div
+     style={{
+       width: "45%",
+       padding: "0 20px",
+       backgroundColor: "#FFF",
+     }}
+   >
+     {/* Display Added Items */}
+     <div
+       style={{
+         display: "flex",
+         flexDirection: "column",
+         minHeight: "100%", // Ensures content fits naturally
+       }}
+     >
+       {/* Header Section */}
+       {/* <h3 style={{ marginTop: "20px" }}>Added Items</h3> */}
+      
+       <div className={style.firstbuttons}>
+         
+         <button
+           className={`${style.separatebtn} ${dineOrParcel === "Parcel" ? style.active : ""
+             }`}
+           onClick={handleClose}
+         >
+           Close
+         </button>
+         <p>Coupon: {coupon} </p>
+         <p>activeTable: {activeTable} </p>
+       </div>
+       
+
+       {/* Items Section */}
+       <div style={{ flex: "1" }}>
+         {addedItems.length > 0 ? (
+           <ul style={{ listStyleType: "none", padding: 0 }}>
+             {addedItems.map((item) => (
+               <li
+                 key={item.dish_id}
+                 style={{
+                   display: "flex",
+                   justifyContent: "space-between",
+                   alignItems: "center",
+                   padding: "10px",
+                   fontSize: "18px",
+                   marginTop: "10px",
+                   borderBottom: "1px solid #ddd",
+                 }}
+               >
+                 {/* Item Name - 40% */}
+                 <span
+                   style={{
+                     flexBasis: "40%",
+                     overflow: "hidden",
+                     whiteSpace: "nowrap",
+                     textOverflow: "ellipsis",
+                   }}
+                 >
+                   {item.dish_name}
+                 </span>
+
+                 {/* Item Price - 10% */}
+                 <span style={{ flexBasis: "10%", textAlign: "center" }}>
+                   ₹{item.dist_rate}
+                 </span>
+
+                 {/* Quantity Controls - 20% */}
+                 <div
+                   style={{
+                     flexBasis: "20%",
+                     display: "flex",
+                     justifyContent: "center",
+                     alignItems: "center",
+                   }}
+                 >
+                   <button
+                     onClick={() => decrementQuantity(item.dish_id)}
+                     style={{
+                       backgroundColor: "#e0e0e0",
+                       border: "none",
+                       cursor: "pointer",
+                       padding: "5px 10px",
+                       marginRight: "5px",
+                     }}
+                   >
+                     -
+                   </button>
+                   <span style={{ margin: "0 10px" }}>{item.quantity}</span>
+                   <button
+                     onClick={() => incrementQuantity(item.dish_id)}
+                     style={{
+                       backgroundColor: "#e0e0e0",
+                       border: "none",
+                       cursor: "pointer",
+                       padding: "5px 10px",
+                     }}
+                   >
+                     +
+                   </button>
+                 </div>
+
+                 {/* Subtotal - 20% */}
+                 <span style={{ flexBasis: "20%", textAlign: "center" }}>
+                   ₹{item.dist_rate * item.quantity}
+                 </span>
+
+                 {/* Delete Button - 10% */}
+                 <button
+                   onClick={() => handleRemoveItem(item.dish_id)}
+                   style={{
+                     flexBasis: "10%",
+                     backgroundColor: "red",
+                     color: "white",
+                     border: "none",
+                     cursor: "pointer",
+                     padding: "5px 10px",
+                     textAlign: "center",
+                   }}
+                 >
+                   Remove
+                 </button>
+               </li>
+             ))}
+           </ul>
+         ) : (
+           <p style={{ fontSize: 20, textAlign: 'center', marginTop: '1rem' }}>No items added On Active table.</p>
+         )}
+       </div>
+
+       {/* Bottom Section (Total Price and Buttons) */}
+       <div
+         style={{
+           display: "flex",
+           flexDirection: "column",
+           justifyContent: "flex-end",
+           backgroundColor: "#f9f9f9",
+           borderTop: "1px solid #ddd",
+         }}
+       >
+         {/* Total Price */}
+         <h3
+           style={{
+             margin: "0",
+             textAlign: "right",
+             padding: "10px",
+           }}
+         >
+           Total Price: ₹{calculateTotalPrice()}
+         </h3>
+
+         {/* Last Buttons */}
+         <div
+           className={style.lastbuttons}
+           style={{
+             display: "flex",
+             justifyContent: "flex-end",
+             width: "100%",
+             gap: "10px",
+             padding: "10px",
+           }}
+         >
+           <button className={style.separatebtn} onClick={handlesaveOrder}>Save</button>
+           <button className={style.separatebtn} onClick={handlePrint}><Receipt dineOrParcel={dineOrParcel} addedItems={addedItems} coupon={coupon} /></button>
+
+
+           <button className={style.separatebtn}>Download</button>
+           <button className={style.separatebtn}>Share</button>
+         </div>
+       </div>
+     </div>
+
+
+   </div>
+      ) : (
+        <div
         style={{
           width: "45%",
           padding: "0 20px",
@@ -582,7 +869,7 @@ useEffect(()=>{
                 ))}
               </ul>
             ) : (
-              <p style={{ fontSize: 20, textAlign: 'center',marginTop:'1rem' }}>No items added.</p>
+              <p style={{ fontSize: 20, textAlign: 'center', marginTop: '1rem' }}>No items added.</p>
             )}
           </div>
 
@@ -630,6 +917,178 @@ useEffect(()=>{
 
 
       </div>
+      )}
+      {/* Selected Items */}
+
+      {/* <div
+        style={{
+          width: "45%",
+          padding: "0 20px",
+          backgroundColor: "#FFF",
+        }}
+      >
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            minHeight: "100%", // Ensures content fits naturally
+          }}
+        >
+          <div className={style.firstbuttons}>
+            <button
+              className={`${style.separatebtn} ${dineOrParcel === "Dine In" ? style.active : ""
+                }`}
+              onClick={handleDine}
+            >
+              Dine
+            </button>
+            <button
+              className={`${style.separatebtn} ${dineOrParcel === "Parcel" ? style.active : ""
+                }`}
+              onClick={handleParcel}
+            >
+              Parcel
+            </button>
+            <p>Coupon: {coupon}</p>
+          </div>
+
+          <div style={{ flex: "1" }}>
+            {addedItems.length > 0 ? (
+              <ul style={{ listStyleType: "none", padding: 0 }}>
+                {addedItems.map((item) => (
+                  <li
+                    key={item.dish_id}
+                    style={{
+                      display: "flex",
+                      justifyContent: "space-between",
+                      alignItems: "center",
+                      padding: "10px",
+                      fontSize: "18px",
+                      marginTop: "10px",
+                      borderBottom: "1px solid #ddd",
+                    }}
+                  >
+
+                    <span
+                      style={{
+                        flexBasis: "40%",
+                        overflow: "hidden",
+                        whiteSpace: "nowrap",
+                        textOverflow: "ellipsis",
+                      }}
+                    >
+                      {item.dish_name}
+                    </span>
+
+                    <span style={{ flexBasis: "10%", textAlign: "center" }}>
+                      ₹{item.dist_rate}
+                    </span>
+
+                    <div
+                      style={{
+                        flexBasis: "20%",
+                        display: "flex",
+                        justifyContent: "center",
+                        alignItems: "center",
+                      }}
+                    >
+                      <button
+                        onClick={() => decrementQuantity(item.dish_id)}
+                        style={{
+                          backgroundColor: "#e0e0e0",
+                          border: "none",
+                          cursor: "pointer",
+                          padding: "5px 10px",
+                          marginRight: "5px",
+                        }}
+                      >
+                        -
+                      </button>
+                      <span style={{ margin: "0 10px" }}>{item.quantity}</span>
+                      <button
+                        onClick={() => incrementQuantity(item.dish_id)}
+                        style={{
+                          backgroundColor: "#e0e0e0",
+                          border: "none",
+                          cursor: "pointer",
+                          padding: "5px 10px",
+                        }}
+                      >
+                        +
+                      </button>
+                    </div>
+
+                    <span style={{ flexBasis: "20%", textAlign: "center" }}>
+                      ₹{item.dist_rate * item.quantity}
+                    </span>
+
+                    <button
+                      onClick={() => handleRemoveItem(item.dish_id)}
+                      style={{
+                        flexBasis: "10%",
+                        backgroundColor: "red",
+                        color: "white",
+                        border: "none",
+                        cursor: "pointer",
+                        padding: "5px 10px",
+                        textAlign: "center",
+                      }}
+                    >
+                      Remove
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <p style={{ fontSize: 20, textAlign: 'center', marginTop: '1rem' }}>No items added.</p>
+            )}
+          </div>
+
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "flex-end",
+              backgroundColor: "#f9f9f9",
+              borderTop: "1px solid #ddd",
+            }}
+          >
+
+            <h3
+              style={{
+                margin: "0",
+                textAlign: "right",
+                padding: "10px",
+              }}
+            >
+              Total Price: ₹{calculateTotalPrice()}
+            </h3>
+
+            <div
+              className={style.lastbuttons}
+              style={{
+                display: "flex",
+                justifyContent: "flex-end",
+                width: "100%",
+                gap: "10px",
+                padding: "10px",
+              }}
+            >
+              <button className={style.separatebtn} onClick={handlesaveOrder}>Save</button>
+              <button className={style.separatebtn} onClick={handlePrint}><Receipt dineOrParcel={dineOrParcel} addedItems={addedItems} coupon={coupon} /></button>
+
+
+              <button className={style.separatebtn}>Download</button>
+              <button className={style.separatebtn}>Share</button>
+            </div>
+          </div>
+        </div>
+
+
+      </div> */}
+
+
+
     </div>
   );
 };
