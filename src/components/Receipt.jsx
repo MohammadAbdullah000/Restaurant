@@ -1,9 +1,9 @@
 import React from "react";
 import jsPDF from "jspdf";
 
-const Receipt = ({ dineOrParcel, addedItems }) => {
+const Receipt = ({ dineOrParcel, addedItems,coupon }) => {
   const printReceipt = () => {
-    const coupon = Math.floor(Math.random() * 100);
+    // const coupon = Math.floor(Math.random() * 100);
 
     // Calculate total price
     const totalPrice = addedItems.reduce(

@@ -175,7 +175,7 @@ const Expense = () => {
         console.log(result);
         if (result.successmessage) {
           // Add the new dish to the state directly
-           setExpenses((prevExpenses=[]) => [
+           setExpenses((prevExpenses) => [
             ...prevExpenses,
             {
               expensCat: expCategory,
@@ -459,16 +459,24 @@ const columns = [
           />
         </div>
         <div className={style.formGroupdish}>
-          <label htmlFor="expcat">Expense Category:</label>
-          <input
-            type="text"
-            id="expcat"
-            value={expCategory}
-            // onChange={(e) => handleInputChange("emp_email", e.target.value)}
-            onChange={(e) => setExpenseCategory(e.target.value)}
-            required
-          />
-        </div>
+  <label htmlFor="expcat">Expense Category:</label>
+  <select
+    id="expcat"
+    value={expCategory}
+    onChange={(e) => setExpenseCategory(e.target.value)}
+    required
+  >
+    <option value="" disabled>
+      Select a category
+    </option>
+    <option value="Food and Inventory">Food and Inventory</option>
+    <option value="Salary">Salary</option>
+    <option value="Utilities and Maintenance">Utilities and Maintenance</option>
+    <option value="Rent">Rent </option>
+    <option value="Miscellaneous">Miscellaneous</option>
+  </select>
+</div>
+
         <div className={style.formGroupdish}>
           <label htmlFor="expdet">Expense Detail:</label>
           <input
@@ -493,14 +501,21 @@ const columns = [
         </div>
         <div className={style.formGroupdish}>
           <label htmlFor="method">Payment Method:</label>
-          <input
-            type="text"
-            id="method"
-            value={paymentMethod}
-            // onChange={(e) => handleInputChange("emp_salary", e.target.value)}
-            onChange={(e) => setPaymentMethod(e.target.value)}
-            required
-          />
+         <select
+    id="expcat"
+    value={paymentMethod}
+    onChange={(e) => setPaymentMethod(e.target.value)}
+    required
+  >
+    <option value="" disabled>
+      Select Payment Method
+    </option>
+    <option value="Online">Online</option>
+    <option value="Cash">Cash</option>
+    <option value="Bank Transfer">Bank Transfer</option>
+    <option value="Cheque">Cheque </option>
+    {/* <option value="Miscellaneous">Miscellaneous</option> */}
+  </select>
         </div>
         <div className={style.formGroupdish}>
           <label htmlFor="vename">Vendor Name:</label>
@@ -582,15 +597,35 @@ const columns = [
       </div>
 
       <div className={style.formGroupdish}>
-        <label htmlFor="email">Expense Cateogry:</label>
-        <input
-          type="text"
-          id="email"
-          value={editExp.expensCat || ""}
-          onChange={(e) => setEditExp((prev) => ({ ...prev, expensCat: e.target.value }))}
-          required
-        />
-      </div>
+  <label htmlFor="expenseCategory">Expense Category:</label>
+  <select
+    id="expenseCategory"
+    value={editExp.expensCat || ""}
+    onChange={(e) =>
+      setEditExp((prev) => ({
+        ...prev,
+        expensCat: e.target.value,
+      }))
+    }
+    required
+    style={{
+      width: "100%",
+      padding: "10px",
+      fontSize: "16px",
+      border: "1px solid #ddd",
+      borderRadius: "5px",
+    }}
+  >
+    <option value="" disabled>
+      Select a category
+    </option>
+    <option value="Food and Inventory">Food and Inventory</option>
+    <option value="Salary">Salary</option>
+    <option value="Utilities and Maintenance">Utilities and Maintenance</option>
+    <option value="Rent">Rent </option>
+    <option value="Miscellaneous">Miscellaneous</option>
+  </select>
+</div>
 
       <div className={style.formGroupdish}>
         <label htmlFor="mobile">Expense Detail:</label>
@@ -616,13 +651,32 @@ const columns = [
 
       <div className={style.formGroupdish}>
         <label htmlFor="salary">Payment Method:</label>
-        <input
-          type="text"
-          id="salary"
-          value={editExp.expensMethod || ""}
-          onChange={(e) => setEditExp((prev) => ({ ...prev, expensMethod: e.target.value }))}
-          required
-        />
+        <select
+    id="salary"
+    value={editExp.expensMethod || ""}
+    onChange={(e) =>
+      setEditExp((prev) => ({
+        ...prev,
+        expensMethod: e.target.value,
+      }))
+    }
+    required
+    style={{
+      width: "100%",
+      padding: "10px",
+      fontSize: "16px",
+      border: "1px solid #ddd",
+      borderRadius: "5px",
+    }}
+  >
+    <option value="" disabled>
+      Select Payment Method
+    </option>
+    <option value="Online">Online</option>
+    <option value="Cash">Cash</option>
+    <option value="Bank Transfer">Bank Transfer</option>
+    <option value="Cheque">Cheque </option>
+  </select>
       </div>
       <div className={style.formGroupdish}>
         <label htmlFor="salary">Vendor Name:</label>
