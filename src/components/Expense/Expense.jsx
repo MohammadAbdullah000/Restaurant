@@ -11,91 +11,91 @@ const Expense = () => {
   const [expDes, setExpDes] = useState("");
   const [amountSpent, setAmountSpent] = useState("");
   const [paymentMethod, setPaymentMethod] = useState("");
-  const [id,setId] = useState('')
+  const [id, setId] = useState('')
   // const [employeeSalary, setEmployeeSalary] = useState("");
   // const [employees, setEmployees] = useState([]);
   const [venderName, setVenderName] = useState([]);
   const [expenses, setExpenses] = useState([]);
   // const [activeCategory, setActiveCategory] = useState(null);
   const [noExpenseMessage, setNoExpenseMessage] = useState("");
-    const [editDishIsOpen, setEditDishIsOpen] = useState(false);
-      const [editExp,setEditExp] = useState([])
+  const [editDishIsOpen, setEditDishIsOpen] = useState(false);
+  const [editExp, setEditExp] = useState([])
   // Fetch Employees
   useEffect(() => {
     fetchExpenses()
-    }, []);
-    
-    async function fetchExpenses() {
-      try {
-        const response = await fetch("https://letzbim.com/Restaurent/Expenses_Fetch_Api.php");
-        if (response.ok) {
-          const data = await response.json();
-          setExpenses(data)
-          console.log("API Response:", data); // Log the full API response
-          console.log("Length of data:", data.length); // Log the length
-    if(!data.length){
-      setNoExpenseMessage("No Expenses Added"); // Show the message
+  }, []);
 
-    }
-          {
-            const formattedEmployees = data.map((expenses) => ({
-              
-              exp_id:expenses.exp_id,
-              expensCat: expenses.expensCat,
-              expensInfo: expenses.expensInfo,
-              expnAmount: expenses.expnAmount,
-              expensMethod: expenses.expensMethod,
-              venderName: expenses.venderName,
-              date: expenses.expdate,
-            }));
-            setExpenses(formattedEmployees);
-            console.log('h',formattedEmployees);
-            
-            setNoExpenseMessage(""); // Clear the message
-          }
-        } 
-        else {
-          console.error("Failed to fetch employees:", response.statusText);
+  async function fetchExpenses() {
+    try {
+      const response = await fetch("https://letzbim.com/Restaurent/Expenses_Fetch_Api.php");
+      if (response.ok) {
+        const data = await response.json();
+        setExpenses(data)
+        console.log("API Response:", data); // Log the full API response
+        console.log("Length of data:", data.length); // Log the length
+        if (!data.length) {
+          setNoExpenseMessage("No Expenses Added"); // Show the message
+
         }
-      } catch (error) {
-        console.error("Error fetching employees:", error);
+        {
+          const formattedEmployees = data.map((expenses) => ({
+
+            exp_id: expenses.exp_id,
+            expensCat: expenses.expensCat,
+            expensInfo: expenses.expensInfo,
+            expnAmount: expenses.expnAmount,
+            expensMethod: expenses.expensMethod,
+            venderName: expenses.venderName,
+            date: expenses.expdate,
+          }));
+          setExpenses(formattedEmployees);
+          console.log('h', formattedEmployees);
+
+          setNoExpenseMessage(""); // Clear the message
+        }
       }
+      else {
+        console.error("Failed to fetch employees:", response.statusText);
+      }
+    } catch (error) {
+      console.error("Error fetching employees:", error);
     }
-    
-    
-    
-    // Fetch Designations
-    // useEffect(() => {
-    //   async function fetchDesignations() {
-    //     try {
-    //       const response = await fetch(
-    //         "https://letzbim.com/Restaurent/designation_fetch_Api.php"
-    //       );
-    //       if (response.ok) {
-    //         const data = await response.json();
-    //         console.log('aaa',data);
-    //         setDesignations(data);
-            
-    //         console.log('ca',Designations);
-            
-  
-    //         // Set the first category as the default active category
-    //         if (data.length > 0) {
-    //           setActiveCategory(data[0].id);
-    //           fetchExpenses(data[0].id); // Fetch Employees for the default category
-    //         }
-    //       } else {
-    //         console.error("Failed to fetch Designations:", response.statusText);
-    //       }
-    //     } catch (error) {
-    //       console.error("Error fetching Designations:", error);
-    //     }
-    //   }
-  
-    //   fetchDesignations();
-    // }, []);
-  
-  
+  }
+
+
+
+  // Fetch Designations
+  // useEffect(() => {
+  //   async function fetchDesignations() {
+  //     try {
+  //       const response = await fetch(
+  //         "https://letzbim.com/Restaurent/designation_fetch_Api.php"
+  //       );
+  //       if (response.ok) {
+  //         const data = await response.json();
+  //         console.log('aaa',data);
+  //         setDesignations(data);
+
+  //         console.log('ca',Designations);
+
+
+  //         // Set the first category as the default active category
+  //         if (data.length > 0) {
+  //           setActiveCategory(data[0].id);
+  //           fetchExpenses(data[0].id); // Fetch Employees for the default category
+  //         }
+  //       } else {
+  //         console.error("Failed to fetch Designations:", response.statusText);
+  //       }
+  //     } catch (error) {
+  //       console.error("Error fetching Designations:", error);
+  //     }
+  //   }
+
+  //   fetchDesignations();
+  // }, []);
+
+
 
   function toggleAddDish() {
     setAddDishIsOpen(!addDishIsOpen);
@@ -126,18 +126,18 @@ const Expense = () => {
     try {
       // Construct the API URL with the given dishcat_id
       const apiUrl = `https://letzbim.com/Restaurent/Expense_Edit_Fetch_Api.php?exp_id=${exp_id}`;
-  
+
       // Make the GET request to fetch the category details
       const response = await axios.get(apiUrl);
-  console.log('rr',response);
-  
+      console.log('rr', response);
+
       // Check if the response is successful
       if (response.data) {
         setEditExp(response.data)
-        console.log('nasa',response.data);
-        
-  console.log('efit',editExp);
-  
+        console.log('nasa', response.data);
+
+        console.log('efit', editExp);
+
         // Handle the fetched data (e.g., open a form with pre-filled data)
         console.log('Category Data:', response.data);
         // Add your logic here to display or use the fetched data
@@ -151,16 +151,16 @@ const Expense = () => {
       alert('An error occurred while fetching the category details.');
     }
   };
-  
+
   async function handleAddExpense() {
     const formData = new URLSearchParams();
     formData.append("expensCat", expCategory);
-    formData.append("expensInfo",expDes);
-    formData.append("expnAmount",amountSpent);
-    formData.append("expensMethod",paymentMethod);
+    formData.append("expensInfo", expDes);
+    formData.append("expnAmount", amountSpent);
+    formData.append("expensMethod", paymentMethod);
     formData.append("venderName", venderName);
     formData.append("date", date);
-   
+
     try {
       const response = await fetch("https://letzbim.com/Restaurent/Expenses_Add_Api.php", {
         method: "POST",
@@ -175,7 +175,7 @@ const Expense = () => {
         console.log(result);
         if (result.successmessage) {
           // Add the new dish to the state directly
-           setExpenses((prevExpenses) => [
+          setExpenses((prevExpenses) => [
             ...prevExpenses,
             {
               expensCat: expCategory,
@@ -195,10 +195,10 @@ const Expense = () => {
           setVenderName("");
           // setEmployeeSalary("");
           // setdesginationID("")
-  
+
           // Close the form
           toggleAddDish();
-  
+
           // Fetch Employees again to update the table
           fetchExpenses(); // Ensure we fetch Employees for the active category
           console.log('success')
@@ -214,7 +214,7 @@ const Expense = () => {
       alert("Failed to add dish. Please try again later.");
     }
   }
-  
+
   const handleCategoryClick = (dishCatID) => {
     setActiveCategory(dishCatID);
     fetchExpenses(dishCatID); // Fetch Employees for the selected category
@@ -229,14 +229,14 @@ const Expense = () => {
         },
         body: new URLSearchParams({ exp_id: empID }),
       });
-  
+
       const result = await response.json();
       // console.log('ffffffff',desigId)
-  
+
       if (result.successmessage === "success") {
         setExpenses((prevEmployees) => prevEmployees.filter((dish) => dish.emp_id !== empID));
         // console.log('aa',activeCategory);
-        
+
         fetchExpenses();
       } else {
         alert(result.message || "Failed to delete employee.");
@@ -246,47 +246,49 @@ const Expense = () => {
       alert("An error occurred while deleting the employee.");
     }
   };
-  
-const columns = [
-  { name: "Date", selector: (row) => row.date, sortable: true },
-  { name: "Expense Category", selector: (row) => row.expensCat, sortable: true },
-  { name: "Expense Detail", selector: (row) => row.expensInfo, sortable: true },
-  { name: "Expense Amount", selector: (row) => row.expnAmount, sortable: true },
-  { name: "Method", selector: (row) => row.expensMethod, sortable: true },
-  { name: "Vendor Name", selector: (row) => row.venderName, sortable: true },
-  {
-    name: "",
-    cell: (row) => (
-      <button
-       className={style.deleteButton}
-       onClick={() => {
-        handleEdit(row. exp_id);
-        toggleEditDish();}}
-      >
-        Edit
-      </button>
-    ),
-    ignoreRowClick: true,
-    allowoverflow: true,
-    button: true,
-  },
-  {
-    name: "",
-    cell: (row) => (
-      <button
-       className={style.deleteButton}
-       onClick={() => {
-        handleDelete(row. exp_id);
-        ;}}
-      >
-        Delete
-      </button>
-    ),
-    ignoreRowClick: true,
-    allowoverflow: true,
-    button: true,
-  },
-];
+
+  const columns = [
+    { name: "Date", selector: (row) => row.date, sortable: true },
+    { name: "Expense Category", selector: (row) => row.expensCat, sortable: true },
+    { name: "Expense Detail", selector: (row) => row.expensInfo, sortable: true },
+    { name: "Expense Amount", selector: (row) => row.expnAmount, sortable: true },
+    { name: "Method", selector: (row) => row.expensMethod, sortable: true },
+    { name: "Vendor Name", selector: (row) => row.venderName, sortable: true },
+    {
+      name: "",
+      cell: (row) => (
+        <button
+          className={style.deleteButton}
+          onClick={() => {
+            handleEdit(row.exp_id);
+            toggleEditDish();
+          }}
+        >
+          Edit
+        </button>
+      ),
+      ignoreRowClick: true,
+      allowoverflow: true,
+      button: true,
+    },
+    {
+      name: "",
+      cell: (row) => (
+        <button
+          className={style.deleteButton}
+          onClick={() => {
+            handleDelete(row.exp_id);
+            ;
+          }}
+        >
+          Delete
+        </button>
+      ),
+      ignoreRowClick: true,
+      allowoverflow: true,
+      button: true,
+    },
+  ];
 
   const customStyles = {
     headCells: {
@@ -303,17 +305,17 @@ const columns = [
 
   useEffect(() => {
     if (editExp) {
-          setDate(editExp.expdate || '');
-          setExpenseCategory(editExp.expensCat || '');
-          setExpDes(editExp.expensInfo || '');
-          setAmountSpent(editExp.expnAmount || '');
-          setPaymentMethod(editExp.expensMethod || '');
-          setVenderName(editExp.venderName || '');
+      setDate(editExp.expdate || '');
+      setExpenseCategory(editExp.expensCat || '');
+      setExpDes(editExp.expensInfo || '');
+      setAmountSpent(editExp.expnAmount || '');
+      setPaymentMethod(editExp.expensMethod || '');
+      setVenderName(editExp.venderName || '');
       console.log(editExp);
-      
+
     }
   }, [editExp]);
-   const handleInputChange = (e) => {
+  const handleInputChange = (e) => {
     setEditDish(e.target.value); // Update the value as user types
   };
   const handleUpdateExpense = async () => {
@@ -322,10 +324,10 @@ const columns = [
     //   alert("Please select a designation.");
     //   return;
     // }
-  
+
     // Prepare form data for the API request
     // const formData = new URLSearchParams();
-  
+
     // Using the state values or the existing editExp fields as fallback
     // formData.append("expnsID", expCategory || editExp.expensCat);
     // formData.append("expensCat", expCategory || editExp.expensCat);
@@ -335,7 +337,7 @@ const columns = [
     // formData.append("venderName", venderName || editExp.venderName);
     // formData.append("date", date || editExp.expdate);
     // formData.append("DesigId", desginationID || editExp.desigID);
-  
+
     try {
       const response = await fetch("https://letzbim.com/Restaurent/Expenses_Update_Api.php", {
         method: "POST",
@@ -353,48 +355,48 @@ const columns = [
           // DesigId: editExp.desigID,
         }),
       });
-  
+
       const result = await response.json();
       // if (response.ok) {
-        if (result.successmessage) {
-          setExpenses((prevEmployees) =>
-            prevEmployees.map((emp) =>
-              emp.exp_id === (editExp.exp_id)
-                ? {
-                    ...emp,
-          exp_id: editExp.exp_id,
-                    expensCat:expCategory || editExp.expensCat,
-                    expensInfo:expDes || editExp.expensInfo,
-                    expnAmount: amountSpent || editExp.expnAmount,
-                    expensMethod: paymentMethod || editExp.expensMethod,
-                    venderName: venderName || editExp.venderName,
-                    date: date || editExp.expdate,
-                    // emp_id:employeeID||editExp.emp_id,
-                    // emp_name: employeeName || editExp.emp_name,
-                    // emp_email: employeeEmail || editExp.emp_email,
-                    // emp_mobile: employeeMobile || editExp.emp_mobile,
-                    // emp_address: employeeAddress || editExp.emp_address,
-                    // emp_salary: employeeSalary || editExp.emp_salary,
-                    // desigID: Designations.find(
-                    //   (desig) => desig.id === (desginationID || editExp.desigID)
-                    // )?.designation_name || "",
-                  }
-                : emp
-            )
-          );
-  
-          setDate("")
-          setExpenseCategory("");
-          setExpDes("");
-          setAmountSpent("");
-          setPaymentMethod("");
-          setVenderName("");
-  
-          toggleEditDish(); // Close the edit form
-          fetchExpenses(); // Refresh employee list
-        } else {
-          alert("Failed to update employee: " + result.errmessage);
-        }
+      if (result.successmessage) {
+        setExpenses((prevEmployees) =>
+          prevEmployees.map((emp) =>
+            emp.exp_id === (editExp.exp_id)
+              ? {
+                ...emp,
+                exp_id: editExp.exp_id,
+                expensCat: expCategory || editExp.expensCat,
+                expensInfo: expDes || editExp.expensInfo,
+                expnAmount: amountSpent || editExp.expnAmount,
+                expensMethod: paymentMethod || editExp.expensMethod,
+                venderName: venderName || editExp.venderName,
+                date: date || editExp.expdate,
+                // emp_id:employeeID||editExp.emp_id,
+                // emp_name: employeeName || editExp.emp_name,
+                // emp_email: employeeEmail || editExp.emp_email,
+                // emp_mobile: employeeMobile || editExp.emp_mobile,
+                // emp_address: employeeAddress || editExp.emp_address,
+                // emp_salary: employeeSalary || editExp.emp_salary,
+                // desigID: Designations.find(
+                //   (desig) => desig.id === (desginationID || editExp.desigID)
+                // )?.designation_name || "",
+              }
+              : emp
+          )
+        );
+
+        setDate("")
+        setExpenseCategory("");
+        setExpDes("");
+        setAmountSpent("");
+        setPaymentMethod("");
+        setVenderName("");
+
+        toggleEditDish(); // Close the edit form
+        fetchExpenses(); // Refresh employee list
+      } else {
+        alert("Failed to update employee: " + result.errmessage);
+      }
       // }
       //  else {
       //   alert("API Error: " + response.statusText);
@@ -404,39 +406,39 @@ const columns = [
       alert("Failed to update employee. Please try again later.");
     }
   };
-  
-  
-  
+
+
+
 
   return (
     <div className={`${style.nunito500} ${style.dish}`}>
       <div className={style.heading}>
         {/* <h2>Welcome to the Employee Section</h2> */}
         {/* <p>Here you can manage your Employee.</p> */}
-       
+
       </div>
       <div>
-  {/* Overlay */}
-  {addDishIsOpen && (
-    <div
-      className={style.overlay}
-      onClick={toggleAddDish} // Clicking on the overlay closes the form
-    ></div>
-  )}
+        {/* Overlay */}
+        {addDishIsOpen && (
+          <div
+            className={style.overlay}
+            onClick={toggleAddDish} // Clicking on the overlay closes the form
+          ></div>
+        )}
 
-  {/* Card Form */}
-  {addDishIsOpen && (
-    <div className={`${style.cardForm} ${addDishIsOpen ? style.animateOpen : ""}`}>
-    <button 
-          className={style.closeButton} 
-          onClick={toggleAddDish} 
-          aria-label="Close"
-        >
-          &times;
-        </button>
-      <h3>Add New Expense</h3>
-      <form onSubmit={(e) => e.preventDefault()}>
-      {/* <div className={style.formGroupdish}>
+        {/* Card Form */}
+        {addDishIsOpen && (
+          <div className={`${style.cardForm} ${addDishIsOpen ? style.animateOpen : ""}`}>
+            <button
+              className={style.closeButton}
+              onClick={toggleAddDish}
+              aria-label="Close"
+            >
+              &times;
+            </button>
+            <h3>Add New Expense</h3>
+            <form onSubmit={(e) => e.preventDefault()}>
+              {/* <div className={style.formGroupdish}>
           <label htmlFor="id">ID:</label>
           <input
             type="number"
@@ -447,88 +449,88 @@ const columns = [
             required
           />
         </div> */}
-        <div className={style.formGroupdish}>
-          <label htmlFor="fullName">Date:</label>
-          <input
-            type="date"
-            id="date"
-            value={date}
-            // onChange={(e) => handleInputChange("emp_name", e.target.value)}
-            onChange={(e) => setDate(e.target.value)}
-            required
-          />
-        </div>
-        <div className={style.formGroupdish}>
-  <label htmlFor="expcat">Expense Category:</label>
-  <select
-    id="expcat"
-    value={expCategory}
-    onChange={(e) => setExpenseCategory(e.target.value)}
-    required
-  >
-    <option value="" disabled>
-      Select a category
-    </option>
-    <option value="Food and Inventory">Food and Inventory</option>
-    <option value="Salary">Salary</option>
-    <option value="Utilities and Maintenance">Utilities and Maintenance</option>
-    <option value="Rent">Rent </option>
-    <option value="Miscellaneous">Miscellaneous</option>
-  </select>
-</div>
+              <div className={style.formGroupdish}>
+                <label htmlFor="fullName">Date:</label>
+                <input
+                  type="date"
+                  id="date"
+                  value={date}
+                  // onChange={(e) => handleInputChange("emp_name", e.target.value)}
+                  onChange={(e) => setDate(e.target.value)}
+                  required
+                />
+              </div>
+              <div className={style.formGroupdish}>
+                <label htmlFor="expcat">Expense Category:</label>
+                <select
+                  id="expcat"
+                  value={expCategory}
+                  onChange={(e) => setExpenseCategory(e.target.value)}
+                  required
+                >
+                  <option value="" disabled>
+                    Select a category
+                  </option>
+                  <option value="Food and Inventory">Food and Inventory</option>
+                  <option value="Salary">Salary</option>
+                  <option value="Utilities and Maintenance">Utilities and Maintenance</option>
+                  <option value="Rent">Rent </option>
+                  <option value="Miscellaneous">Miscellaneous</option>
+                </select>
+              </div>
 
-        <div className={style.formGroupdish}>
-          <label htmlFor="expdet">Expense Detail:</label>
-          <input
-            type="text"
-            id="expdet"
-            value={expDes}
-            // onChange={(e) => handleInputChange("emp_mobile", e.target.value)}
-            onChange={(e) => setExpDes(e.target.value)}
-            required
-          />
-        </div>
-        <div className={style.formGroupdish}>
-          <label htmlFor="spent">Amount Spent:</label>
-          <input
-            type="number"
-            id="spent"
-            value={amountSpent}
-            // onChange={(e) => handleInputChange("emp_address", e.target.value)}
-            onChange={(e) => setAmountSpent(e.target.value)}
-            required
-          />
-        </div>
-        <div className={style.formGroupdish}>
-          <label htmlFor="method">Payment Method:</label>
-         <select
-    id="expcat"
-    value={paymentMethod}
-    onChange={(e) => setPaymentMethod(e.target.value)}
-    required
-  >
-    <option value="" disabled>
-      Select Payment Method
-    </option>
-    <option value="Online">Online</option>
-    <option value="Cash">Cash</option>
-    <option value="Bank Transfer">Bank Transfer</option>
-    <option value="Cheque">Cheque </option>
-    {/* <option value="Miscellaneous">Miscellaneous</option> */}
-  </select>
-        </div>
-        <div className={style.formGroupdish}>
-          <label htmlFor="vename">Vendor Name:</label>
-          <input
-            type="text"
-            id="venname"
-            value={venderName}
-            // onChange={(e) => handleInputChange("emp_salary", e.target.value)}
-            onChange={(e) => setVenderName(e.target.value)}
-            required
-          />
-        </div>
-        {/* <div className={style.formGroupdish}>
+              <div className={style.formGroupdish}>
+                <label htmlFor="expdet">Expense Detail:</label>
+                <input
+                  type="text"
+                  id="expdet"
+                  value={expDes}
+                  // onChange={(e) => handleInputChange("emp_mobile", e.target.value)}
+                  onChange={(e) => setExpDes(e.target.value)}
+                  required
+                />
+              </div>
+              <div className={style.formGroupdish}>
+                <label htmlFor="spent">Amount Spent:</label>
+                <input
+                  type="number"
+                  id="spent"
+                  value={amountSpent}
+                  // onChange={(e) => handleInputChange("emp_address", e.target.value)}
+                  onChange={(e) => setAmountSpent(e.target.value)}
+                  required
+                />
+              </div>
+              <div className={style.formGroupdish}>
+                <label htmlFor="method">Payment Method:</label>
+                <select
+                  id="expcat"
+                  value={paymentMethod}
+                  onChange={(e) => setPaymentMethod(e.target.value)}
+                  required
+                >
+                  <option value="" disabled>
+                    Select Payment Method
+                  </option>
+                  <option value="Online">Online</option>
+                  <option value="Cash">Cash</option>
+                  <option value="Bank Transfer">Bank Transfer</option>
+                  <option value="Cheque">Cheque </option>
+                  {/* <option value="Miscellaneous">Miscellaneous</option> */}
+                </select>
+              </div>
+              <div className={style.formGroupdish}>
+                <label htmlFor="vename">Vendor Name:</label>
+                <input
+                  type="text"
+                  id="venname"
+                  value={venderName}
+                  // onChange={(e) => handleInputChange("emp_salary", e.target.value)}
+                  onChange={(e) => setVenderName(e.target.value)}
+                  required
+                />
+              </div>
+              {/* <div className={style.formGroupdish}>
                   <label htmlFor="designation">Designation:</label>
                   <select
                     id="designation"
@@ -548,33 +550,33 @@ const columns = [
                     ))}
                   </select>
                 </div> */}
-        <div className={style.buttonGroup}>
-          <button type="button" onClick={handleAddExpense}>
-            Submit
-          </button>
-          {/* <button type="button" onClick={toggleAddDish}>
+              <div className={style.buttonGroup}>
+                <button type="button" onClick={handleAddExpense}>
+                  Submit
+                </button>
+                {/* <button type="button" onClick={toggleAddDish}>
             Cancel
           </button> */}
-        </div>
-      </form>
-    </div>
-  )}
-  {editDishIsOpen && (
-    <div
-      className={style.overlay}
-      onClick={toggleEditDish} // Clicking on the overlay closes the form
-    ></div>
-  )}
+              </div>
+            </form>
+          </div>
+        )}
+        {editDishIsOpen && (
+          <div
+            className={style.overlay}
+            onClick={toggleEditDish} // Clicking on the overlay closes the form
+          ></div>
+        )}
 
-  {/* Card Form */}
-  {editDishIsOpen && (
-  <div className={`${style.cardForm} ${editDishIsOpen ? style.animateOpen : ""}`}>
-    <button className={style.closeButton} onClick={toggleEditDish} aria-label="Close">
-      &times;
-    </button>
-    <h3>Edit Employee</h3>
-    <form onSubmit={(e) => e.preventDefault()}>
-      {/* <div className={style.formGroupdish}>
+        {/* Card Form */}
+        {editDishIsOpen && (
+          <div className={`${style.cardForm} ${editDishIsOpen ? style.animateOpen : ""}`}>
+            <button className={style.closeButton} onClick={toggleEditDish} aria-label="Close">
+              &times;
+            </button>
+            <h3>Edit Employee</h3>
+            <form onSubmit={(e) => e.preventDefault()}>
+              {/* <div className={style.formGroupdish}>
         <label htmlFor="id">ID:</label>
         <input
           type="number"
@@ -585,111 +587,111 @@ const columns = [
         />
       </div> */}
 
-      <div className={style.formGroupdish}>
-        <label htmlFor="date">Date:</label>
-        <input
-          type="date"
-          id="date"
-          value={editExp.expdate || ""}
-          onChange={(e) => setEditExp((prev) => ({ ...prev, expdate: e.target.value }))}
-          required
-        />
-      </div>
+              <div className={style.formGroupdish}>
+                <label htmlFor="date">Date:</label>
+                <input
+                  type="date"
+                  id="date"
+                  value={editExp.expdate || ""}
+                  onChange={(e) => setEditExp((prev) => ({ ...prev, expdate: e.target.value }))}
+                  required
+                />
+              </div>
 
-      <div className={style.formGroupdish}>
-  <label htmlFor="expenseCategory">Expense Category:</label>
-  <select
-    id="expenseCategory"
-    value={editExp.expensCat || ""}
-    onChange={(e) =>
-      setEditExp((prev) => ({
-        ...prev,
-        expensCat: e.target.value,
-      }))
-    }
-    required
-    style={{
-      width: "100%",
-      padding: "10px",
-      fontSize: "16px",
-      border: "1px solid #ddd",
-      borderRadius: "5px",
-    }}
-  >
-    <option value="" disabled>
-      Select a category
-    </option>
-    <option value="Food and Inventory">Food and Inventory</option>
-    <option value="Salary">Salary</option>
-    <option value="Utilities and Maintenance">Utilities and Maintenance</option>
-    <option value="Rent">Rent </option>
-    <option value="Miscellaneous">Miscellaneous</option>
-  </select>
-</div>
+              <div className={style.formGroupdish}>
+                <label htmlFor="expenseCategory">Expense Category:</label>
+                <select
+                  id="expenseCategory"
+                  value={editExp.expensCat || ""}
+                  onChange={(e) =>
+                    setEditExp((prev) => ({
+                      ...prev,
+                      expensCat: e.target.value,
+                    }))
+                  }
+                  required
+                  style={{
+                    width: "100%",
+                    padding: "10px",
+                    fontSize: "16px",
+                    border: "1px solid #ddd",
+                    borderRadius: "5px",
+                  }}
+                >
+                  <option value="" disabled>
+                    Select a category
+                  </option>
+                  <option value="Food and Inventory">Food and Inventory</option>
+                  <option value="Salary">Salary</option>
+                  <option value="Utilities and Maintenance">Utilities and Maintenance</option>
+                  <option value="Rent">Rent </option>
+                  <option value="Miscellaneous">Miscellaneous</option>
+                </select>
+              </div>
 
-      <div className={style.formGroupdish}>
-        <label htmlFor="mobile">Expense Detail:</label>
-        <input
-          type="text"
-          id="mobile"
-          value={editExp.expensInfo || ""}
-          onChange={(e) => setEditExp((prev) => ({ ...prev, expensInfo: e.target.value }))}
-          required
-        />
-      </div>
+              <div className={style.formGroupdish}>
+                <label htmlFor="mobile">Expense Detail:</label>
+                <input
+                  type="text"
+                  id="mobile"
+                  value={editExp.expensInfo || ""}
+                  onChange={(e) => setEditExp((prev) => ({ ...prev, expensInfo: e.target.value }))}
+                  required
+                />
+              </div>
 
-      <div className={style.formGroupdish}>
-        <label htmlFor="address">Amount Spent:</label>
-        <input
-          type="number"
-          id="address"
-          value={editExp.expnAmount || ""}
-          onChange={(e) => setEditExp((prev) => ({ ...prev, expnAmount: e.target.value }))}
-          required
-        />
-      </div>
+              <div className={style.formGroupdish}>
+                <label htmlFor="address">Amount Spent:</label>
+                <input
+                  type="number"
+                  id="address"
+                  value={editExp.expnAmount || ""}
+                  onChange={(e) => setEditExp((prev) => ({ ...prev, expnAmount: e.target.value }))}
+                  required
+                />
+              </div>
 
-      <div className={style.formGroupdish}>
-        <label htmlFor="salary">Payment Method:</label>
-        <select
-    id="salary"
-    value={editExp.expensMethod || ""}
-    onChange={(e) =>
-      setEditExp((prev) => ({
-        ...prev,
-        expensMethod: e.target.value,
-      }))
-    }
-    required
-    style={{
-      width: "100%",
-      padding: "10px",
-      fontSize: "16px",
-      border: "1px solid #ddd",
-      borderRadius: "5px",
-    }}
-  >
-    <option value="" disabled>
-      Select Payment Method
-    </option>
-    <option value="Online">Online</option>
-    <option value="Cash">Cash</option>
-    <option value="Bank Transfer">Bank Transfer</option>
-    <option value="Cheque">Cheque </option>
-  </select>
-      </div>
-      <div className={style.formGroupdish}>
-        <label htmlFor="salary">Vendor Name:</label>
-        <input
-          type="text"
-          id="salary"
-          value={editExp.venderName || ""}
-          onChange={(e) => setEditExp((prev) => ({ ...prev, venderName: e.target.value }))}
-          required
-        />
-      </div>
+              <div className={style.formGroupdish}>
+                <label htmlFor="salary">Payment Method:</label>
+                <select
+                  id="salary"
+                  value={editExp.expensMethod || ""}
+                  onChange={(e) =>
+                    setEditExp((prev) => ({
+                      ...prev,
+                      expensMethod: e.target.value,
+                    }))
+                  }
+                  required
+                  style={{
+                    width: "100%",
+                    padding: "10px",
+                    fontSize: "16px",
+                    border: "1px solid #ddd",
+                    borderRadius: "5px",
+                  }}
+                >
+                  <option value="" disabled>
+                    Select Payment Method
+                  </option>
+                  <option value="Online">Online</option>
+                  <option value="Cash">Cash</option>
+                  <option value="Bank Transfer">Bank Transfer</option>
+                  <option value="Cheque">Cheque </option>
+                </select>
+              </div>
+              <div className={style.formGroupdish}>
+                <label htmlFor="salary">Vendor Name:</label>
+                <input
+                  type="text"
+                  id="salary"
+                  value={editExp.venderName || ""}
+                  onChange={(e) => setEditExp((prev) => ({ ...prev, venderName: e.target.value }))}
+                  required
+                />
+              </div>
 
-      {/* <div className={style.formGroupdish}>
+              {/* <div className={style.formGroupdish}>
         <label htmlFor="designation">Designation:</label>
         <select
           id="designation"
@@ -707,17 +709,17 @@ const columns = [
         {!editExp.desigID && <p className={style.error}>Designation is required.</p>}
       </div> */}
 
-      <div className={style.buttonGroup}>
-        <button type="button" onClick={handleUpdateExpense}>
-          Submit
-        </button>
+              <div className={style.buttonGroup}>
+                <button type="button" onClick={handleUpdateExpense}>
+                  Submit
+                </button>
+              </div>
+            </form>
+          </div>
+        )}
+
+
       </div>
-    </form>
-  </div>
-)}
-
-
-</div>
 
 
       {/* <div className={style.tableContainer}>
@@ -730,28 +732,28 @@ const columns = [
           />
         </div> */}
 
-        
+
 
       <div className={style.tableContainer}>
-      <div className={style.searchbutton}>
-        <div className={style.searchContainer}>
-          <input
-            type="text"
-            placeholder="Search by Dish Name..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-          />
-        </div>
-        <div className={style.addDish}>
-          <button onClick={toggleAddDish} 
-          //  style={{ display: !Designations.length ? 'none' : 'block' }}
-           >Add New Employee</button>
-        </div>
+        <div className={style.searchbutton}>
+          <div className={style.searchContainer}>
+            <input
+              type="text"
+              placeholder="Search by Dish Name..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
+          </div>
+          <div className={style.addDish}>
+            <button onClick={toggleAddDish}
+            //  style={{ display: !Designations.length ? 'none' : 'block' }}
+            >Add New Employee</button>
+          </div>
         </div>
 
         <div className={style.tableWrapper}>
-        <div className={style.categoryTabs}>
-  {/* {!Designations.length?(
+          <div className={style.categoryTabs}>
+            {/* {!Designations.length?(
     <p style={{fontSize:'30px', color:'red',margin:'auto'}}>Please add Designation first</p>
   ):(
 
@@ -766,26 +768,26 @@ const columns = [
       {category.designation_name}
     </button>
   )))} */}
-</div>
-<div>
-  {noExpenseMessage ? (
-    <p className={style.noExpenseMessage}>{noExpenseMessage}</p>
-  ) : (
-    <DataTable
-      className={style.datatable}
-      columns={columns}
-      data={expenses}
-      pagination
-      highlightOnHover
-      customStyles={customStyles}
-    />
-  )}
-</div>
+          </div>
+          <div>
+            {noExpenseMessage ? (
+              <p className={style.noExpenseMessage}>{noExpenseMessage}</p>
+            ) : (
+              <DataTable
+                className={style.datatable}
+                columns={columns}
+                data={expenses}
+                pagination
+                highlightOnHover
+                customStyles={customStyles}
+              />
+            )}
+          </div>
 
         </div>
       </div>
-    {/* </div> */}
-      </div>
+      {/* </div> */}
+    </div>
     // </div>
   );
 };

@@ -1,0 +1,270 @@
+.nunito500 {
+    font-family: "Nunito", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 500;
+    font-style: normal;
+  }
+  
+  .cinzel500 {
+    font-family: "Cinzel", serif;
+    font-optical-sizing: auto;
+    font-weight: 500;
+    font-style: normal;
+  }
+  .dish{
+    margin-inline: 20px;
+  
+  
+  }
+  .heading{
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      
+  }
+  
+    
+  .heading h2{
+    margin-top: 1rem;
+    font-size: 2rem;
+  }
+  .heading p{
+    margin-bottom: 0.5rem;
+    font-size: 1rem;
+    
+  }
+  .addDish{
+    display: flex;
+      justify-content: end;
+  }
+  .addDish button{
+      /* box-shadow: 5px 5px gray; */
+      transition: all 0.3s;
+      color: black;
+      background-color: var(--accent-color);
+  }
+  .addDish button:hover{
+      background-color: var(--background-color);
+      color: white;
+  }
+  .cardForm form{
+    /* max-width: 333px; */
+      width: 100%;
+      /* margin: 0 auto; */
+      height: 100%;
+      display: flex;
+      /* flex-direction: column; */
+      justify-content: space-evenly;
+      grid-column: 1 / 2;
+      grid-row: 1 / 2;
+      transition: opacity 0.2s 0.4s;
+      align-items: center;
+    }
+    .cardForm {
+    /* position: absolute; */
+    /* top: 50%;
+    transform: translate(-50%, -50%); Ensure proper centering */
+    /* top: 10%; */
+    /* left: 38.7%; */
+    background: var(--primary-color);
+    color: white;
+    padding: 20px;
+    border-radius: 10px;
+    /* box-shadow: 10px 10px 10px rgba(0, 0, 0, 0.3); */
+    /* margin: auto; */
+    /* opacity: 0; Initial state */
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    display: flex;
+    flex-direction: column; /* Change to column if it's a form */
+    z-index: 10;
+    margin-inline: auto;
+    margin-top: 1rem;
+    width: 80%; /* Adjust to prevent it from taking the full width */
+    /* max-width: 350px; Optional, limits max width */
+  }
+ 
+    
+    .cardForm h3 {
+      /* text-align: center; */
+      margin-bottom: 20px;
+      width: 100%;
+    }
+    
+    .formGroupdish {
+      margin-bottom: 15px;
+      margin-right: 20px;
+      width: 100%;
+      
+    }
+    
+    .formGroupdish label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: bold;
+    }
+    
+    .formGroupdish input {
+      width: 100%;
+      padding: 8px;
+      height: 40px;
+      margin-right: 20px;
+
+      font-size: 18px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+    }
+    
+    .buttonGroup {
+      display: flex;align-items: center;
+      justify-content: flex-end;
+    }
+    .closeButton {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background: none;
+      border: none;
+      font-size: 30px;margin-top: 10px;
+      color: #fff;
+      cursor: pointer;
+    }
+    
+    .closeButton:hover {
+      color: red;
+    }
+    .buttonGroup button {
+      padding: 10px 15px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+  
+    .addDish button {
+      /* width: 10%; */
+      border: #28a745;
+      padding: 10px 15px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      
+      /* margin-left: 88.5%; */
+    }
+    
+    .buttonGroup button:first-child {
+      background: #28a745;
+      color: #fff;
+    }
+    
+    /* .buttonGroup button:last-child {
+      background: #dc3545;
+      color: #fff;
+    } */
+    .tableContainer{
+      /* margin: 20px; */
+     text-align: center;
+  }
+  .tableContainer h3{
+      font-size: 1.5rem;
+  }
+  .searchbutton{
+    display: flex;
+   gap: 20px; 
+   justify-content: end;
+   margin-top: 20px;
+  }
+  .searchContainer{
+    width: 30%;
+  }
+  .searchContainer input{
+        width: 100%;
+        /* margin-left: 70%; */
+      /* margin-bottom: 20px; */
+      /* margin-top: 50px; */
+      padding: 10px;
+    }
+  
+    .datatable{
+      font-size: 30px;
+    }
+    
+    @media (max-width:786px){
+      .datatable{
+        font-size: 20px;
+      }
+      
+    }
+  
+    .deleteButton {
+      background-color: #ff4d4f;
+      color: #fff;
+      border: none;
+      padding: 6px 12px;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+    
+    .deleteButton:hover {
+      background-color: #d9363e;
+    }
+    .categoryTabs{
+      display: flex;
+      justify-content: start;
+      gap: 20px;
+      margin-block: 20px;
+      
+    }
+    .tabButton{
+      transition: all 0.3s;
+      cursor: pointer;
+      /* width:10%; */
+      font-weight: 700;
+      padding: 10px;
+      border-radius: 5px;
+      background-color: #4a6886;
+      color: #fff;
+      border: none;
+      font-size: 20px;
+    }
+    .tabButton:hover{
+      background-color: var(--primary-color);
+    }
+    .activeTab{
+      background: #202c39;
+    }
+  
+    .formGroupdish select {
+      padding: 0.5rem;
+      font-size: 1rem;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      background-color: #fff;
+      color: #333;
+      cursor: pointer;
+      width: 100%;
+      transition: border-color 0.3s ease;
+    }
+    
+    /* Style when select is focused */
+    .formGroupdish select:focus {
+      border-color: #007bff;
+      outline: none;
+    }
+    
+    /* Style for the option elements */
+    .formGroupdish select option {
+      padding: 0.2rem;
+      font-size: 1rem;
+    }
+    
+    /* Optional: Add some hover effect on options */
+    .formGroupdish select option:hover {
+      background-color: #f1f1f1;
+    }
+
+    .totalExpense{
+      text-align: end;
+      margin-right: 10rem;
+      font-size: 1.3rem;
+    }

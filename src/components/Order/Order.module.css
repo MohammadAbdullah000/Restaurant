@@ -1,3 +1,6 @@
+*{
+  /* box-sizing: border-box; */
+}
 .separatebtn{
     padding: 10px;
     background-color: var(--primary-color);
@@ -20,7 +23,7 @@
 }
 .firstbuttons button{
 
-    margin-right: 10px;
+    margin-right: 20px;
 }
 .active {
   background-color: #2C3E50; /* Active color */
@@ -37,4 +40,65 @@
     font-optical-sizing: auto;
     font-weight: 700;
     font-style: normal;
+  }
+
+  .header {
+    display: flex;
+    justify-content: space-between; /* Adjust spacing between elements */
+    align-items: center; /* Align items vertically */
+    gap: 10px; /* Add spacing between elements if needed */
+    padding: 10px; /* Add some padding for better visual appearance */
+    border-bottom: 1px solid #ddd; /* Optional: Add a border to separate rows */
+  }
+.name{
+  font-weight: bold;
+
+}  
+.payment{
+  text-align: end;
+  margin-block: 10px;
+}
+.payment label{
+  margin-right: 10px;
+}
+.payment input{
+  cursor: pointer;  
+
+}
+  .header p {
+    flex: 1; /* Ensure all items take equal space */
+    text-align: center; /* Center align the text in each column */
+  }
+  .alltables{
+    display: flex;
+    margin-top: 1rem;
+    justify-content: space-between;
+  }
+  .tablebutton{
+    padding: 15px;
+    width: 50px;
+    font-size: 1rem;
+    background-color: #435e78;
+    color: white;
+    /* margin-right: 15px; */
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+  }
+  .activetable {
+    background-color: #015bfa;
+    color: white;
+    border-color: #015bfa;
+  }
+  .separatebtnback{
+    
+    font-size: 25px;
+    padding: 5px;
+    display: flex;
+    border: none;
+    margin-right: 20px;
+  }
+  .firstbuttons p:nth-child(1){
+    font-size: 25px;
+    cursor: pointer;
   }

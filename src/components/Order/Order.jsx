@@ -1,6 +1,9 @@
+import { FaTrash, FaEye } from "react-icons/fa";
+import { IoMdArrowRoundBack } from "react-icons/io";
 import React, { useState, useEffect } from "react";
 import style from './Order.module.css';
 import Receipt from "../Receipt";
+import ModalReceipt from "../ModalReciept";
 
 const Order = () => {
   const [categories, setCategories] = useState([]);
@@ -10,6 +13,13 @@ const Order = () => {
   const [dineOrParcel, setDineOrParcel] = useState('Dine In')
   const [noDishesMessage, setNoDishesMessage] = useState("");
   const [coupon, setCoupon] = useState('')
+  const [tableOcc, setTableOcc] = useState('')
+  const [selectedTable, setSelectedTable] = useState(null); // To store the selected table number
+  const [isModalOpen, setIsModalOpen] = useState(false); // Modal visibility state
+  const [activeTable, setActiveTable] = useState(null); // Track active table
+  const [activeTableclick, setActiveTableclick] = useState(null); // Track active table
+  const [activeCouponTable, setActiveCouponTable] = useState(null); // Track active table
+
   useEffect(() => {
     // Fetch categories from API
     fetch("https://letzbim.com/Restaurent/dish_categories_fetch_Api.php")
@@ -101,11 +111,49 @@ const Order = () => {
     return addedItems.reduce((total, item) => total + item.dist_rate * item.quantity, 0);
   };
   useEffect(() => {
-    const coupon = Math.floor(Math.random() * 100)
-    setCoupon(coupon)
-    console.log('Coupon:', coupon);
-  }, [])
+    // if (!activeCouponTable) {
+    // If no active coupon from handleTableClick, fetch a new coupon
+    fetchcoupon();
+    // }
+  }, []);
 
+  async function fetchcoupon() {
+    try {
+      const response = await fetch('https://letzbim.com/Restaurent/UniqueNUmberFetchApi.php');
+      const data = await response.json();
+      setCoupon(data.Coupon_No); // Set coupon for API usage
+      console.log('Fetched Coupon:', data);
+    } catch (error) {
+      console.error('Error fetching coupon:', error);
+    }
+  }
+  const [activeCoupon, setactivecoupon] = useState('')
+  const handleTableClick = (tableNo, couponnumber) => {
+    setSelectedTable(tableNo); // Set the selected table number
+    setActiveTableclick(tableNo); // Set active table
+    setTableOcc(tableNo); // Set active table
+    if (couponnumber) {
+      setCoupon(couponnumber); // Use provided coupon if available
+      console.log('Using existing coupon:', couponnumber);
+    } else {
+      console.log('No coupon provided, using fetched coupon:', coupon);
+    }
+    // setIsModalOpen(true); // Open the modal if needed
+  };
+
+
+
+  // setCoupon(coupon)
+  // console.log('Coupon:', coupon);
+  //  { activeCouponTable==null ?(
+  //   let orderCoupon = coupon;
+  //  ):(
+  //   let orderCoupon = activeCouponTable;
+  //  )}
+  // const [orderCoupon,setOrderCoupon]=useState(null)
+  // let orderCo = activeCouponTable == null ? coupon : activeCouponTable;
+  //   setOrderCoupon(orderCo)
+  
   const handlePrint = () => {
     let count = 0
     // addedItems.forEach((item)=>{
@@ -123,6 +171,9 @@ const Order = () => {
     // const coupon = Math.floor(Math.random() * 100)
     // setCoupon(coupon)
     // console.log('Coupon:', coupon);
+    fetchcoupon();
+    console.log('c', coupon);
+
   }
   const handleParcel = () => {
     setDineOrParcel('Parcel')
@@ -141,8 +192,19 @@ const Order = () => {
   //   const Total = updatedItems.reduce((sum, item) => sum + item.subtotal, 0);
   //   console.log("Total:", Total); 
   // }
+  const [payment, setPayment] = useState('')
+  const handleChange = (event) => {
+    setPayment(event.target.value); // Update state with selected value
+  };
+  console.log('pay', payment);
+
 
   const handlesaveOrder = async () => {
+    // if(!payment){
+    //   alert('Please Select Payment Mode')
+    // }
+    // else{
+
     try {
       // Prepare the items with subtotal
       const updatedItems = addedItems.map((item) => ({
@@ -152,17 +214,23 @@ const Order = () => {
         quantity: item.quantity,
         subtotal: item.quantity * item.dist_rate, // Calculate subtotal
         status: '0',
-        couponNo: '125',
-        dineNo: '8',
+        couponNo: coupon,
+        dineNo: tableOcc,
+        pay_method: payment,
       }));
 
       // Calculate the total price
       const Total = updatedItems.reduce((sum, item) => sum + item.subtotal, 0);
 
+
       // Prepare the payload
       const payload = {
         items: updatedItems,
         total: Total,
+        // items: mergedItems,
+        // total: mergedTotal,
+        // dineNo: tableOcc,
+        // couponNo: coupon,
       };
 
       // Make the API call
@@ -179,6 +247,72 @@ const Order = () => {
       if (response.ok) {
         console.log("Order submitted successfully:", result);
         alert("Order submitted successfully");
+        fetchPendingTable()
+        fetchPendingTableOrder()
+        setAddedItems([])
+        // fetchcoupon()
+      } else {
+        console.error("Error submitting order:", result.message);
+        alert(`Error: ${result.message}`);
+      }
+    } 
+    catch (error) {
+      console.error("Error in handlesaveOrder:", error);
+      alert("An error occurred while submitting the order");
+    }
+  // }
+  };
+  const handlesavePrintOrder = async () => {
+    if(!payment){
+      alert("Please Select Payment Mode!!!")
+    }else{
+
+      try {
+        // Prepare the items with subtotal
+        const updatedItems = addedItems.map((item) => ({
+        dish_id: item.dish_id,
+        dish_qnty: item.dish_qnty,
+        dist_rate: item.dist_rate,
+        quantity: item.quantity,
+        subtotal: item.quantity * item.dist_rate, // Calculate subtotal
+        status: '1',
+        couponNo: coupon,
+        dineNo: tableOcc,
+        pay_method: payment,
+      }));
+
+      // Calculate the total price
+      const Total = updatedItems.reduce((sum, item) => sum + item.subtotal, 0);
+
+
+      // Prepare the payload
+      const payload = {
+        items: updatedItems,
+        total: Total,
+        // items: mergedItems,
+        // total: mergedTotal,
+        // dineNo: tableOcc,
+        // couponNo: coupon,
+      };
+      
+      // Make the API call
+      const response = await fetch("https://letzbim.com/Restaurent/Order_Submit_Api.php", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload),
+      });
+
+      const result = await response.json();
+
+      if (response.ok) {
+        console.log("Order submitted successfully:", result);
+        alert("Order submitted successfully");
+        fetchPendingTable()
+        // fetchPendingTableOrder()
+        setAddedItems([])
+        fetchcoupon()
       } else {
         console.error("Error submitting order:", result.message);
         alert(`Error: ${result.message}`);
@@ -187,6 +321,7 @@ const Order = () => {
       console.error("Error in handlesaveOrder:", error);
       alert("An error occurred while submitting the order");
     }
+  }
   };
 
 
@@ -246,6 +381,10 @@ const Order = () => {
   const [PendingTable, setPendingTable] = useState([])
   useEffect(() => {
     // Fetch categories from API
+    fetchPendingTable()
+  }, []);
+  const fetchPendingTable = (async) => {
+
     fetch("https://letzbim.com/Restaurent/Pending_Order_Table_Fetch.php")
       .then((res) => res.json())
       .then((data) => {
@@ -255,47 +394,151 @@ const Order = () => {
         // if (data.length > 0) setSelectedCategory(data[0].dishcat_id); // Set default category
       })
       .catch((err) => console.error("Error fetching Pending table :", err));
-  }, []);
+  }
 
 
-  const [selectedTable, setSelectedTable] = useState(null); // To store the selected table number
-  const [isModalOpen, setIsModalOpen] = useState(false); // Modal visibility state
-  const [activeTable, setActiveTable] = useState(null); // Track active table
 
-  const handleTableClick = (tableNo) => {
-    setSelectedTable(tableNo); // Set the selected table number
-    setActiveTable(tableNo); // Set active table
-    setIsModalOpen(true); // Open the modal
-  };
+
+
+
+  const closeModal = () => {
+    setIsModalOpen(false)
+  }
+  const allTables = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"];
+  const pendingTableNumbers = PendingTable.map((table) => table.tableno);
+  const visibleTables = allTables.filter((table) => !pendingTableNumbers.includes(table));
 
   const [PendingTableOrder, setPendingTableOrder] = useState([])
-  
- // Function to close the modal
- const handleClose = () => {
-  setActiveTable(null); // Reset active table
-  setPendingTableOrder([]); // Clear pending orders
-};
 
+  // Function to close the modal
+  const handleClose = () => {
+    setActiveTableclick(null); // Reset active table
+    setPendingTableOrder([]); // Clear pending orders
+  };
 
-useEffect(() => {
-  if (activeTable !== null) {
-    fetch(
-      `https://letzbim.com/Restaurent/Table_Order_Fetch_Api.php?tableNo=${activeTable}`
-    )
-      .then((res) => res.json())
-      .then((data) => {
-        console.log("Pending table order:" + activeTable + ' ' + data);
-        setPendingTableOrder(data);
-      })
-      .catch((err) =>
-        console.error("Error fetching Pending table Order:", err)
-      );
+  const fetchPendingTableOrder = (async) => {
+    if (activeTable !== null) {
+      fetch(
+        `https://letzbim.com/Restaurent/Table_Order_Fetch_Api.php?tableNo=${activeTable}`
+      )
+        .then((res) => res.json())
+        .then((data) => {
+          console.log("Pending table order:" + activeTable + ' ' + data);
+          setPendingTableOrder(data);
+          console.log('pending', PendingTableOrder);
+
+        })
+        .catch((err) =>
+          console.error("Error fetching Pending table Order:", err)
+        );
+    }
   }
-}, [activeTable]);
+
+  useEffect(() => {
+    if (activeTable !== null) {
+      fetch(
+        `https://letzbim.com/Restaurent/Table_Order_Fetch_Api.php?tableNo=${activeTable}`
+      )
+        .then((res) => res.json())
+        .then((data) => {
+          console.log("Pending table order:" + activeTable + ' ' + data);
+          setPendingTableOrder(data);
+          console.log('pending', PendingTableOrder);
+
+        })
+        .catch((err) =>
+          console.error("Error fetching Pending table Order:", err)
+        );
+    }
+  }, [activeTable]);
+  const [activeTablecolor, setActiveTablecolor] = useState('')
+  const handleaddtable = (table) => {
+    setActiveTablecolor(table)
+    {
+      PendingTable.map((pending) => {
+
+        if (table === pending.tableno) {
+          alert('occu')
+        }
+      })
+    }
+    setTableOcc(table)
+  }
+  const handlePendingPrint = async () => {
+    try {
+      // Prepare the payload
+      const payload = new URLSearchParams({
+        dineID: selectedTable, // Replace with the state or variable for the selected table
+        CouponNum: activeCoupon, // Replace with the state or variable for the active coupon
+        paymethod: payment, // Replace with the state or variable for the payment method
+      });
+
+      // Make the API call
+      const response = await fetch("https://letzbim.com/Restaurent/Pendig_Order_Finish_Api.php", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded",
+        },
+        body: payload.toString(), // Convert the payload to a URL-encoded string
+      });
+
+      // Parse the response
+      const result = await response.json();
+
+      if (response.ok) {
+        console.log("Pending order finished successfully:", result);
+        alert("Order finished successfully!");
+        setIsModalOpen(false)
+        fetchcoupon()
+        fetchPendingTable()
+        // PendingTable()
+        // Perform any additional actions like updating the UI
+      } else {
+        console.error("Error finishing order:", result.message);
+        alert(`Error: ${result.message}`);
+      }
+    } catch (error) {
+      console.error("Error in handlePendingPrint:", error);
+      alert("An error occurred while finishing the order.");
+    }
+  };
 
 
+  const handleEyeClick = (tableNo, couponnumber) => {
+    setIsModalOpen(true)
+    setactivecoupon(couponnumber)
+
+    setSelectedTable(tableNo); // Set the selected table number
+    setActiveTable(tableNo);
+
+  }
+  const [isOnline, setIsOnline] = useState(navigator.onLine);
+
+  useEffect(() => {
+    // Event listener for online
+    const handleOnline = () => setIsOnline(true);
+
+    // Event listener for offline
+    const handleOffline = () => setIsOnline(false);
+
+    // Attach listeners
+    window.addEventListener("online", handleOnline);
+    window.addEventListener("offline", handleOffline);
+
+    // Cleanup listeners on component unmount
+    return () => {
+      window.removeEventListener("online", handleOnline);
+      window.removeEventListener("offline", handleOffline);
+    };
+  }, []);
   return (
+    
     <div style={{ display: "flex", minHeight: "90vh", }} className={style.nunito500}>
+    <div>
+  {!isOnline && (
+    alert('Offline')
+  )}
+</div>
       {/* Left Sidebar */}
       <div
         style={{
@@ -315,6 +558,7 @@ useEffect(() => {
                 style={{
                   padding: "10px",
                   cursor: "pointer",
+                  fontSize: 20,
                   backgroundColor:
                     selectedCategory === category.dishcat_id ? "#e0e0e0" : "transparent",
                   color: selectedCategory === category.dishcat_id ? "#1A1A1A" : "#fff",
@@ -353,15 +597,15 @@ useEffect(() => {
                   height: "100%"
                 }}
               >
-                <h3 style={{ textAlign: "center", color: "#2C3E50", marginTop: '0.5rem' }} className={style.cinzel500}>Half Quantity</h3>
+                {/* <h3 style={{ textAlign: "center", color: "#2C3E50", marginTop: '0.5rem' }} className={style.cinzel500}>Half Quantity</h3> */}
                 {/* filter((dish) => dish.dish_qnty === "Half"). */}
                 {subcategories.length > 0 ? (
                   <ul
                     style={{
                       listStyleType: "none",
-                      marginTop: '1.5rem',
+                      // marginTop: '1.5rem',
                       paddingBottom: "20px",
-                      display:"flex",flexDirection:"row",flexWrap:"wrap"
+                      display: "flex", flexDirection: "row", flexWrap: "wrap", justifyContent: 'flex-start', alignItems: 'flex-start'
                     }}
                   >
                     {subcategories
@@ -371,16 +615,16 @@ useEffect(() => {
                           style={{
                             cursor: "pointer",
                             backgroundColor: "#2C3E50",
-                            marginTop: 15,
+                            margin: 10,
                             color: "#1A1A1A",
-                            fontSize: 15,
-                            marginLeft: "auto",
-                            marginRight: "auto",
+                            fontSize: 18,
+                            // marginLeft: "auto",
+                            // marginRight: "auto",
                             fontWeight: 400,
-                            width: "30%",height:60,
+                            width: "30%", height: 60,
                             display: "flex",
-                            justifyContent: dish.dish_qnty === "Half" ? "flex-start":"center",
-                            alignItems:  dish.dish_qnty === "Half" ? "flex-start":"center",
+                            justifyContent: dish.dish_qnty === "Half" ? "flex-start" : "center",
+                            alignItems: dish.dish_qnty === "Half" ? "flex-start" : "center",
                           }}
                           onClick={() => handleAddItem(dish)}
                         >
@@ -390,7 +634,8 @@ useEffect(() => {
                               height: dish.dish_qnty === "Half" ? "90%" : "80%",
                               width: "100%",
                               textAlign: "center",
-                              justifyContent:"center",alignItems:"center",paddingTop:12
+                              display: 'flex',
+                              justifyContent: "center", alignItems: "center",
                             }}
                           >
                             <h4>{dish.dish_name}</h4>
@@ -485,10 +730,27 @@ useEffect(() => {
               </div> */}
 
 
-              <div style={{ borderWidth: 1, height: "20vh", backgroundColor: "#ddd", width: "100%", padding: 30 }}>
+              <div style={{ borderWidth: 1, display: 'flex', flexWrap: 'wrap', height: "20vh", backgroundColor: "#ddd", width: "100%", padding: 30 }}>
                 {PendingTable.length > 0 ? (
                   PendingTable.map((item, index) => (
-                    <a key={index} onClick={() => handleTableClick(item.tableno)} style={{ padding: 20, backgroundColor: "red", color: "white", marginRight: 20 }}>{item.tableno}</a>
+                    <div style={{ border: '2px solid black', borderRadius:5,height: 50, width: 100, marginLeft: 10, display: 'flex', alignItems: 'center', justifyContent: 'center', marginTop: 10, cursor: 'pointer' }}>
+
+                      <a key={index} onClick={() => handleTableClick(item.tableno, item.O_CouponNo)} style={{ padding: 13, textAlign: 'center', borderRadius:3,width: '50%', backgroundColor: "#435e78", color: "white", }}>{item.tableno}</a>
+                      <span
+                        onClick={() => handleEyeClick(item.tableno, item.O_CouponNo)}
+                        style={{
+                          display: 'flex', alignItems: 'center', justifyContent: 'center',
+                          // marginInline: 6,
+                          width: '50%',
+                          fontSize: 20,
+                          color: "#2C3E50",
+                          // border:'2px solid black'
+                        }}
+                      >
+                        <FaEye />
+                      </span>
+                    </div>
+
                   ))
                 ) : (
                   <tr>
@@ -525,32 +787,86 @@ useEffect(() => {
 
 
       {/* Modal */}
-      {/* {isModalOpen && (
+      {isModalOpen && (
         <div
           style={{
             position: "fixed",
-            // top: "50%",
-            left: "59%",
-            // transform: "translate(-50%, -50%)",
+            left: "30%",
+            top: "25%",
             backgroundColor: "white",
             padding: 20,
             borderRadius: 10,
             boxShadow: "0 0 10px rgba(0, 0, 0, 0.3)",
             zIndex: 1000,
             width: "40%",
-            height:"80%"
+            maxHeight: "85vh", // Dynamic height based on viewport
+            overflowY: "auto", // Enables scrolling if content exceeds max height
           }}
         >
-          <h3>Details for Table No: {selectedTable}</h3>
-          <p>Additional information for table {selectedTable} can be shown here.</p>
-          <button onClick={closeModal} style={{ padding: 10, marginTop: 20 }}>
-            Close
-          </button>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <div>
+
+              <h3>Details for Table No: {selectedTable}</h3>
+              <p>Additional information for table {selectedTable} can be shown here.</p>
+            </div>
+            <p onClick={closeModal} style={{ cursor: "pointer", padding: 10, fontSize: 25 }}>
+              &times;
+
+            </p>
+          </div>
+          <div className={style.header}>
+            <p className={style.name}>Dish Name</p>
+            <p className={style.name}>Quantity</p>
+            <p className={style.name}>Subtotal</p>
+            <p className={style.name}>Dish Rate</p>
+            <p className={style.name}>Order Unit</p>
+          </div>
+          {PendingTableOrder.map((order) => (
+            <div className={style.header} key={order.id}>
+              <p>{order.dish_name}</p>
+              <p>{order.dish_qnty}</p>
+              <p>{order.order_subtotal}</p>
+              <p>{order.dist_rate}</p>
+              <p>{order.order_unit}</p>
+            </div>
+          ))}
+          <div style={{ textAlign: 'end', marginRight: 50, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }} className="totalamount">
+            <div className={style.payment}>
+              <input
+                type="radio"
+                name="payment"
+                id="online"
+                value="online"
+                onChange={handleChange}
+                checked={payment === "online"} // Control the checked state
+              />
+              <label htmlFor="online">Online</label>
+
+              <input
+                type="radio"
+                name="payment"
+                id="cash"
+                value="cash"
+                onChange={handleChange}
+                checked={payment === "cash"} // Control the checked state
+              />
+              <label htmlFor="cash">Cash</label>
+            </div>
+            <p style={{ marginTop: 10 }}>
+              <strong>Total Price: ₹
+                {PendingTableOrder.reduce((total, order) => total + Number(order.order_subtotal), 0)}</strong>
+            </p>
+          </div>
+
+          <button className={style.separatebtn} onClick={handlePendingPrint}><ModalReceipt dineOrParcel={dineOrParcel} addedItems={PendingTableOrder} coupon={activeCoupon} payment={payment} /></button>
+
+
         </div>
-      )} */}
+
+      )}
 
       {/* Modal Overlay */}
-      {/* {isModalOpen && (
+      {isModalOpen && (
         <div
           onClick={closeModal}
           style={{
@@ -563,361 +879,438 @@ useEffect(() => {
             zIndex: 999,
           }}
         ></div>
-      )} */}
+      )}
 
 
-{activeTable !== null ? (
-     <div
-     style={{
-       width: "45%",
-       padding: "0 20px",
-       backgroundColor: "#FFF",
-     }}
-   >
-     {/* Display Added Items */}
-     <div
-       style={{
-         display: "flex",
-         flexDirection: "column",
-         minHeight: "100%", // Ensures content fits naturally
-       }}
-     >
-       {/* Header Section */}
-       {/* <h3 style={{ marginTop: "20px" }}>Added Items</h3> */}
-      
-       <div className={style.firstbuttons}>
-         
-         <button
-           className={`${style.separatebtn} ${dineOrParcel === "Parcel" ? style.active : ""
-             }`}
-           onClick={handleClose}
-         >
-           Close
-         </button>
-         <p>Coupon: {coupon} </p>
-         <p>activeTable: {activeTable} </p>
-       </div>
-       
-
-       {/* Items Section */}
-       <div style={{ flex: "1" }}>
-         {addedItems.length > 0 ? (
-           <ul style={{ listStyleType: "none", padding: 0 }}>
-             {addedItems.map((item) => (
-               <li
-                 key={item.dish_id}
-                 style={{
-                   display: "flex",
-                   justifyContent: "space-between",
-                   alignItems: "center",
-                   padding: "10px",
-                   fontSize: "18px",
-                   marginTop: "10px",
-                   borderBottom: "1px solid #ddd",
-                 }}
-               >
-                 {/* Item Name - 40% */}
-                 <span
-                   style={{
-                     flexBasis: "40%",
-                     overflow: "hidden",
-                     whiteSpace: "nowrap",
-                     textOverflow: "ellipsis",
-                   }}
-                 >
-                   {item.dish_name}
-                 </span>
-
-                 {/* Item Price - 10% */}
-                 <span style={{ flexBasis: "10%", textAlign: "center" }}>
-                   ₹{item.dist_rate}
-                 </span>
-
-                 {/* Quantity Controls - 20% */}
-                 <div
-                   style={{
-                     flexBasis: "20%",
-                     display: "flex",
-                     justifyContent: "center",
-                     alignItems: "center",
-                   }}
-                 >
-                   <button
-                     onClick={() => decrementQuantity(item.dish_id)}
-                     style={{
-                       backgroundColor: "#e0e0e0",
-                       border: "none",
-                       cursor: "pointer",
-                       padding: "5px 10px",
-                       marginRight: "5px",
-                     }}
-                   >
-                     -
-                   </button>
-                   <span style={{ margin: "0 10px" }}>{item.quantity}</span>
-                   <button
-                     onClick={() => incrementQuantity(item.dish_id)}
-                     style={{
-                       backgroundColor: "#e0e0e0",
-                       border: "none",
-                       cursor: "pointer",
-                       padding: "5px 10px",
-                     }}
-                   >
-                     +
-                   </button>
-                 </div>
-
-                 {/* Subtotal - 20% */}
-                 <span style={{ flexBasis: "20%", textAlign: "center" }}>
-                   ₹{item.dist_rate * item.quantity}
-                 </span>
-
-                 {/* Delete Button - 10% */}
-                 <button
-                   onClick={() => handleRemoveItem(item.dish_id)}
-                   style={{
-                     flexBasis: "10%",
-                     backgroundColor: "red",
-                     color: "white",
-                     border: "none",
-                     cursor: "pointer",
-                     padding: "5px 10px",
-                     textAlign: "center",
-                   }}
-                 >
-                   Remove
-                 </button>
-               </li>
-             ))}
-           </ul>
-         ) : (
-           <p style={{ fontSize: 20, textAlign: 'center', marginTop: '1rem' }}>No items added On Active table.</p>
-         )}
-       </div>
-
-       {/* Bottom Section (Total Price and Buttons) */}
-       <div
-         style={{
-           display: "flex",
-           flexDirection: "column",
-           justifyContent: "flex-end",
-           backgroundColor: "#f9f9f9",
-           borderTop: "1px solid #ddd",
-         }}
-       >
-         {/* Total Price */}
-         <h3
-           style={{
-             margin: "0",
-             textAlign: "right",
-             padding: "10px",
-           }}
-         >
-           Total Price: ₹{calculateTotalPrice()}
-         </h3>
-
-         {/* Last Buttons */}
-         <div
-           className={style.lastbuttons}
-           style={{
-             display: "flex",
-             justifyContent: "flex-end",
-             width: "100%",
-             gap: "10px",
-             padding: "10px",
-           }}
-         >
-           <button className={style.separatebtn} onClick={handlesaveOrder}>Save</button>
-           <button className={style.separatebtn} onClick={handlePrint}><Receipt dineOrParcel={dineOrParcel} addedItems={addedItems} coupon={coupon} /></button>
-
-
-           <button className={style.separatebtn}>Download</button>
-           <button className={style.separatebtn}>Share</button>
-         </div>
-       </div>
-     </div>
-
-
-   </div>
-      ) : (
-        <div
-        style={{
-          width: "45%",
-          padding: "0 20px",
-          backgroundColor: "#FFF",
-        }}
-      >
-        {/* Display Added Items */}
+      {activeTableclick !== null ? (
         <div
           style={{
-            display: "flex",
-            flexDirection: "column",
-            minHeight: "100%", // Ensures content fits naturally
+            width: "45%",
+            padding: "0 20px",
+            backgroundColor: "#FFF",
           }}
         >
-          {/* Header Section */}
-          {/* <h3 style={{ marginTop: "20px" }}>Added Items</h3> */}
-          <div className={style.firstbuttons}>
-            <button
-              className={`${style.separatebtn} ${dineOrParcel === "Dine In" ? style.active : ""
-                }`}
-              onClick={handleDine}
-            >
-              Dine
-            </button>
-            <button
-              className={`${style.separatebtn} ${dineOrParcel === "Parcel" ? style.active : ""
-                }`}
-              onClick={handleParcel}
-            >
-              Parcel
-            </button>
-            <p>Coupon: {coupon}</p>
-          </div>
-
-          {/* Items Section */}
-          <div style={{ flex: "1" }}>
-            {addedItems.length > 0 ? (
-              <ul style={{ listStyleType: "none", padding: 0 }}>
-                {addedItems.map((item) => (
-                  <li
-                    key={item.dish_id}
-                    style={{
-                      display: "flex",
-                      justifyContent: "space-between",
-                      alignItems: "center",
-                      padding: "10px",
-                      fontSize: "18px",
-                      marginTop: "10px",
-                      borderBottom: "1px solid #ddd",
-                    }}
-                  >
-                    {/* Item Name - 40% */}
-                    <span
-                      style={{
-                        flexBasis: "40%",
-                        overflow: "hidden",
-                        whiteSpace: "nowrap",
-                        textOverflow: "ellipsis",
-                      }}
-                    >
-                      {item.dish_name}
-                    </span>
-
-                    {/* Item Price - 10% */}
-                    <span style={{ flexBasis: "10%", textAlign: "center" }}>
-                      ₹{item.dist_rate}
-                    </span>
-
-                    {/* Quantity Controls - 20% */}
-                    <div
-                      style={{
-                        flexBasis: "20%",
-                        display: "flex",
-                        justifyContent: "center",
-                        alignItems: "center",
-                      }}
-                    >
-                      <button
-                        onClick={() => decrementQuantity(item.dish_id)}
-                        style={{
-                          backgroundColor: "#e0e0e0",
-                          border: "none",
-                          cursor: "pointer",
-                          padding: "5px 10px",
-                          marginRight: "5px",
-                        }}
-                      >
-                        -
-                      </button>
-                      <span style={{ margin: "0 10px" }}>{item.quantity}</span>
-                      <button
-                        onClick={() => incrementQuantity(item.dish_id)}
-                        style={{
-                          backgroundColor: "#e0e0e0",
-                          border: "none",
-                          cursor: "pointer",
-                          padding: "5px 10px",
-                        }}
-                      >
-                        +
-                      </button>
-                    </div>
-
-                    {/* Subtotal - 20% */}
-                    <span style={{ flexBasis: "20%", textAlign: "center" }}>
-                      ₹{item.dist_rate * item.quantity}
-                    </span>
-
-                    {/* Delete Button - 10% */}
-                    <button
-                      onClick={() => handleRemoveItem(item.dish_id)}
-                      style={{
-                        flexBasis: "10%",
-                        backgroundColor: "red",
-                        color: "white",
-                        border: "none",
-                        cursor: "pointer",
-                        padding: "5px 10px",
-                        textAlign: "center",
-                      }}
-                    >
-                      Remove
-                    </button>
-                  </li>
-                ))}
-              </ul>
-            ) : (
-              <p style={{ fontSize: 20, textAlign: 'center', marginTop: '1rem' }}>No items added.</p>
-            )}
-          </div>
-
-          {/* Bottom Section (Total Price and Buttons) */}
+          {/* Display Added Items */}
           <div
             style={{
               display: "flex",
               flexDirection: "column",
-              justifyContent: "flex-end",
-              backgroundColor: "#f9f9f9",
-              borderTop: "1px solid #ddd",
+              minHeight: "100%", // Ensures content fits naturally
             }}
           >
-            {/* Total Price */}
-            <h3
-              style={{
-                margin: "0",
-                textAlign: "right",
-                padding: "10px",
-              }}
-            >
-              Total Price: ₹{calculateTotalPrice()}
-            </h3>
+            {/* Header Section */}
+            {/* <h3 style={{ marginTop: "20px" }}>Added Items</h3> */}
 
-            {/* Last Buttons */}
+            <div className={style.firstbuttons}>
+
+              <p
+                className={`${style.separatebtnback} ${dineOrParcel === "Parcel" ? style.active : ""
+                  }`}
+                onClick={handleClose}
+              >
+                <IoMdArrowRoundBack />
+              </p>
+              <p>Coupon: {coupon} </p>
+              <p style={{ marginLeft: 20 }}>Active Table: {tableOcc} </p>
+            </div>
+
+
+            {/* Items Section */}
+            <div style={{ flex: "1" }}>
+              {addedItems.length > 0 ? (
+                <ul style={{ listStyleType: "none", padding: 0 }}>
+                  {addedItems.map((item) => (
+                    <li
+                      key={item.dish_id}
+                      style={{
+                        display: "flex",
+                        justifyContent: "space-between",
+                        alignItems: "center",
+                        padding: "10px",
+                        fontSize: "18px",
+                        marginTop: "10px",
+                        borderBottom: "1px solid #ddd",
+                      }}
+                    >
+                      {/* Item Name - 40% */}
+                      <span
+                        style={{
+                          flexBasis: "40%",
+                          overflow: "hidden",
+                          whiteSpace: "nowrap",
+                          textOverflow: "ellipsis",
+                        }}
+                      >
+                        {item.dish_name}
+                      </span>
+
+                      {/* Item Price - 10% */}
+                      <span style={{ flexBasis: "10%", textAlign: "center" }}>
+                        ₹{item.dist_rate}
+                      </span>
+
+                      {/* Quantity Controls - 20% */}
+                      <div
+                        style={{
+                          flexBasis: "20%",
+                          display: "flex",
+                          justifyContent: "center",
+                          alignItems: "center",
+                        }}
+                      >
+                        <button
+                          onClick={() => decrementQuantity(item.dish_id)}
+                          style={{
+                            backgroundColor: "#e0e0e0",
+                            border: "none",
+                            cursor: "pointer",
+                            padding: "5px 10px",
+                            marginRight: "5px",
+                          }}
+                        >
+                          -
+                        </button>
+                        <span style={{ margin: "0 10px" }}>{item.quantity}</span>
+                        <button
+                          onClick={() => incrementQuantity(item.dish_id)}
+                          style={{
+                            backgroundColor: "#e0e0e0",
+                            border: "none",
+                            cursor: "pointer",
+                            padding: "5px 10px",
+                          }}
+                        >
+                          +
+                        </button>
+                      </div>
+
+                      {/* Subtotal - 20% */}
+                      <span style={{ flexBasis: "20%", textAlign: "center" }}>
+                        ₹{item.dist_rate * item.quantity}
+                      </span>
+
+                      {/* Delete Button - 10% */}
+                      <button
+                        onClick={() => handleRemoveItem(item.dish_id)}
+                        style={{
+                          flexBasis: "5%",
+                          backgroundColor: "red",
+                          color: "white",
+                          border: "none",
+                          cursor: "pointer",
+                          padding: "10px",
+                          textAlign: "center",
+                        }}
+                      >
+                        <FaTrash />
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+              ) : (
+                <p style={{ fontSize: 20, textAlign: 'center', marginTop: '1rem' }}>No items added On Active table.</p>
+              )}
+            </div>
+
+
+            {/* Bottom Section (Total Price and Buttons) */}
             <div
-              className={style.lastbuttons}
               style={{
                 display: "flex",
+                flexDirection: "column",
                 justifyContent: "flex-end",
-                width: "100%",
-                gap: "10px",
-                padding: "10px",
+                backgroundColor: "#f9f9f9",
+                borderTop: "1px solid #ddd",
               }}
             >
-              <button className={style.separatebtn} onClick={handlesaveOrder}>Save</button>
-              <button className={style.separatebtn} onClick={handlePrint}><Receipt dineOrParcel={dineOrParcel} addedItems={addedItems} coupon={coupon} /></button>
+              {/* <div className={style.payment}>
+            <input
+              type="radio"
+              name="payment"
+              id="online"
+              value="Online"
+              onChange={handleChange}
+              checked={payment === "Online"} // Control the checked state
+            />
+            <label htmlFor="online">Online</label>
+
+            <input
+              type="radio"
+              name="payment"
+              id="cash"
+              value="Cash"
+              onChange={handleChange}
+              checked={payment === "Cash"} // Control the checked state
+            />
+            <label htmlFor="cash">Cash</label>
+          </div> */}
 
 
-              <button className={style.separatebtn}>Download</button>
-              <button className={style.separatebtn}>Share</button>
+              {/* Total Price */}
+              <h3
+                style={{
+                  margin: "0",
+                  textAlign: "right",
+                  padding: "10px",
+                }}
+              >
+
+                Total Price: ₹{calculateTotalPrice()}
+              </h3>
+
+              {/* Last Buttons */}
+              <div
+                className={style.lastbuttons}
+                style={{
+                  display: "flex",
+                  justifyContent: "flex-end",
+                  width: "100%",
+                  gap: "10px",
+                  padding: "10px",
+                }}
+              >
+                <button className={style.separatebtn} onClick={handlesaveOrder}>Save</button>
+
+                {/* <button className={style.separatebtn} onClick={handlePrint}><Receipt dineOrParcel={dineOrParcel} addedItems={addedItems} coupon={coupon}  payment={payment} /></button> */}
+
+
+                <button className={style.separatebtn}>Download</button>
+                <button className={style.separatebtn}>Share</button>
+              </div>
             </div>
           </div>
+
+
         </div>
+      ) : (
+        <div
+          style={{
+            width: "45%",
+            padding: "0 20px",
+            backgroundColor: "#FFF",
+          }}
+        >
+          {/* Display Added Items */}
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              minHeight: "100%", // Ensures content fits naturally
+            }}
+          >
+            {/* Header Section */}
+            {/* <h3 style={{ marginTop: "20px" }}>Added Items</h3> */}
+            <div className={style.firstbuttons}>
+              <button
+                className={`${style.separatebtn} ${dineOrParcel === "Dine In" ? style.active : ""
+                  }`}
+                onClick={handleDine}
+              >
+                Dine
+              </button>
+              <button
+                className={`${style.separatebtn} ${dineOrParcel === "Parcel" ? style.active : ""
+                  }`}
+                onClick={handleParcel}
+              >
+                Parcel
+              </button>
+              <p>Coupon: {coupon}</p>
+            </div>
+            {dineOrParcel === 'Dine In' ? (
+              <div className={style.alltables}>
+                {visibleTables.map((table) => (
+                  <button
+                    key={table}
+                    className={style.tablebutton}
+                    onClick={() => handleaddtable(table)}
+                    style={{
+                      backgroundColor: activeTablecolor === table ? "#2C3E50" : "#435e78",
+                    }}
+                  >
+                    {table}
+                  </button>
+                ))}
+              </div>
+            ) : (
+              null
+            )}
+            {/* <button className={style.tablebutton} onClick={() => handleaddtable('2')}>2</button>
+              <button className={style.tablebutton} onClick={() => handleaddtable('3')}>3</button>
+              <button className={style.tablebutton} onClick={() => handleaddtable('4')}>4</button>
+              <button className={style.tablebutton} onClick={() => handleaddtable('5')}>5</button>
+              <button className={style.tablebutton} onClick={() => handleaddtable('6')}>6</button>
+              <button className={style.tablebutton} onClick={() => handleaddtable('7')}>7</button>
+              <button className={style.tablebutton} onClick={() => handleaddtable('8')}>8</button>
+              <button className={style.tablebutton} onClick={() => handleaddtable('9')}>9</button>
+              <button className={style.tablebutton} onClick={() => handleaddtable('10')}>10</button> */}
+
+            {/* Items Section */}
+            <div style={{ flex: "1" }}>
+              {addedItems.length > 0 ? (
+                <ul style={{ listStyleType: "none", padding: 0 }}>
+                  {addedItems.map((item) => (
+                    <li
+                      key={item.dish_id}
+                      style={{
+                        display: "flex",
+                        justifyContent: "space-between",
+                        alignItems: "center",
+                        padding: "10px",
+                        fontSize: "18px",
+                        marginTop: "10px",
+                        borderBottom: "1px solid #ddd",
+                      }}
+                    >
+                      {/* Item Name - 40% */}
+                      <span
+                        style={{
+                          flexBasis: "40%",
+                          overflow: "hidden",
+                          whiteSpace: "nowrap",
+                          textOverflow: "ellipsis",
+                        }}
+                      >
+                        {item.dish_name}
+                      </span>
+
+                      {/* Item Price - 10% */}
+                      <span style={{ flexBasis: "10%", textAlign: "center" }}>
+                        ₹{item.dist_rate}
+                      </span>
+
+                      {/* Quantity Controls - 20% */}
+                      <div
+                        style={{
+                          flexBasis: "20%",
+                          display: "flex",
+                          justifyContent: "center",
+                          alignItems: "center",
+                        }}
+                      >
+                        <button
+                          onClick={() => decrementQuantity(item.dish_id)}
+                          style={{
+                            backgroundColor: "#e0e0e0",
+                            border: "none",
+                            cursor: "pointer",
+                            padding: "5px 10px",
+                            marginRight: "5px",
+                          }}
+                        >
+                          -
+                        </button>
+                        <span style={{ margin: "0 10px" }}>{item.quantity}</span>
+                        <button
+                          onClick={() => incrementQuantity(item.dish_id)}
+                          style={{
+                            backgroundColor: "#e0e0e0",
+                            border: "none",
+                            cursor: "pointer",
+                            padding: "5px 10px",
+                          }}
+                        >
+                          +
+                        </button>
+                      </div>
+
+                      {/* Subtotal - 20% */}
+                      <span style={{ flexBasis: "20%", textAlign: "center" }}>
+                        ₹{item.dist_rate * item.quantity}
+                      </span>
+
+                      {/* Delete Button - 10% */}
+                      <button
+                        onClick={() => handleRemoveItem(item.dish_id)}
+                        style={{
+                          flexBasis: "5%",
+                          backgroundColor: "red",
+                          color: "white",
+                          border: "none",
+                          cursor: "pointer",
+                          padding: "10px",
+                          textAlign: "center",
+                        }}
+                      >
+                        <FaTrash />
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+              ) : (
+                <p style={{ fontSize: 20, textAlign: 'center', marginTop: '1rem' }}>No items added.</p>
+              )}
+            </div>
+
+            {/* Bottom Section (Total Price and Buttons) */}
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                justifyContent: "flex-end",
+                backgroundColor: "#f9f9f9",
+                borderTop: "1px solid #ddd",
+              }}
+            >
+
+              {/* Total Price */}
+            {dineOrParcel==='Parcel' ? ( <div className={style.payment}>
+                <input
+                  type="radio"
+                  name="payment"
+                  id="online"
+                  value="Online"
+                  onChange={handleChange}
+                  checked={payment === "Online"} // Control the checked state
+                />
+                <label htmlFor="online">Online</label>
+
+                <input
+                  type="radio"
+                  name="payment"
+                  id="cash"
+                  value="Cash"
+                  onChange={handleChange}
+                  checked={payment === "Cash"} // Control the checked state
+                />
+                <label htmlFor="cash">Cash</label>
+              </div>):null}
+              <h3
+                style={{
+                  margin: "0",
+                  textAlign: "right",
+                  // padding: "10px",
+                }}
+              >
+                Total Price: ₹{calculateTotalPrice()}
+              </h3>
+
+              {/* Last Buttons */}
+              <div
+                className={style.lastbuttons}
+                style={{
+                  display: "flex",
+                  justifyContent: "flex-end",
+                  width: "100%",
+                  gap: "10px",
+                  padding: "10px",
+                }}
+              >
+                {/* <button className={style.separatebtn} onClick={handlesaveOrder}>Save</button> */}
+                {dineOrParcel === 'Dine In' ? (<button className={style.separatebtn} onClick={handlesaveOrder}>Save</button>) : (<button className={style.separatebtn} onClick={handlesavePrintOrder}><Receipt dineOrParcel={dineOrParcel} addedItems={addedItems} coupon={coupon} payment={payment} /></button>)}
 
 
-      </div>
-      )}
+
+                <button className={style.separatebtn}>Download</button>
+                <button className={style.separatebtn}>Share</button>
+              </div>
+            </div>
+          </div>
+
+
+        </div>
+      )
+      }
       {/* Selected Items */}
 
       {/* <div

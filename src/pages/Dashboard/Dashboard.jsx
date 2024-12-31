@@ -9,6 +9,8 @@ const Dashboard = () => {
   const [desigCount, setDesigCount] = useState('')
   const [dishCatCount, setDishCatCount] = useState('')
   const [dishesCount, setDishCount] = useState('')
+  const [Order, setOrder] = useState('')
+  const [expenesetotal, setexpenesetotal] = useState('')
 
   // Generate dummy data
   const generateData = () => {
@@ -39,6 +41,8 @@ const Dashboard = () => {
         setDesigCount(data.DesigCounts);
         setDishCatCount(data.DishCatCounts);
         setDishCount(data.DishesCounts);
+        setexpenesetotal(data.totalExpenses);
+        setOrder(data.totalTableOrder);
 
       })
       .catch((err) => console.error("Error fetching categories:", err));
@@ -59,7 +63,15 @@ const Dashboard = () => {
             <FaUsers className={style.icon} />
             <div className={style.text}>
 
-              <h3>Designation</h3>
+              <h3>Orders</h3>
+              <p>Total: {Order}</p>
+            </div>
+          </div>
+          <div className={style.card}>
+            <FaUsers className={style.icon} />
+            <div className={style.text}>
+
+              <h3>Designations</h3>
               <p>Total: {desigCount}</p>
             </div>
           </div>
@@ -82,22 +94,28 @@ const Dashboard = () => {
           </div>
 
           {/* Menu Card */}
-          <div className={style.card}>
-            <FaHamburger className={style.icon} />
-            <div className={style.text}>
-              <h3>Dishes</h3>
-              <p>Items: {dishesCount}</p>
+          <Link to='dishes'>
+
+            <div className={style.card}>
+              <FaHamburger className={style.icon} />
+              <div className={style.text}>
+                <h3>Dishes</h3>
+                <p>Items: {dishesCount}</p>
+              </div>
             </div>
-          </div>
+          </Link>
 
           {/* Income Card */}
-          {/* <div className={style.card}>
-            <FaMoneyBillWave className={style.icon} />
-            <div className={style.text}>
-              <h3></h3>
-              <p>Total: $5000</p>
+          <Link to='expenses'>
+
+            <div className={style.card}  >
+              <FaMoneyBillWave className={style.icon} />
+              <div className={style.text}>
+                <h3>Expenses</h3>
+                <p>Total: ₹ {expenesetotal}</p>
+              </div>
             </div>
-          </div> */}
+          </Link>
 
           {/* Outcome Card */}
           {/* <div className={style.card}>

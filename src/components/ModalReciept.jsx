@@ -1,13 +1,13 @@
 import React from "react";
 import jsPDF from "jspdf";
 
-const Receipt = ({ payment,dineOrParcel, addedItems,coupon }) => {
+const ModalReceipt = ({ dineOrParcel, addedItems,coupon,payment }) => {
   const printReceipt = () => {
     // const coupon = Math.floor(Math.random() * 100);
 
     // Calculate total price
     const totalPrice = addedItems.reduce(
-      (total, item) => total + item.dist_rate * item.quantity,
+      (total, item) => total + item.dist_rate * item.order_unit,
       0
     );
 
@@ -63,18 +63,18 @@ const Receipt = ({ payment,dineOrParcel, addedItems,coupon }) => {
       });
 
       // Add other columns only to the first line
-      pdf.text(`${String(item.quantity)}`, 35, yPosition); // Moved QTY column 8px to the right
+      pdf.text(`${String(item.order_unit)}`, 35, yPosition); // Moved QTY column 8px to the right
       pdf.text(`₹${String(item.dist_rate)}`, 40, yPosition);
-      pdf.text(`₹${String(item.dist_rate * item.quantity)}`, 50, yPosition);
+      pdf.text(`₹${String(item.dist_rate * item.order_unit)}`, 50, yPosition);
 
       yPosition += itemHeight + 2; // Move to the next item's position
     });
 
     // Add total price
     pdf.text(`Total: ₹${String(totalPrice)}`, 5, yPosition + 5);
-    pdf.text(`Payment Mode: ${payment}`, 5, yPosition + 10)
 
     // Footer
+    pdf.text(`Payment  Mode: ${payment}`, 5, yPosition + 10);
     pdf.text("Presented by Barkat", 5, yPosition + 15);
 
     // Save the PDF
@@ -91,7 +91,7 @@ const Receipt = ({ payment,dineOrParcel, addedItems,coupon }) => {
           color: "white",
           border: "none",
           cursor: "pointer",
-          // width: "49%",
+          width: "49%",
           fontWeight: "500",
           fontSize: "18px",
         }}
@@ -103,4 +103,4 @@ const Receipt = ({ payment,dineOrParcel, addedItems,coupon }) => {
   );
 };
 
-export default Receipt;
+export default ModalReceipt;

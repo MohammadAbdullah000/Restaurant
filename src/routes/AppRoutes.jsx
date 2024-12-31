@@ -15,6 +15,8 @@ import Category from '../components/Category/Category'
 import Designation from '../components/Designation/Designation'
 import Employee from '../components/Employee/Employee'
 import Expense from '../components/Expense/Expense'
+import ShowTotalExpenses from '../components/ShowTotalExpenses/ShowTotalExpenses'
+import ShowDishesSell from '../components/ShowDishesSell/ShowDishesSell'
 const router = createBrowserRouter([
   {
     path:'/',
@@ -82,6 +84,14 @@ element:<LoginSignup/>
       {
         path: "expense", // Correctly nested route for /dashboard/inventory
         element: <Expense/>,
+      },
+      {
+        path: "expenses", // Correctly nested route for /dashboard/inventory
+        element: <ShowTotalExpenses/>,
+      },
+      {
+        path: "dishes", // Correctly nested route for /dashboard/inventory
+        element: <ShowDishesSell/>,
       },
     ],
   },
