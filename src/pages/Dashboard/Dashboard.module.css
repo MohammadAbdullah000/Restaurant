@@ -43,7 +43,7 @@
   
   .cards {
     display: grid;
-    grid-template-columns: repeat(3,1fr);
+    grid-template-columns: repeat(2,1fr);
     grid-template-rows: repeat(2,1fr);
     gap: 20px;
     width: 100%;
@@ -67,7 +67,7 @@
     color: #666;
   }
   .text p:nth-child(2){
-    font-size: 20px;
+    font-size: 25px;
     
   }
   a{

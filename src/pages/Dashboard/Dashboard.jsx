@@ -58,15 +58,27 @@ const Dashboard = () => {
 
       <div className={`${style.maindashboard}  ${style.nunito500}`}>
         <div className={style.cards}>
-          {/* Orders Card */}
-          <div className={style.card}>
-            <FaUsers className={style.icon} />
+        <div className={style.card}>
+          <FaMoneyBillWave className={style.icon} />
+
             <div className={style.text}>
 
-              <h3>Orders</h3>
-              <p>Total: {Order}</p>
+              <h3>Income</h3>
+              <p>Total: ₹{Order}</p>
             </div>
           </div>
+          <Link to='expenses'>
+
+<div className={style.card}  >
+<FaMoneyCheckAlt className={style.icon} />
+  <div className={style.text}>
+    <h3>Expenses</h3>
+    <p>Total: ₹ {expenesetotal}</p>
+  </div>
+</div>
+</Link>
+          {/* Orders Card */}
+         
           <div className={style.card}>
             <FaUsers className={style.icon} />
             <div className={style.text}>
@@ -104,18 +116,10 @@ const Dashboard = () => {
               </div>
             </div>
           </Link>
-
+         
           {/* Income Card */}
-          <Link to='expenses'>
+        
 
-            <div className={style.card}  >
-              <FaMoneyBillWave className={style.icon} />
-              <div className={style.text}>
-                <h3>Expenses</h3>
-                <p>Total: ₹ {expenesetotal}</p>
-              </div>
-            </div>
-          </Link>
 
           {/* Outcome Card */}
           {/* <div className={style.card}>
