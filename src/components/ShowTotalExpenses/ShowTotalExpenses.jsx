@@ -12,7 +12,7 @@ const ShowTotalExpenses = () => {
     async function handleGetExpense() {
         try {
             const response = await fetch(
-                `https://letzbim.com/Restaurent/Expense_Record_Fetch_Api.php?expenses=${expenseCategory}&dateOne=${startDate}&dateTwo=${endDate}`
+                `https://hotelbarkat.com/Apis/Expense_Record_Fetch_Api.php?expenses=${expenseCategory}&dateOne=${startDate}&dateTwo=${endDate}`
             );
 
             if (response.ok) {

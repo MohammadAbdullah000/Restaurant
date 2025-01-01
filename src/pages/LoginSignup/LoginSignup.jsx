@@ -43,7 +43,7 @@ const LoginSignup = () => {
     setError(""); // Clear any previous errors
 
     try {
-      const response = await fetch("https://letzbim.com/Restaurent/SigninApi.php", {
+      const response = await fetch("https://hotelbarkat.com/Apis/SigninApi.php", {
         method: "POST",
         headers: {
           "Content-Type": "application/x-www-form-urlencoded",

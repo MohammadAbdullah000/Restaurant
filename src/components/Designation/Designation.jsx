@@ -15,7 +15,7 @@ const Designation = () => {
     // useEffect(() => {
     async function fetchDesignation() {
       try {
-        const response = await fetch('https://letzbim.com/Restaurent/designation_fetch_Api.php');
+        const response = await fetch('https://hotelbarkat.com/Apis/designation_fetch_Api.php');
         if (response.ok) {
           const data = await response.json();
           console.log('API Response:', data); // Log the API response to see its structure
@@ -55,7 +55,7 @@ const Designation = () => {
 
   async function handleAddDish() {
     try {
-      const response = await fetch('https://letzbim.com/Restaurent/designation_create_Api.php', {
+      const response = await fetch('https://hotelbarkat.com/Apis/designation_create_Api.php', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded',
@@ -88,7 +88,7 @@ const Designation = () => {
   
 async function handleUpdateDesignation() {
   try{
-    const response = await fetch('https://letzbim.com/Restaurent/Designation_Update_APi.php',{
+    const response = await fetch('https://hotelbarkat.com/Apis/Designation_Update_APi.php',{
       method: "POST",
       headers: {
         "Content-Type": "application/x-www-form-urlencoded",
@@ -124,7 +124,7 @@ async function handleUpdateDesignation() {
   // Handle delete category
   const handleDelete = async (dishId) => {
     try {
-      const response = await fetch('https://letzbim.com/Restaurent/Designation_Delete_Api.php', {
+      const response = await fetch('https://hotelbarkat.com/Apis/Designation_Delete_Api.php', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded',
@@ -152,7 +152,7 @@ async function handleUpdateDesignation() {
 const handleEdit = async (desigId) => {
   try {
     // Construct the API URL with the given dishcat_id
-    const apiUrl = `https://letzbim.com/Restaurent/Designation_Edit_Fetch_Api.php?desigId=${desigId}`;
+    const apiUrl = `https://hotelbarkat.com/Apis/Designation_Edit_Fetch_Api.php?desigId=${desigId}`;
 
     // Make the GET request to fetch the category details
     const response = await axios.get(apiUrl);

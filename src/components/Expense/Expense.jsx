@@ -27,7 +27,7 @@ const Expense = () => {
 
   async function fetchExpenses() {
     try {
-      const response = await fetch("https://letzbim.com/Restaurent/Expenses_Fetch_Api.php");
+      const response = await fetch("https://hotelbarkat.com/Apis/Expenses_Fetch_Api.php");
       if (response.ok) {
         const data = await response.json();
         setExpenses(data)
@@ -125,7 +125,7 @@ const Expense = () => {
   const handleEdit = async (exp_id) => {
     try {
       // Construct the API URL with the given dishcat_id
-      const apiUrl = `https://letzbim.com/Restaurent/Expense_Edit_Fetch_Api.php?exp_id=${exp_id}`;
+      const apiUrl = `https://hotelbarkat.com/Apis/Expense_Edit_Fetch_Api.php?exp_id=${exp_id}`;
 
       // Make the GET request to fetch the category details
       const response = await axios.get(apiUrl);
@@ -162,7 +162,7 @@ const Expense = () => {
     formData.append("date", date);
 
     try {
-      const response = await fetch("https://letzbim.com/Restaurent/Expenses_Add_Api.php", {
+      const response = await fetch("https://hotelbarkat.com/Apis/Expenses_Add_Api.php", {
         method: "POST",
         headers: {
           "Content-Type": "application/x-www-form-urlencoded",
@@ -175,17 +175,23 @@ const Expense = () => {
         console.log(result);
         if (result.successmessage) {
           // Add the new dish to the state directly
-          setExpenses((prevExpenses) => [
-            ...prevExpenses,
-            {
-              expensCat: expCategory,
-              expensInfo: expDes,
-              expnAmount: amountSpent,
-              expensMethod: paymentMethod,
-              venderName: venderName,
-              date: date,
-            },
-          ]);
+          setExpenses((prevExpenses) => {
+            // Ensure prevExpenses is always an array
+            const expensesArray = Array.isArray(prevExpenses) ? prevExpenses : [];
+            return [
+              ...expensesArray,
+              {
+                expensCat: expCategory,
+                expensInfo: expDes,
+                expnAmount: amountSpent,
+                expensMethod: paymentMethod,
+                venderName: venderName,
+                date: date,
+              },
+            ];
+          });
+        
+        
           // Clear form fields
           setDate("")
           setExpenseCategory("");
@@ -203,15 +209,15 @@ const Expense = () => {
           fetchExpenses(); // Ensure we fetch Employees for the active category
           console.log('success')
         } else {
-          alert("Failed to add dish: " + result.errmessage);
+          alert("Failed to add Expense: " + result.errmessage);
           console
         }
       } else {
         alert("API Error: " + response.statusText);
       }
     } catch (error) {
-      console.error("Error adding dish:", result.errmessage);
-      alert("Failed to add dish. Please try again later.");
+      console.error("Error adding Expense:", result.errmessage);
+      alert("Failed to add Expense. Please try again later.");
     }
   }
 
@@ -222,7 +228,7 @@ const Expense = () => {
 
   const handleDelete = async (empID) => {
     try {
-      const response = await fetch("https://letzbim.com/Restaurent/Expense_Delete_Api.php", {
+      const response = await fetch("https://hotelbarkat.com/Apis/Expense_Delete_Api.php", {
         method: "POST",
         headers: {
           "Content-Type": "application/x-www-form-urlencoded",
@@ -339,7 +345,7 @@ const Expense = () => {
     // formData.append("DesigId", desginationID || editExp.desigID);
 
     try {
-      const response = await fetch("https://letzbim.com/Restaurent/Expenses_Update_Api.php", {
+      const response = await fetch("https://hotelbarkat.com/Apis/Expenses_Update_Api.php", {
         method: "POST",
         headers: {
           "Content-Type": "application/x-www-form-urlencoded",
@@ -395,15 +401,15 @@ const Expense = () => {
         toggleEditDish(); // Close the edit form
         fetchExpenses(); // Refresh employee list
       } else {
-        alert("Failed to update employee: " + result.errmessage);
+        alert("Failed to update Expense: " + result.errmessage);
       }
       // }
       //  else {
       //   alert("API Error: " + response.statusText);
       // }
     } catch (error) {
-      console.error("Error updating employee:", error);
-      alert("Failed to update employee. Please try again later.");
+      console.error("Error updating Expense:", error);
+      alert("Failed to update Expense. Please try again later.");
     }
   };
 
@@ -527,7 +533,7 @@ const Expense = () => {
                   value={venderName}
                   // onChange={(e) => handleInputChange("emp_salary", e.target.value)}
                   onChange={(e) => setVenderName(e.target.value)}
-                  required
+                  
                 />
               </div>
               {/* <div className={style.formGroupdish}>
@@ -687,7 +693,7 @@ const Expense = () => {
                   id="salary"
                   value={editExp.venderName || ""}
                   onChange={(e) => setEditExp((prev) => ({ ...prev, venderName: e.target.value }))}
-                  required
+                  
                 />
               </div>
 
@@ -747,7 +753,7 @@ const Expense = () => {
           <div className={style.addDish}>
             <button onClick={toggleAddDish}
             //  style={{ display: !Designations.length ? 'none' : 'block' }}
-            >Add New Employee</button>
+            >Add New Expense</button>
           </div>
         </div>
 

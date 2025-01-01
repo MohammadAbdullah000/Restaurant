@@ -22,7 +22,7 @@ const Order = () => {
 
   useEffect(() => {
     // Fetch categories from API
-    fetch("https://letzbim.com/Restaurent/dish_categories_fetch_Api.php")
+    fetch("https://hotelbarkat.com/Apis/dish_categories_fetch_Api.php")
       .then((res) => res.json())
       .then((data) => {
         setCategories(data);
@@ -36,7 +36,7 @@ const Order = () => {
   useEffect(() => {
     if (selectedCategory) {
       // Fetch subcategories when category is selected
-      fetch(`https://letzbim.com/Restaurent/dishes_fetch_Api.php?dishCatID=${selectedCategory}`)
+      fetch(`https://hotelbarkat.com/Apis/dishes_fetch_Api.php?dishCatID=${selectedCategory}`)
         .then((res) => res.json())
         .then((data) => {
           // if(!data.length){
@@ -119,7 +119,7 @@ const Order = () => {
 
   async function fetchcoupon() {
     try {
-      const response = await fetch('https://letzbim.com/Restaurent/UniqueNUmberFetchApi.php');
+      const response = await fetch('https://hotelbarkat.com/Apis/UniqueNUmberFetchApi.php');
       const data = await response.json();
       setCoupon(data.Coupon_No); // Set coupon for API usage
       console.log('Fetched Coupon:', data);
@@ -234,7 +234,7 @@ const Order = () => {
       };
 
       // Make the API call
-      const response = await fetch("https://letzbim.com/Restaurent/Order_Submit_Api.php", {
+      const response = await fetch("https://hotelbarkat.com/Apis/Order_Submit_Api.php", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -296,7 +296,7 @@ const Order = () => {
       };
       
       // Make the API call
-      const response = await fetch("https://letzbim.com/Restaurent/Order_Submit_Api.php", {
+      const response = await fetch("https://hotelbarkat.com/Apis/Order_Submit_Api.php", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -385,7 +385,7 @@ const Order = () => {
   }, []);
   const fetchPendingTable = (async) => {
 
-    fetch("https://letzbim.com/Restaurent/Pending_Order_Table_Fetch.php")
+    fetch("https://hotelbarkat.com/Apis/Pending_Order_Table_Fetch.php")
       .then((res) => res.json())
       .then((data) => {
         // setCategories(data);
@@ -419,7 +419,7 @@ const Order = () => {
   const fetchPendingTableOrder = (async) => {
     if (activeTable !== null) {
       fetch(
-        `https://letzbim.com/Restaurent/Table_Order_Fetch_Api.php?tableNo=${activeTable}`
+        `https://hotelbarkat.com/Apis/Table_Order_Fetch_Api.php?tableNo=${activeTable}`
       )
         .then((res) => res.json())
         .then((data) => {
@@ -437,7 +437,7 @@ const Order = () => {
   useEffect(() => {
     if (activeTable !== null) {
       fetch(
-        `https://letzbim.com/Restaurent/Table_Order_Fetch_Api.php?tableNo=${activeTable}`
+        `https://hotelbarkat.com/Apis/Table_Order_Fetch_Api.php?tableNo=${activeTable}`
       )
         .then((res) => res.json())
         .then((data) => {
@@ -474,7 +474,7 @@ const Order = () => {
       });
 
       // Make the API call
-      const response = await fetch("https://letzbim.com/Restaurent/Pendig_Order_Finish_Api.php", {
+      const response = await fetch("https://hotelbarkat.com/Apis/Pendig_Order_Finish_Api.php", {
         method: "POST",
         headers: {
           "Content-Type": "application/x-www-form-urlencoded",

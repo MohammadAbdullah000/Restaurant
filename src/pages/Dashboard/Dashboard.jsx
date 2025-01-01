@@ -34,7 +34,7 @@ const Dashboard = () => {
   );
   useEffect(() => {
     // Fetch categories from API
-    fetch("https://letzbim.com/Restaurent/UniqueNUmberFetchApi.php")
+    fetch("https://hotelbarkat.com/Apis/UniqueNUmberFetchApi.php")
       .then((res) => res.json())
       .then((data) => {
         setEmpCount(data.EmpCounts);

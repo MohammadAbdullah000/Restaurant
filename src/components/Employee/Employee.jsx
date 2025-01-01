@@ -24,7 +24,7 @@ const Employee = () => {
   // useEffect(() => {
     async function fetchEmployee(desigId) {
       try {
-        const response = await fetch(`https://letzbim.com/Restaurent/employee_fetch_Api.php?desigId=${desigId}`);
+        const response = await fetch(`https://hotelbarkat.com/Apis/employee_fetch_Api.php?desigId=${desigId}`);
         if (response.ok) {
           const data = await response.json();
           
@@ -67,7 +67,7 @@ const Employee = () => {
       async function fetchDesignations() {
         try {
           const response = await fetch(
-            "https://letzbim.com/Restaurent/designation_fetch_Api.php"
+            "https://hotelbarkat.com/Apis/designation_fetch_Api.php"
           );
           if (response.ok) {
             const data = await response.json();
@@ -105,7 +105,7 @@ const Employee = () => {
     // Fetch unique number from the API when the component mounts
     const fetchUniqueID = async () => {
       try {
-        const response = await axios.get("https://letzbim.com/Restaurent/UniqueNUmberFetchApi.php");
+        const response = await axios.get("https://hotelbarkat.com/Apis/UniqueNUmberFetchApi.php");
         if (response.data && response.data.employee_ID) {
           setEmployeeID(response.data.employee_ID); // Assuming the response contains the unique ID in this structure
         } else {
@@ -123,7 +123,7 @@ const Employee = () => {
   const handleEdit = async (emp_id) => {
     try {
       // Construct the API URL with the given dishcat_id
-      const apiUrl = `https://letzbim.com/Restaurent/employee_Profile_Edit_Fetch_Api.php?emp_id=${emp_id}`;
+      const apiUrl = `https://hotelbarkat.com/Apis/employee_Profile_Edit_Fetch_Api.php?emp_id=${emp_id}`;
   
       // Make the GET request to fetch the category details
       const response = await axios.get(apiUrl);
@@ -158,7 +158,7 @@ const Employee = () => {
     formData.append("DesigId", desginationID);
   
     try {
-      const response = await fetch("https://letzbim.com/Restaurent/employee_create_Api.php", {
+      const response = await fetch("https://hotelbarkat.com/Apis/employee_create_Api.php", {
         method: "POST",
         headers: {
           "Content-Type": "application/x-www-form-urlencoded",
@@ -221,7 +221,7 @@ const Employee = () => {
 
   const handleDelete = async (empID) => {
     try {
-      const response = await fetch("https://letzbim.com/Restaurent/employee_detelte_Api.php", {
+      const response = await fetch("https://hotelbarkat.com/Apis/employee_detelte_Api.php", {
         method: "POST",
         headers: {
           "Content-Type": "application/x-www-form-urlencoded",
@@ -333,7 +333,7 @@ const Employee = () => {
     // formData.append("DesigId", desginationID || editEmp.desigID);
   
     try {
-      const response = await fetch("https://letzbim.com/Restaurent/Employee_update_Api.php", {
+      const response = await fetch("https://hotelbarkat.com/Apis/Employee_update_Api.php", {
         method: "POST",
         headers: {
           "Content-Type": "application/x-www-form-urlencoded",

@@ -19,7 +19,7 @@ const ShowDishesSell = () => {
             try {
                 // Fetch categories first
                 const categoryResponse = await fetch(
-                    "https://letzbim.com/Restaurent/dish_categories_fetch_Api.php"
+                    "https://hotelbarkat.com/Apis/dish_categories_fetch_Api.php"
                 );
                 if (categoryResponse.ok) {
                     const categoryData = await categoryResponse.json();
@@ -51,7 +51,7 @@ const ShowDishesSell = () => {
     const fetchDishes = async (dishCatID) => {
         try {
             const response = await fetch(
-                `https://letzbim.com/Restaurent/dishes_fetch_Api.php?dishCatID=${dishCatID}`
+                `https://hotelbarkat.com/Apis/dishes_fetch_Api.php?dishCatID=${dishCatID}`
             );
             if (response.ok) {
                 const data = await response.json();
@@ -85,7 +85,7 @@ const ShowDishesSell = () => {
     const handleGetExpense = async () => {
         try {
             const response = await fetch(
-                `https://letzbim.com/Restaurent/Food_Sell_Fetch_Api.php?Odish_id=${selectedDish}&dateOne=${startDate}&dateTwo=${endDate}`
+                `https://hotelbarkat.com/Apis/Food_Sell_Fetch_Api.php?Odish_id=${selectedDish}&dateOne=${startDate}&dateTwo=${endDate}`
             );
 
             if (response.ok) {

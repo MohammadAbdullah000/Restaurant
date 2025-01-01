@@ -1,0 +1,34 @@
+.receiptcontent {
+  display: none;
+}
+
+@media print {
+  @page {
+    size: 59mm auto; /* Set page width to 59mm */
+    margin: 0; /* Remove default margins */
+  }
+
+  body {
+    margin: 0; /* Remove body margin for proper alignment */
+  }
+
+  .receiptcontent {
+    display: block;
+  }
+
+  body * {
+    visibility: hidden;
+  }
+
+  .receiptcontent,
+  .receiptcontent * {
+    visibility: visible;
+  }
+
+  .receiptcontent {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%; /* Match the page width */
+  }
+}

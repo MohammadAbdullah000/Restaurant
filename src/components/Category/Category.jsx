@@ -15,7 +15,7 @@ const Category = () => {
   // useEffect(() => {
     async function fetchCategories() {
       try {
-        const response = await fetch('https://letzbim.com/Restaurent/dish_categories_fetch_Api.php');
+        const response = await fetch('https://hotelbarkat.com/Apis/dish_categories_fetch_Api.php');
         if (response.ok) {
           const data = await response.json();
           console.log('API Response:', data); // Log the API response to see its structure
@@ -55,7 +55,7 @@ const Category = () => {
 
   async function handleAddDish() {
     try {
-      const response = await fetch('https://letzbim.com/Restaurent/dishes_create_Api.php', {
+      const response = await fetch('https://hotelbarkat.com/Apis/dishes_create_Api.php', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded',
@@ -92,7 +92,7 @@ const Category = () => {
         return;
       }
   
-      const response = await fetch("https://letzbim.com/Restaurent/dishes_update_Api.php", {
+      const response = await fetch("https://hotelbarkat.com/Apis/dishes_update_Api.php", {
         method: "POST",
         headers: {
           "Content-Type": "application/x-www-form-urlencoded",
@@ -129,7 +129,7 @@ const Category = () => {
   // Handle delete category
   const handleDelete = async (dishId) => {
     try {
-      const response = await fetch('https://letzbim.com/Restaurent/dish_category_delete_Api.php', {
+      const response = await fetch('https://hotelbarkat.com/Apis/dish_category_delete_Api.php', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded',
@@ -158,7 +158,7 @@ const Category = () => {
 const handleEdit = async (dishcat_id) => {
   try {
     // Construct the API URL with the given dishcat_id
-    const apiUrl = `https://letzbim.com/Restaurent/Dish_categories_Edit_fetch_Api.php?dishcat_id=${dishcat_id}`;
+    const apiUrl = `https://hotelbarkat.com/Apis/Dish_categories_Edit_fetch_Api.php?dishcat_id=${dishcat_id}`;
 
     // Make the GET request to fetch the category details
     const response = await axios.get(apiUrl);

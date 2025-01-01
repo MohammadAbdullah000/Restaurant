@@ -1,3 +1,7 @@
+/*
+
+OLD CODE
+
 import React from "react";
 import jsPDF from "jspdf";
 
@@ -96,6 +100,93 @@ const ModalReceipt = ({ dineOrParcel, addedItems,coupon,payment }) => {
           fontSize: "18px",
         }}
         onClick={printReceipt}
+      >
+        Print
+      </button>
+    </div>
+  );
+};
+
+export default ModalReceipt;
+*/
+import React, { useRef } from "react";
+import { useReactToPrint } from "react-to-print";
+
+const ModalReceipt = ({ dineOrParcel, addedItems, coupon, payment }) => {
+  const receiptRef = useRef(); // Reference for the printable content
+
+  // Function to trigger print
+  const handlePrint = useReactToPrint({
+    content: () => receiptRef.current,
+  });
+
+  // Calculate total price
+  const totalPrice = addedItems.reduce(
+    (total, item) => total + item.dist_rate * item.order_unit,
+    0
+  );
+
+  const now = new Date();
+  const formattedDate = `${now.getDate()}/${now.getMonth() + 1}/${now
+    .getFullYear()
+    .toString()
+    .slice(2)}`;
+  const formattedTime = `${now.getHours()}:${now
+    .getMinutes()
+    .toString()
+    .padStart(2, "0")}`;
+
+  return (
+    <div>
+      <div ref={receiptRef} style={{ display: "none" }}>
+        {/* Printable receipt content */}
+        <div style={{ width: "59mm", fontSize: "10px", lineHeight: "1.5" }}>
+          <h4 style={{ textAlign: "center" }}>Receipt</h4>
+          <p>Date: {formattedDate}</p>
+          <p>Time: {formattedTime}</p>
+          <p>Type: {dineOrParcel}</p>
+          <p>Coupon Code: {coupon}</p>
+
+          <table style={{ width: "100%", marginTop: "10px" }}>
+            <thead>
+              <tr>
+                <th style={{ textAlign: "left" }}>Item</th>
+                <th style={{ textAlign: "center" }}>Qty</th>
+                <th style={{ textAlign: "right" }}>Price</th>
+              </tr>
+            </thead>
+            <tbody>
+              {addedItems.map((item, index) => (
+                <tr key={index}>
+                  <td style={{ textAlign: "left" }}>{item.dish_name}</td>
+                  <td style={{ textAlign: "center" }}>{item.order_unit}</td>
+                  <td style={{ textAlign: "right" }}>Rs {item.dist_rate}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+
+          <p style={{ marginTop: "10px" }}>Total: Rs {totalPrice}</p>
+          <p>Payment Mode: {payment}</p>
+          <p style={{ marginTop: "10px", textAlign: "center" }}>
+            Presented by Barkat
+          </p>
+        </div>
+      </div>
+
+      {/* Print button */}
+      <button
+        style={{
+          backgroundColor: "#435e78",
+          borderRadius: "5px",
+          color: "white",
+          border: "none",
+          cursor: "pointer",
+          width: "49%",
+          fontWeight: "500",
+          fontSize: "18px",
+        }}
+        onClick={handlePrint}
       >
         Print
       </button>

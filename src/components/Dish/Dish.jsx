@@ -21,7 +21,7 @@ const Dish = () => {
   // useEffect(() => {
     async function fetchDishes(dishCatID) {
       try {
-        const response = await fetch(`https://letzbim.com/Restaurent/dishes_fetch_Api.php?dishCatID=${dishCatID}`);
+        const response = await fetch(`https://hotelbarkat.com/Apis/dishes_fetch_Api.php?dishCatID=${dishCatID}`);
         if (response.ok) {
           const data = await response.json();
           
@@ -63,7 +63,7 @@ const Dish = () => {
       async function fetchCategories() {
         try {
           const response = await fetch(
-            "https://letzbim.com/Restaurent/dish_categories_fetch_Api.php"
+            "https://hotelbarkat.com/Apis/dish_categories_fetch_Api.php"
           );
           if (response.ok) {
             const data = await response.json();
@@ -100,7 +100,7 @@ const Dish = () => {
   };
   const handleDelete = async (dishId) => {
     try {
-      const response = await fetch('https://letzbim.com/Restaurent/dishes_delete_Api.php', {
+      const response = await fetch('https://hotelbarkat.com/Apis/dishes_delete_Api.php', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded',
@@ -127,7 +127,7 @@ const Dish = () => {
   const handleEdit = async (dish_id) => {
     try {
       // Construct the API URL with the given dishcat_id
-      const apiUrl = `https://letzbim.com/Restaurent/Dishes_Edit_Fetch_Api.php?dish_id=${dish_id}`;
+      const apiUrl = `https://hotelbarkat.com/Apis/Dishes_Edit_Fetch_Api.php?dish_id=${dish_id}`;
   
       // Make the GET request to fetch the category details
       const response = await axios.get(apiUrl);
@@ -222,7 +222,7 @@ const Dish = () => {
     formData.append("dish_rate", dishPrice);
   
     try {
-      const response = await fetch("https://letzbim.com/Restaurent/create_Sub_dishesApi.php", {
+      const response = await fetch("https://hotelbarkat.com/Apis/create_Sub_dishesApi.php", {
         method: "POST",
         headers: {
           "Content-Type": "application/x-www-form-urlencoded",
@@ -277,7 +277,7 @@ const Dish = () => {
     formData.append("dish_qnty", dishQuantity || editDish.dish_qnty); // Use updated or existing quantity
   
     try {
-      const response = await fetch("https://letzbim.com/Restaurent/subDish_update_Api.php", {
+      const response = await fetch("https://hotelbarkat.com/Apis/subDish_update_Api.php", {
         method: "POST",
         headers: {
           "Content-Type": "application/x-www-form-urlencoded",
@@ -388,6 +388,7 @@ console.log(editDish.dish_rate);
           <input
             type="text"
             id="dishQuantity"
+            placeholder="Half / Full"
             value={dishQuantity}
             onChange={(e) => setDishQuantity(e.target.value)}
             required
@@ -487,7 +488,7 @@ console.log(editDish.dish_rate);
       required
     />
   </div>
-  <div className={style.formGroupdish}>
+  {/* <div className={style.formGroupdish}>
     <label htmlFor="dishCategory">Dish Category:</label>
     <select
       id="dishCategory"
@@ -507,7 +508,7 @@ console.log(editDish.dish_rate);
         </option>
       ))}
     </select>
-  </div>
+  </div> */}
   <div className={style.buttonGroup}>
     <button type="button" onClick={handleUpdateDish}>
       Submit
