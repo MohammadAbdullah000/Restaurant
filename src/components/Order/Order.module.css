@@ -102,3 +102,16 @@
     font-size: 25px;
     cursor: pointer;
   }
+
+  @media print{
+    .modall{
+      display: none;
+    }
+  }
+  
+
+  @media screen{
+    .printt{
+      display: none;
+    }
+  }

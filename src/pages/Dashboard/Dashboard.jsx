@@ -54,6 +54,9 @@ const Dashboard = () => {
         <Link to="order">
           <button className={style.orderbtn}>Order</button>
         </Link>
+        <Link to="history">
+          <button className={style.orderbtn}>History</button>
+        </Link>
       </div>
 
       <div className={`${style.maindashboard}  ${style.nunito500}`}>

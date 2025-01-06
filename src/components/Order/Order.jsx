@@ -1,6 +1,6 @@
 import { FaTrash, FaEye } from "react-icons/fa";
 import { IoMdArrowRoundBack } from "react-icons/io";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import style from './Order.module.css';
 import Receipt from "../Receipt";
 import ModalReceipt from "../ModalReciept";
@@ -153,28 +153,28 @@ const Order = () => {
   // const [orderCoupon,setOrderCoupon]=useState(null)
   // let orderCo = activeCouponTable == null ? coupon : activeCouponTable;
   //   setOrderCoupon(orderCo)
-  
-  const handlePrint = () => {
-    let count = 0
-    // addedItems.forEach((item)=>{
-    //   console.log('Dish Name:',item.dish_name);
-    //   console.log('Dish Rate:',item.dist_rate);
-    //   console.log('Dish Quantity:',item.quantity);
-    //   console.log('Dish qnty:',item.dish_qnty);
-    //   console.log('Dish Subtotal:',item.dist_rate * item.quantity)
-    //   // console.log(item.dish_name);
 
-    // })
-    console.log(addedItems)
-    const Total = calculateTotalPrice()
-    console.log('Total:', Total);
-    // const coupon = Math.floor(Math.random() * 100)
-    // setCoupon(coupon)
-    // console.log('Coupon:', coupon);
-    fetchcoupon();
-    console.log('c', coupon);
+  // const handlePrint = () => {
+  //   let count = 0
+  //   // addedItems.forEach((item)=>{
+  //   //   console.log('Dish Name:',item.dish_name);
+  //   //   console.log('Dish Rate:',item.dist_rate);
+  //   //   console.log('Dish Quantity:',item.quantity);
+  //   //   console.log('Dish qnty:',item.dish_qnty);
+  //   //   console.log('Dish Subtotal:',item.dist_rate * item.quantity)
+  //   //   // console.log(item.dish_name);
 
-  }
+  //   // })
+  //   console.log(addedItems)
+  //   const Total = calculateTotalPrice()
+  //   console.log('Total:', Total);
+  //   // const coupon = Math.floor(Math.random() * 100)
+  //   // setCoupon(coupon)
+  //   // console.log('Coupon:', coupon);
+  //   fetchcoupon();
+  //   console.log('c', coupon);
+
+  // }
   const handleParcel = () => {
     setDineOrParcel('Parcel')
   }
@@ -206,6 +206,17 @@ const Order = () => {
     // else{
 
     try {
+      // Ensure tableOcc and addedItems are valid
+      if (!tableOcc) {
+        alert("Please select a table before submitting the order.");
+        return;
+      }
+
+      if (!addedItems || addedItems.length === 0) {
+        alert("Please add at least one item before submitting the order.");
+        return;
+      }
+
       // Prepare the items with subtotal
       const updatedItems = addedItems.map((item) => ({
         dish_id: item.dish_id,
@@ -213,7 +224,7 @@ const Order = () => {
         dist_rate: item.dist_rate,
         quantity: item.quantity,
         subtotal: item.quantity * item.dist_rate, // Calculate subtotal
-        status: '0',
+        status: "0",
         couponNo: coupon,
         dineNo: tableOcc,
         pay_method: payment,
@@ -221,98 +232,34 @@ const Order = () => {
 
       // Calculate the total price
       const Total = updatedItems.reduce((sum, item) => sum + item.subtotal, 0);
-
+      // console.log('update',addedItems);
 
       // Prepare the payload
       const payload = {
         items: updatedItems,
         total: Total,
-        // items: mergedItems,
-        // total: mergedTotal,
-        // dineNo: tableOcc,
-        // couponNo: coupon,
       };
 
       // Make the API call
-      const response = await fetch("https://hotelbarkat.com/Apis/Order_Submit_Api.php", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(payload),
-      });
+      const response = await fetch(
+        "https://hotelbarkat.com/Apis/Order_Submit_Api.php",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(payload),
+        }
+      );
 
       const result = await response.json();
 
       if (response.ok) {
         console.log("Order submitted successfully:", result);
         alert("Order submitted successfully");
-        fetchPendingTable()
-        fetchPendingTableOrder()
-        setAddedItems([])
-        // fetchcoupon()
-      } else {
-        console.error("Error submitting order:", result.message);
-        alert(`Error: ${result.message}`);
-      }
-    } 
-    catch (error) {
-      console.error("Error in handlesaveOrder:", error);
-      alert("An error occurred while submitting the order");
-    }
-  // }
-  };
-  const handlesavePrintOrder = async () => {
-    if(!payment){
-      alert("Please Select Payment Mode!!!")
-    }else{
-
-      try {
-        // Prepare the items with subtotal
-        const updatedItems = addedItems.map((item) => ({
-        dish_id: item.dish_id,
-        dish_qnty: item.dish_qnty,
-        dist_rate: item.dist_rate,
-        quantity: item.quantity,
-        subtotal: item.quantity * item.dist_rate, // Calculate subtotal
-        status: '1',
-        couponNo: coupon,
-        dineNo: tableOcc,
-        pay_method: payment,
-      }));
-
-      // Calculate the total price
-      const Total = updatedItems.reduce((sum, item) => sum + item.subtotal, 0);
-
-
-      // Prepare the payload
-      const payload = {
-        items: updatedItems,
-        total: Total,
-        // items: mergedItems,
-        // total: mergedTotal,
-        // dineNo: tableOcc,
-        // couponNo: coupon,
-      };
-      
-      // Make the API call
-      const response = await fetch("https://hotelbarkat.com/Apis/Order_Submit_Api.php", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(payload),
-      });
-
-      const result = await response.json();
-
-      if (response.ok) {
-        console.log("Order submitted successfully:", result);
-        alert("Order submitted successfully");
-        fetchPendingTable()
-        // fetchPendingTableOrder()
-        setAddedItems([])
-        fetchcoupon()
+        fetchPendingTable();
+        fetchPendingTableOrder();
+        setAddedItems([]);
       } else {
         console.error("Error submitting order:", result.message);
         alert(`Error: ${result.message}`);
@@ -321,7 +268,70 @@ const Order = () => {
       console.error("Error in handlesaveOrder:", error);
       alert("An error occurred while submitting the order");
     }
-  }
+
+    // }
+  };
+  const handlesavePrintOrder = async () => {
+    if (!payment) {
+      alert("Please Select Payment Mode!!!")
+    } else {
+
+      try {
+        // Prepare the items with subtotal
+        const updatedItems = addedItems.map((item) => ({
+          dish_id: item.dish_id,
+          dish_qnty: item.dish_qnty,
+          dist_rate: item.dist_rate,
+          quantity: item.quantity,
+          subtotal: item.quantity * item.dist_rate, // Calculate subtotal
+          status: '1',
+          couponNo: coupon,
+          dineNo: tableOcc,
+          pay_method: payment,
+        }));
+
+        // Calculate the total price
+        const Total = updatedItems.reduce((sum, item) => sum + item.subtotal, 0);
+        console.log('nn', addedItems);
+
+
+        // Prepare the payload
+        const payload = {
+          items: updatedItems,
+          total: Total,
+          // items: mergedItems,
+          // total: mergedTotal,
+          // dineNo: tableOcc,
+          // couponNo: coupon,
+        };
+
+        // Make the API call
+        const response = await fetch("https://hotelbarkat.com/Apis/Order_Submit_Api.php", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(payload),
+        });
+
+        const result = await response.json();
+
+        if (response.ok) {
+          console.log("Order submitted successfully:", result);
+          alert("Order submitted successfully");
+          fetchPendingTable()
+          // fetchPendingTableOrder()
+          setAddedItems([])
+          fetchcoupon()
+        } else {
+          console.error("Error submitting order:", result.message);
+          alert(`Error: ${result.message}`);
+        }
+      } catch (error) {
+        console.error("Error in handlesaveOrder:", error);
+        alert("An error occurred while submitting the order");
+      }
+    }
   };
 
 
@@ -389,7 +399,7 @@ const Order = () => {
       .then((res) => res.json())
       .then((data) => {
         // setCategories(data);
-        console.log('pending table show ' + data[0].tableno)
+        // console.log('pending table show ' + data[0].tableno)
         setPendingTable(data)
         // if (data.length > 0) setSelectedCategory(data[0].dishcat_id); // Set default category
       })
@@ -405,7 +415,11 @@ const Order = () => {
     setIsModalOpen(false)
   }
   const allTables = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"];
-  const pendingTableNumbers = PendingTable.map((table) => table.tableno);
+  const pendingTableNumbers =
+    PendingTable && PendingTable.length > 0
+      ? PendingTable.map((table) => table.tableno)
+      : [];
+
   const visibleTables = allTables.filter((table) => !pendingTableNumbers.includes(table));
 
   const [PendingTableOrder, setPendingTableOrder] = useState([])
@@ -531,14 +545,77 @@ const Order = () => {
       window.removeEventListener("offline", handleOffline);
     };
   }, []);
+  const receiptRef = useRef();
+
+  const handlePrint = (ref) => {
+    if (ref.current) {
+      const originalContents = document.body.innerHTML; // Save original page content
+      const printContents = ref.current.innerHTML; // Get the printable content
+
+      // Replace the page's content with the printable content
+      document.body.innerHTML = `
+        <html>
+          <head>
+            <title>Print</title>
+            <style>
+              /* Add styles for your print layout here */
+              body {
+                font-family: Arial, sans-serif;
+                padding: 20px;
+                width: 59mm; /* Set the width for printing */
+              }
+              .table-row {
+                display: flex;
+                justify-content: space-between;
+                margin-bottom: 8px;
+              }
+              .table-container {
+                width: 100%;
+                border-collapse: collapse;
+              }
+            </style>
+          </head>
+          <body>${printContents}</body>
+        </html>
+      `;
+
+      window.print(); // Trigger the print dialog
+      document.body.innerHTML = originalContents; // Restore the original content
+      window.location.reload(); // Reload to ensure the original state is restored
+    }
+  };
+
+
+  // Calculate total price
+  const totalPrice =
+    PendingTableOrder && PendingTableOrder.length > 0
+      ? PendingTableOrder.reduce(
+        (total, item) => total + item.dist_rate * item.order_unit,
+        0
+      )
+      : 0;
+
+  const totalPricePrint = addedItems.reduce(
+    (total, item) => total + item.dist_rate * item.quantity,
+    0)
+
+  const now = new Date();
+  const formattedDate = `${now.getDate()}/${now.getMonth() + 1}/${now
+    .getFullYear()
+    .toString()
+    .slice(2)}`;
+  const formattedTime = `${now.getHours()}:${now
+    .getMinutes()
+    .toString()
+    .padStart(2, "0")}`;
   return (
-    
-    <div style={{ display: "flex", minHeight: "90vh", }} className={style.nunito500}>
-    <div>
-  {!isOnline && (
-    alert('Offline')
-  )}
-</div>
+
+    <div style={{ display: "flex", minHeight: "90vh", }} className={`${style.nunito500} ${style.modall}`}>
+      <div>
+        {!isOnline && (
+          alert('Offline')
+        )}
+      </div>
       {/* Left Sidebar */}
       <div
         style={{
@@ -733,9 +810,9 @@ const Order = () => {
               <div style={{ borderWidth: 1, display: 'flex', flexWrap: 'wrap', height: "20vh", backgroundColor: "#ddd", width: "100%", padding: 30 }}>
                 {PendingTable.length > 0 ? (
                   PendingTable.map((item, index) => (
-                    <div style={{ border: '2px solid black', borderRadius:5,height: 50, width: 100, marginLeft: 10, display: 'flex', alignItems: 'center', justifyContent: 'center', marginTop: 10, cursor: 'pointer' }}>
+                    <div style={{ border: '2px solid black', borderRadius: 5, height: 50, width: 100, marginLeft: 10, display: 'flex', alignItems: 'center', justifyContent: 'center', marginTop: 10, cursor: 'pointer' }}>
 
-                      <a key={index} onClick={() => handleTableClick(item.tableno, item.O_CouponNo)} style={{ padding: 13, textAlign: 'center', borderRadius:3,width: '50%', backgroundColor: "#435e78", color: "white", }}>{item.tableno}</a>
+                      <a key={index} onClick={() => handleTableClick(item.tableno, item.O_CouponNo)} style={{ padding: 13, textAlign: 'center', borderRadius: 3, width: '50%', backgroundColor: "#435e78", color: "white", }}>{item.tableno}</a>
                       <span
                         onClick={() => handleEyeClick(item.tableno, item.O_CouponNo)}
                         style={{
@@ -799,67 +876,82 @@ const Order = () => {
             boxShadow: "0 0 10px rgba(0, 0, 0, 0.3)",
             zIndex: 1000,
             width: "40%",
-            maxHeight: "85vh", // Dynamic height based on viewport
-            overflowY: "auto", // Enables scrolling if content exceeds max height
+            maxHeight: "85vh",
+            overflowY: "auto",
+
           }}
         >
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <div>
-
-              <h3>Details for Table No: {selectedTable}</h3>
-              <p>Additional information for table {selectedTable} can be shown here.</p>
+          <div className={style.modall}
+          >
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+              <div>
+                <h3>Details for Table No: {selectedTable}</h3>
+                <p>Additional information for table {selectedTable} can be shown here.</p>
+              </div>
+              <p onClick={closeModal} style={{ cursor: "pointer", padding: 10, fontSize: 25 }}>
+                &times;
+              </p>
             </div>
-            <p onClick={closeModal} style={{ cursor: "pointer", padding: 10, fontSize: 25 }}>
-              &times;
-
-            </p>
-          </div>
-          <div className={style.header}>
-            <p className={style.name}>Dish Name</p>
-            <p className={style.name}>Quantity</p>
-            <p className={style.name}>Subtotal</p>
-            <p className={style.name}>Dish Rate</p>
-            <p className={style.name}>Order Unit</p>
-          </div>
-          {PendingTableOrder.map((order) => (
-            <div className={style.header} key={order.id}>
-              <p>{order.dish_name}</p>
-              <p>{order.dish_qnty}</p>
-              <p>{order.order_subtotal}</p>
-              <p>{order.dist_rate}</p>
-              <p>{order.order_unit}</p>
+            <div className={style.header}>
+              <p className={style.name}>Dish Name</p>
+              <p className={style.name}>Quantity</p>
+              <p className={style.name}>Subtotal</p>
+              <p className={style.name}>Dish Rate</p>
+              <p className={style.name}>Order Unit</p>
             </div>
-          ))}
-          <div style={{ textAlign: 'end', marginRight: 50, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }} className="totalamount">
-            <div className={style.payment}>
-              <input
-                type="radio"
-                name="payment"
-                id="online"
-                value="online"
-                onChange={handleChange}
-                checked={payment === "online"} // Control the checked state
-              />
-              <label htmlFor="online">Online</label>
+            {PendingTableOrder.map((order) => (
+              <div className={style.header} key={order.id}>
+                <p>{order.dish_name}</p>
+                <p>{order.dish_qnty}</p>
+                <p>{order.order_subtotal}</p>
+                <p>{order.dist_rate}</p>
+                <p>{order.order_unit}</p>
+              </div>
+            ))}
+            <div
+              style={{
+                textAlign: "end",
+                marginRight: 50,
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+              }}
+              className="totalamount"
+            >
+              <div className={style.payment}>
+                <input
+                  type="radio"
+                  name="payment"
+                  id="online"
+                  value="Online"
+                  onChange={handleChange}
+                  checked={payment === "Online"} // Control the checked state
+                />
+                <label htmlFor="online">Online</label>
 
-              <input
-                type="radio"
-                name="payment"
-                id="cash"
-                value="cash"
-                onChange={handleChange}
-                checked={payment === "cash"} // Control the checked state
-              />
-              <label htmlFor="cash">Cash</label>
+                <input
+                  type="radio"
+                  name="payment"
+                  id="cash"
+                  value="Cash"
+                  onChange={handleChange}
+                  checked={payment === "Cash"} // Control the checked state
+                />
+                <label htmlFor="cash">Cash</label>
+              </div>
+              <p style={{ marginTop: 10 }}>
+                <strong>Total Price: ₹{totalPrice}</strong>
+              </p>
             </div>
-            <p style={{ marginTop: 10 }}>
-              <strong>Total Price: ₹
-                {PendingTableOrder.reduce((total, order) => total + Number(order.order_subtotal), 0)}</strong>
-            </p>
+
+            <button
+              className={style.separatebtn}
+              onClick={() => { handlePendingPrint(); handlePrint(receiptRef) }} // Print content when clicked
+            >
+              Print
+            </button>
           </div>
-
-          <button className={style.separatebtn} onClick={handlePendingPrint}><ModalReceipt dineOrParcel={dineOrParcel} addedItems={PendingTableOrder} coupon={activeCoupon} payment={payment} /></button>
-
+          {/* Printable content */}
 
         </div>
 
@@ -1254,7 +1346,7 @@ const Order = () => {
             >
 
               {/* Total Price */}
-            {dineOrParcel==='Parcel' ? ( <div className={style.payment}>
+              {dineOrParcel === 'Parcel' ? (<div className={style.payment}>
                 <input
                   type="radio"
                   name="payment"
@@ -1274,7 +1366,7 @@ const Order = () => {
                   checked={payment === "Cash"} // Control the checked state
                 />
                 <label htmlFor="cash">Cash</label>
-              </div>):null}
+              </div>) : null}
               <h3
                 style={{
                   margin: "0",
@@ -1297,12 +1389,79 @@ const Order = () => {
                 }}
               >
                 {/* <button className={style.separatebtn} onClick={handlesaveOrder}>Save</button> */}
-                {dineOrParcel === 'Dine In' ? (<button className={style.separatebtn} onClick={handlesaveOrder}>Save</button>) : (<button className={style.separatebtn} onClick={handlesavePrintOrder}><Receipt dineOrParcel={dineOrParcel} addedItems={addedItems} coupon={coupon} payment={payment} /></button>)}
+                {dineOrParcel === 'Dine In' ? (<button className={style.separatebtn} onClick={handlesaveOrder}>Save</button>) : (<button className={style.separatebtn} onClick={() => { handlesavePrintOrder(); handlePrint(receiptRef) }}>Print</button>)}
 
 
 
                 <button className={style.separatebtn}>Download</button>
                 <button className={style.separatebtn}>Share</button>
+              </div>
+              <div ref={receiptRef} className={style.printt}>
+                <h4 style={{ textAlign: 'center', marginBottom: 20 }}>Receipt</h4>
+                <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                  <div>
+                    <p>Date: {formattedDate}</p>
+                    <p>Time: {formattedTime}</p>
+                  </div>
+                  <div>
+                    <p>Type: <strong>{dineOrParcel}</strong></p>
+                    <p>Coupon Code: <strong>{coupon}</strong></p>
+                  </div>
+                </div>
+
+                <div className="table-container" style={{ marginTop: 20, display: 'flex', flexDirection: 'column', width: '100%' }}>
+                  {/* Header Row */}
+                  <div className="table-row" style={{ display: 'flex', justifyContent: 'space-between', fontWeight: 'bold' }}>
+                    <div style={{ width: '60%' }}>Item</div>
+                    <div style={{ width: '20%' }}>Qty</div>
+                    <div style={{ width: '20%' }}>Price</div>
+                  </div>
+
+                  {/* Table Data */}
+                  {dineOrParcel === 'Parcel' ? (
+                    addedItems.map((item, index) => (
+                      <div
+                        className="table-row"
+                        key={index}
+                        style={{
+                          display: 'flex',
+                          justifyContent: 'space-between',
+                          padding: '8px 0',
+                        }}
+                      >
+                        <div style={{ width: '60%' }}>{item.dish_name}</div>
+                        <div style={{ width: '20%' }}>{item.quantity}</div>
+                        <div style={{ width: '20%' }}>₹{item.dist_rate}</div>
+                      </div>
+                    ))
+                  ) : (
+                    PendingTableOrder.map((item, index) => (
+                      <div
+                        className="table-row"
+                        key={index}
+                        style={{
+                          display: 'flex',
+                          justifyContent: 'space-between',
+                          padding: '8px 0',
+                        }}
+                      >
+                        <div style={{ width: '60%' }}>{item.dish_name}</div>
+                        <div style={{ width: '20%' }}>{item.order_unit}</div>
+                        <div style={{ width: '20%' }}>₹{item.dist_rate}</div>
+                      </div>
+                    ))
+                  )}
+
+                </div>
+
+                <hr />
+                <div style={{ display: 'flex', justifyContent: 'space-around', marginTop: 10 }}>
+
+                  <p> Payment: <strong>{payment}</strong></p>
+                  <p>Total: <strong>₹{dineOrParcel === 'Parcel' ? totalPricePrint : totalPrice} </strong></p>
+
+                </div>
+                <p style={{ textAlign: 'center', paddingTop: 5 }}>Presented by Barkat</p>
               </div>
             </div>
           </div>

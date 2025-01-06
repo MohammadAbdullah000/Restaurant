@@ -1,0 +1,16 @@
+@media print{
+    .modall{
+
+        width: 59mm;
+    }
+}
+@media print{
+    .printbtn{
+        display: none;
+    }
+    .top{
+        display: flex;
+        flex-direction: column;
+        gap: 0px;
+    }
+}

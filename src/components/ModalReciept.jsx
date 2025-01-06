@@ -1,126 +1,72 @@
-/*
+import { useRef } from "react";
+const handlePrint = (receiptRef) => {
+  const printContents = receiptRef.current.innerHTML;
 
-OLD CODE
+  // Create a temporary printable area
+  const tempPrintDiv = document.createElement("div");
+  tempPrintDiv.innerHTML = `
+    <html>
+      <head>
+        <title>Receipt</title>
+        <style>
+          body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+          }
+          .receipt-container {
+            width: 59mm;
+            margin: 0 auto;
+            padding: 5mm;
+            font-size: 10px;
+            line-height: 1.4;
+            word-wrap: break-word;
+          }
+          h4 {
+            text-align: center;
+            margin: 5px 0;
+          }
+          p {
+            margin: 5px 0;
+          }
+          table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 5px;
+          }
+          th, td {
+            border: 1px solid #ddd;
+            padding: 4px;
+            text-align: left;
+          }
+          th {
+            background-color: #f2f2f2;
+          }
+          .footer {
+            text-align: center;
+            margin-top: 10px;
+            font-size: 9px;
+          }
+        </style>
+      </head>
+      <body>
+        <div class="receipt-container">
+          ${printContents}
+        </div>
+      </body>
+    </html>
+  `;
 
-import React from "react";
-import jsPDF from "jspdf";
+  document.body.appendChild(tempPrintDiv);
 
-const ModalReceipt = ({ dineOrParcel, addedItems,coupon,payment }) => {
-  const printReceipt = () => {
-    // const coupon = Math.floor(Math.random() * 100);
-
-    // Calculate total price
-    const totalPrice = addedItems.reduce(
-      (total, item) => total + item.dist_rate * item.order_unit,
-      0
-    );
-
-    const now = new Date();
-    const formattedDate = `${now.getDate()}/${now.getMonth() + 1}/${now
-      .getFullYear()
-      .toString()
-      .slice(2)}`;
-    const formattedTime = `${now.getHours()}:${now
-      .getMinutes()
-      .toString()
-      .padStart(2, "0")}`;
-
-    // Calculate dynamic height
-    const baseHeight = 40; // Starting height for fixed content
-    const itemHeight = addedItems.length * 10; // 10mm per item for wrapped text
-    const footerHeight = 20; // Footer height
-    const totalHeight = baseHeight + itemHeight + footerHeight;
-
-    // Create a new PDF with dynamic height
-    const pdf = new jsPDF({
-      orientation: "portrait",
-      unit: "mm",
-      format: [59, totalHeight], // 59mm width and dynamic height
-    });
-
-    // Add receipt content
-    pdf.setFontSize(8); // Reduced from 10 to 8
-    pdf.text("Receipt", 25, 10, { align: "center" }); // Centered title
-    pdf.setFontSize(6); // Reduced from 8 to 6
-    pdf.text(`Date: ${formattedDate}`, 5, 20);
-    pdf.text(`Time: ${formattedTime}`, 40, 20);
-    pdf.text(`Type: ${dineOrParcel}`, 5, 25);
-    pdf.text(`Coupon Code: ${coupon}`, 5, 30);
-
-    // Add order items
-    
-    pdf.setFontSize(6); // Reduced from 8 to 6
-    let yPosition = 40; // Start position for items
-    pdf.text("Item", 5, yPosition);
-    pdf.text("Qty", 35, yPosition); // Moved QTY column 8px to the right
-    pdf.text("Price", 40, yPosition);
-    pdf.text("Amount", 50, yPosition);
-    yPosition += 5;
-
-    addedItems.forEach((item) => {
-      const itemNameLines = pdf.splitTextToSize(item.dish_name, 25); // 45% of 59mm (approx. 25mm)
-      const lineHeight = 5; // Height for each line
-      const itemHeight = itemNameLines.length * lineHeight;
-
-      itemNameLines.forEach((line, index) => {
-        pdf.text(line, 5, yPosition + index * lineHeight); // Item name
-      });
-
-      // Add other columns only to the first line
-      pdf.text(`${String(item.order_unit)}`, 35, yPosition); // Moved QTY column 8px to the right
-      pdf.text(`₹${String(item.dist_rate)}`, 40, yPosition);
-      pdf.text(`₹${String(item.dist_rate * item.order_unit)}`, 50, yPosition);
-
-      yPosition += itemHeight + 2; // Move to the next item's position
-    });
-
-    // Add total price
-    pdf.text(`Total: ₹${String(totalPrice)}`, 5, yPosition + 5);
-
-    // Footer
-    pdf.text(`Payment  Mode: ${payment}`, 5, yPosition + 10);
-    pdf.text("Presented by Barkat", 5, yPosition + 15);
-
-    // Save the PDF
-    pdf.save("receipt.pdf");
-    
-  };
-
-  return (
-    <div>
-      <button
-        style={{
-          backgroundColor: "#435e78",
-          borderRadius: "5px",
-          color: "white",
-          border: "none",
-          cursor: "pointer",
-          width: "49%",
-          fontWeight: "500",
-          fontSize: "18px",
-        }}
-        onClick={printReceipt}
-      >
-        Print
-      </button>
-    </div>
-  );
+  // Trigger print and remove temporary div after
+  window.print();
+  document.body.removeChild(tempPrintDiv);
 };
 
-export default ModalReceipt;
-*/
-import React, { useRef } from "react";
-import { useReactToPrint } from "react-to-print";
-
 const ModalReceipt = ({ dineOrParcel, addedItems, coupon, payment }) => {
-  const receiptRef = useRef(); // Reference for the printable content
+  const receiptRef = useRef();
 
-  // Function to trigger print
-  const handlePrint = useReactToPrint({
-    content: () => receiptRef.current,
-  });
-
-  // Calculate total price
   const totalPrice = addedItems.reduce(
     (total, item) => total + item.dist_rate * item.order_unit,
     0
@@ -138,40 +84,38 @@ const ModalReceipt = ({ dineOrParcel, addedItems, coupon, payment }) => {
 
   return (
     <div>
+      {/* Printable content */}
       <div ref={receiptRef} style={{ display: "none" }}>
-        {/* Printable receipt content */}
-        <div style={{ width: "59mm", fontSize: "10px", lineHeight: "1.5" }}>
-          <h4 style={{ textAlign: "center" }}>Receipt</h4>
-          <p>Date: {formattedDate}</p>
-          <p>Time: {formattedTime}</p>
-          <p>Type: {dineOrParcel}</p>
-          <p>Coupon Code: {coupon}</p>
+        <h4>Receipt</h4>
+        <p>Date: {formattedDate}</p>
+        <p>Time: {formattedTime}</p>
+        <p>Type: {dineOrParcel}</p>
+        <p>Coupon Code: {coupon}</p>
 
-          <table style={{ width: "100%", marginTop: "10px" }}>
-            <thead>
-              <tr>
-                <th style={{ textAlign: "left" }}>Item</th>
-                <th style={{ textAlign: "center" }}>Qty</th>
-                <th style={{ textAlign: "right" }}>Price</th>
+        <table>
+          <thead>
+            <tr>
+              <th>Item</th>
+              <th>Qty</th>
+              <th>Price</th>
+              <th>Amount</th>
+            </tr>
+          </thead>
+          <tbody>
+            {addedItems.map((item, index) => (
+              <tr key={index}>
+                <td>{item.dish_name}</td>
+                <td>{item.order_unit}</td>
+                <td>₹{item.dist_rate}</td>
+                <td>₹{item.dist_rate * item.order_unit}</td>
               </tr>
-            </thead>
-            <tbody>
-              {addedItems.map((item, index) => (
-                <tr key={index}>
-                  <td style={{ textAlign: "left" }}>{item.dish_name}</td>
-                  <td style={{ textAlign: "center" }}>{item.order_unit}</td>
-                  <td style={{ textAlign: "right" }}>Rs {item.dist_rate}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+            ))}
+          </tbody>
+        </table>
 
-          <p style={{ marginTop: "10px" }}>Total: Rs {totalPrice}</p>
-          <p>Payment Mode: {payment}</p>
-          <p style={{ marginTop: "10px", textAlign: "center" }}>
-            Presented by Barkat
-          </p>
-        </div>
+        <p>Total: ₹{totalPrice}</p>
+        <p>Payment Mode: {payment}</p>
+        <p className="footer">Presented by Barkat</p>
       </div>
 
       {/* Print button */}
@@ -186,7 +130,7 @@ const ModalReceipt = ({ dineOrParcel, addedItems, coupon, payment }) => {
           fontWeight: "500",
           fontSize: "18px",
         }}
-        onClick={handlePrint}
+        onClick={() => handlePrint(receiptRef)}
       >
         Print
       </button>
