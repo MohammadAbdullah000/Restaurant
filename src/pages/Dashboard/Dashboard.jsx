@@ -61,8 +61,12 @@ const Dashboard = () => {
 
       <div className={`${style.maindashboard}  ${style.nunito500}`}>
         <div className={style.cards}>
-        <div className={style.card}>
-          <FaMoneyBillWave className={style.icon} />
+        <Link to='income'>
+          <div className={style.card}>
+            <div style={{ width: '30%', textAlign: 'center' }}>
+
+              <FaMoneyBillWave className={style.icon} />
+            </div>
 
             <div className={style.text}>
 
@@ -70,20 +74,27 @@ const Dashboard = () => {
               <p>Total: ₹{Order}</p>
             </div>
           </div>
+          </Link>
           <Link to='expenses'>
 
-<div className={style.card}  >
-<FaMoneyCheckAlt className={style.icon} />
-  <div className={style.text}>
-    <h3>Expenses</h3>
-    <p>Total: ₹ {expenesetotal}</p>
-  </div>
-</div>
-</Link>
+            <div className={style.card}  >
+              <div style={{ width: '30%', textAlign: 'center' }}>
+
+                <FaMoneyCheckAlt className={style.icon} />
+              </div>
+              <div className={style.text}>
+                <h3>Expenses</h3>
+                <p>Total: ₹ {expenesetotal}</p>
+              </div>
+            </div>
+          </Link>
           {/* Orders Card */}
-         
+
           <div className={style.card}>
-            <FaUsers className={style.icon} />
+            <div style={{ width: '30%', textAlign: 'center' }}>
+
+              <FaUsers className={style.icon} />
+            </div>
             <div className={style.text}>
 
               <h3>Designations</h3>
@@ -91,7 +102,10 @@ const Dashboard = () => {
             </div>
           </div>
           <div className={style.card}>
-            <FaUsers className={style.icon} />
+            <div style={{ width: '30%', textAlign: 'center' }}>
+
+              <FaUsers className={style.icon} />
+            </div>
             <div className={style.text}>
 
               <h3>Employees</h3>
@@ -101,7 +115,10 @@ const Dashboard = () => {
 
           {/* Customers Card */}
           <div className={style.card}>
-            <FaConciergeBell className={style.icon} />
+            <div style={{ width: '30%', textAlign: 'center' }}>
+
+              <FaConciergeBell className={style.icon} />
+            </div>
             <div className={style.text}>
               <h3>Categorys</h3>
               <p>Total: {dishCatCount}</p>
@@ -112,16 +129,19 @@ const Dashboard = () => {
           <Link to='dishes'>
 
             <div className={style.card}>
-              <FaHamburger className={style.icon} />
+              <div style={{ width: '30%', textAlign: 'center' }}>
+
+                <FaHamburger className={style.icon} />
+              </div>
               <div className={style.text}>
                 <h3>Dishes</h3>
                 <p>Items: {dishesCount}</p>
               </div>
             </div>
           </Link>
-         
+
           {/* Income Card */}
-        
+
 
 
           {/* Outcome Card */}

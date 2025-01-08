@@ -468,14 +468,6 @@ const Order = () => {
   const [activeTablecolor, setActiveTablecolor] = useState('')
   const handleaddtable = (table) => {
     setActiveTablecolor(table)
-    {
-      PendingTable.map((pending) => {
-
-        if (table === pending.tableno) {
-          alert('occu')
-        }
-      })
-    }
     setTableOcc(table)
   }
   const handlePendingPrint = async () => {
@@ -1403,9 +1395,9 @@ const Order = () => {
                     <p>Date: {formattedDate}</p>
                     <p>Time: {formattedTime}</p>
                   </div>
-                  <div>
+                  <div  style={{textAlign:'end'}}>
                     <p>Type: <strong>{dineOrParcel}</strong></p>
-                    <p>Coupon Code: <strong>{coupon}</strong></p>
+                    <strong>{coupon}</strong>
                   </div>
                 </div>
 

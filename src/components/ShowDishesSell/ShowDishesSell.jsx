@@ -151,7 +151,6 @@ const ShowDishesSell = () => {
     return (
         <div className={style.dish}>
             <div className={`${style.cardForm} ${style.nunito500}`}>
-                <h3>View Expenses</h3>
                 <form onSubmit={(e) => e.preventDefault()}>
                     <div className={style.formGroupdish}>
                         <label htmlFor="cat">Category Name:</label>

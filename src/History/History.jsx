@@ -146,59 +146,82 @@ const History = () => {
     return (
         <div>
             {/* Coupon Boxes */}
-            <div>
-                {/* Today's Coupons Section */}
-                <h2 style={{ paddingInline: '1rem', paddingTop: '1rem' }}>Today's Coupons</h2>
-                <div style={{ display: "flex", flexWrap: "wrap", gap: "16px", padding: "20px" }}>
-                    {coupons.todaysCoupons.length > 0 ? (
-                        coupons.todaysCoupons.map((coupon, index) => (
-                            <div
-                                key={index}
-                                onClick={() => fetchCouponDetails(coupon.O_CouponNo)}
-                                style={{
-                                    border: "1px solid #ddd",
-                                    borderRadius: "8px",
-                                    padding: "16px",
-                                    minWidth: "200px",
-                                    textAlign: "center",
-                                    backgroundColor: "#f9f9f9",
-                                    cursor: "pointer",
-                                }}
-                            >
-                                <h3>{coupon.O_CouponNo || "N/A"}</h3>
-                            </div>
-                        ))
-                    ) : (
-                        <p>No coupons available for today.</p>
-                    )}
+            <div style={{ backgroundColor: '#f9f9f9', width: '100vw' }}>
+    {/* Today's Coupons Section */}
+    <h2 style={{ paddingInline: '1rem', paddingTop: '1rem' }}>Today's Orders</h2>
+    <div
+        style={{
+            display: "flex",
+            flexWrap: "wrap",
+            gap: "16px",
+            padding: "20px",
+            justifyContent: '',
+            width: '100%',
+        }}
+    >
+        {coupons.todaysCoupons.length > 0 ? (
+            coupons.todaysCoupons.map((coupon, index) => (
+                <div
+                    key={index}
+                    onClick={() => fetchCouponDetails(coupon.O_CouponNo)}
+                    style={{
+                        border: "1px solid #ddd",
+                        borderRadius: "8px",
+                        padding: "25px",
+                        flex: '1 1 calc(20% - 16px)', // Adjusts the size dynamically
+                        textAlign: "center",
+                        color: '#fff',
+                        backgroundColor: "#435e78",
+                        cursor: "pointer",
+                        maxWidth: '19%', // Ensures consistent sizing
+                    }}
+                >
+                    <h3>{coupon.O_CouponNo || "N/A"}</h3>
                 </div>
+            ))
+        ) : (
+            <p>No coupons available for today.</p>
+        )}
+    </div>
 
-                {/* Last 7 Days' Coupons Section */}
-                <h2 style={{ paddingInline: '1rem', paddingTop: '1rem' }}>Last 7 Days' Coupons (Excluding Today)</h2>
-                <div style={{ display: "flex", flexWrap: "wrap", gap: "16px", padding: "20px" }}>
-                    {coupons.last7DaysCoupons.length > 0 ? (
-                        coupons.last7DaysCoupons.map((coupon, index) => (
-                            <div
-                                key={index}
-                                onClick={() => fetchCouponDetails(coupon.O_CouponNo)}
-                                style={{
-                                    border: "1px solid #ddd",
-                                    borderRadius: "8px",
-                                    padding: "16px",
-                                    minWidth: "200px",
-                                    textAlign: "center",
-                                    backgroundColor: "#f9f9f9",
-                                    cursor: "pointer",
-                                }}
-                            >
-                                <h3>{coupon.O_CouponNo || "N/A"}</h3>
-                            </div>
-                        ))
-                    ) : (
-                        <p>No coupons available for the last 7 days.</p>
-                    )}
+    {/* Last 7 Days' Coupons Section */}
+    <h2 style={{ paddingInline: '1rem', paddingTop: '1rem' }}>Last 7 Days Orders</h2>
+    <div
+        style={{
+            display: "flex",
+            flexWrap: "wrap",
+            justifyContent: 'start',
+            gap: "16px",
+            padding: "20px",
+            width: '100%',
+        }}
+    >
+        {coupons.last7DaysCoupons.length > 0 ? (
+            coupons.last7DaysCoupons.map((coupon, index) => (
+                <div
+                    key={index}
+                    onClick={() => fetchCouponDetails(coupon.O_CouponNo)}
+                    style={{
+                        border: "none",
+                        borderRadius: "8px",
+                        padding: "25px",
+                        flex: '1 1 calc(20% - 16px)', // Adjusts the size dynamically
+                        textAlign: "center",
+                        color: '#fff',
+                        backgroundColor: "#435e78",
+                        maxWidth: '19%', // Ensures consistent sizing
+                        cursor: "pointer",
+                    }}
+                >
+                    <h3>{coupon.O_CouponNo || "N/A"}</h3>
                 </div>
-            </div>
+            ))
+        ) : (
+            <p>No coupons available for the last 7 days.</p>
+        )}
+    </div>
+</div>
+
 
 
             {/* Modal for Coupon Details */}
