@@ -1,0 +1,21 @@
+.nunito500 {
+    font-family: "Nunito", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 500;
+    font-style: normal;
+  }
+  .cinzel500 {
+    font-family: "Cinzel", serif;
+    font-optical-sizing: auto;
+    font-weight: 500;
+    font-style: normal;
+  }
+  .slider{
+    margin-inline: 5rem;
+  }
+  @media (max-width:1000px){
+
+    .slider{
+      margin-inline: 3rem;
+    }
+  }

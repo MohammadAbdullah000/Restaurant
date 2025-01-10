@@ -56,7 +56,7 @@ const Sidebar = () => {
           <li>
             <Link to="dish" onClick={closeSidebar}>
               <i className="fas fa-box"></i>
-              <span>Dish</span>
+              <span>Add Dish</span>
             </Link>
           </li>
           <li>

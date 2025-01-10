@@ -10,7 +10,6 @@
     cursor: pointer;
     font-size: 16px;
     width: 35%;
-    
 }
 .firstbuttons{
     margin-top: 15px;
@@ -115,3 +114,8 @@
       display: none;
     }
   }
+@media (max-width:1200px) {
+  .modall{
+    font-size: 1rem;
+  }
+}

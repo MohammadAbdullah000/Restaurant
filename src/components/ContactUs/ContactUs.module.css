@@ -1,0 +1,40 @@
+.nunito500 {
+    font-family: "Nunito", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 500;
+    font-style: normal;
+}
+
+.contactus {
+    background-color: #f0f0f0;
+    padding: 2rem;
+}
+
+.contactcontent {
+    display: flex;
+    justify-content: space-evenly;
+    line-height: 2;
+}
+
+.contactus h2 {
+    padding: 3rem;
+    font-size: 2rem;
+    text-align: center;
+}
+
+.contact h4 {
+    margin-block: 0.7rem;
+    font-size: 1.3rem
+}
+
+.contact {
+    text-align: center;
+}
+
+@media (max-width:786px) {
+    .contactcontent {
+        display: flex;
+        flex-direction: column;
+        line-height: 2;
+    }
+}

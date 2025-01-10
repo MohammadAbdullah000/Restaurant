@@ -109,8 +109,26 @@ const Income = () => {
     // Calculate Grand Total
     const grandTotal = filteredOrders.reduce((sum, order) => sum + parseFloat(order.order_subtotal || 0), 0);
 
+    const handleReset = async () => {
+        try {
+            const response = await axios.post('https://hotelbarkat.com/Apis/Receipt_Reset_Api.php');
+    
+            if (response.status === 200 && response.data.success) {
+               alert('Successfully Reset the coupons');
+            } else {
+                console.warn('Failed to submit data:', response.data.message || 'Unknown error');
+            }
+        } catch (error) {
+            console.error('Error while submitting data to the database:', error.message);
+            if (error.response) {
+                console.error('Error details:', error.response.data);
+            }
+        }
+    };
     return (
         <div style={{ padding: '20px' }}>
+        <div style={{display:'flex',alignItems:'center',justifyContent:'space-evenly',gap:'1rem'}}>
+
             <div style={{ display: 'flex', gap: '10px', marginBottom: '20px' }} className={`${style.cardForm} ${style.nunito500}`}>
                 <form onSubmit={(e) => e.preventDefault()}>
                     <div className={style.formGroupdish}>
@@ -168,6 +186,10 @@ const Income = () => {
                     </div>
                 </form>
             </div>
+            <div className={style.buttonGroup}>
+                <button onClick={handleReset}>Reset</button>
+                </div>
+        </div>
 
             <div>
                 <DataTable

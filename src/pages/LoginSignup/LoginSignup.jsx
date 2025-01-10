@@ -1,4 +1,4 @@
-import React, { useState, useEffect,useContext } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import "../../index.css";
 import style from "./LoginSignup.module.css";
@@ -7,7 +7,7 @@ const LoginSignup = () => {
   const [inputStates, setInputStates] = useState({ mobile: false, password: false, email: false });
   const [isSignUpMode, setIsSignUpMode] = useState(false);
   const [fadeIn, setFadeIn] = useState(false);
-  const [loginData, setLoginData] =  useState({ mobile: "", password: "" });
+  const [loginData, setLoginData] = useState({ mobile: "", password: "" });
   const [error, setError] = useState("");
   const [activeSlide, setActiveSlide] = useState(1);
   const navigate = useNavigate();
@@ -57,7 +57,7 @@ const LoginSignup = () => {
       const result = await response.json();
       // const result = await response.json();
       console.log("API Response:", result); // Debugging line
-  
+
       // if (response.ok && result.status === "success") {
       if (result.id) {
         // Save user data if necessary (e.g., in localStorage or context)
@@ -75,62 +75,61 @@ const LoginSignup = () => {
 
   return (
     <div
-    className={`${style.login} ${isSignUpMode ? style.signUpMode : ""} ${
-      fadeIn ? style.fadeIn : ""
-    }`}
-  >
-    <div className={`${style.box} ${style.nunito500}`}>
-      <div className={style.innerBox}>
-        <div className={style.formsWrap}>
-          {/* Sign In Form */}
-          <form className={style.signInForm} onSubmit={handleLogin}>
-            <div className={style.logo}>
-              <img
-                src="https://letzbim.com/wp-content/uploads/2020/06/jfjrtj.webp"
-                alt="Logo"
-              />
-            </div>
-            <div className={style.heading}>
-              <h2 className={style.cinzel500}>Welcome Back</h2>
-              <h6>Not registered yet? </h6>
-              <Link to="#" className={style.toggle} onClick={toggleMode}>
-                Sign Up
-              </Link>
-            </div>
-            <div className={style.actualForm}>
-              <div className={style.inputWrap}>
-                <input
-                  type="text"
-                  name="mobile"
-                  value={loginData.mobile}
-                  className={`${style.inputField} ${inputStates.mobile ? style.active : ""}`}
-                  required
-                  onFocus={() => handleFocus("mobile")}
-                  onBlur={(e) => handleBlur("mobile", e.target.value)}
-                  onChange={handleInputChange}
+      className={`${style.login} ${isSignUpMode ? style.signUpMode : ""} ${fadeIn ? style.fadeIn : ""
+        }`}
+    >
+      <div className={`${style.box} ${style.nunito500}`}>
+        <div className={style.innerBox}>
+          <div className={style.formsWrap}>
+            {/* Sign In Form */}
+            <form className={style.signInForm} onSubmit={handleLogin}>
+              <div className={style.logo}>
+                <img
+                  src="https://letzbim.com/wp-content/uploads/2020/06/jfjrtj.webp"
+                  alt="Logo"
                 />
-                <label className={inputStates.mobile ? style.activeLabel : ""}>Mobile Number</label>
               </div>
-              <div className={style.inputWrap}>
-                <input
-                  type="password"
-                  name="password"
-                  value={loginData.password}
-                  className={`${style.inputField} ${inputStates.password ? style.active : ""}`}
-                  required
-                  onFocus={() => handleFocus("password")}
-                  onBlur={(e) => handleBlur("password", e.target.value)}
-                  onChange={handleInputChange}
-                />
-                <label className={inputStates.password ? style.activeLabel : ""}>Password</label>
+              <div className={style.heading}>
+                <h2 className={style.cinzel500}>Welcome Back</h2>
+                <h6>Not registered yet? </h6>
+                <Link to="#" className={style.toggle} onClick={toggleMode}>
+                  Sign Up
+                </Link>
               </div>
-              <input type="submit" className={style.signBtn} value="Sign In" />
-              {error && <p className={style.errorText}>{error}</p>}
-              <Link to="/forgotpassword" className={style.text}>
-                Forgotten your password?
-              </Link>
-            </div>
-          </form>
+              <div className={style.actualForm}>
+                <div className={style.inputWrap}>
+                  <input
+                    type="text"
+                    name="mobile"
+                    value={loginData.mobile}
+                    className={`${style.inputField} ${inputStates.mobile ? style.active : ""}`}
+                    required
+                    onFocus={() => handleFocus("mobile")}
+                    onBlur={(e) => handleBlur("mobile", e.target.value)}
+                    onChange={handleInputChange}
+                  />
+                  <label className={inputStates.mobile ? style.activeLabel : ""}>Mobile Number</label>
+                </div>
+                <div className={style.inputWrap}>
+                  <input
+                    type="password"
+                    name="password"
+                    value={loginData.password}
+                    className={`${style.inputField} ${inputStates.password ? style.active : ""}`}
+                    required
+                    onFocus={() => handleFocus("password")}
+                    onBlur={(e) => handleBlur("password", e.target.value)}
+                    onChange={handleInputChange}
+                  />
+                  <label className={inputStates.password ? style.activeLabel : ""}>Password</label>
+                </div>
+                <input type="submit" className={style.signBtn} value="Sign In" />
+                {error && <p className={style.errorText}>{error}</p>}
+                <Link to="/forgotpassword" className={style.text}>
+                  Forgotten your password?
+                </Link>
+              </div>
+            </form>
 
 
             {/* Sign Up Form */}

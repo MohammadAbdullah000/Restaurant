@@ -8,12 +8,12 @@ import Footer from '../../layouts/Footer/Footer'
 const Home = () => {
   return (
     <div>
-        <Header/>
-        {/* <HeroSection/>
+        {/* <Header/> */}
+        <HeroSection/>
         <AboutUs />
         <Slider/>
         <ContactUs/>
-        <Footer/> */}
+        <Footer/>
 
     </div>
   )

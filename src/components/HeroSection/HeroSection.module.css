@@ -1,0 +1,133 @@
+.header {
+  position: fixed;
+  top: 0;
+  /* Ensure the header is at the very top */
+  width: 100%;
+  /* Make the header span the full width */
+  z-index: 100;
+  /* Keep it above other content */
+  background-color: #2f4f4f;
+  /* Add a background color to distinguish it */
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  /* Optional: Add a shadow for better visibility */
+}
+
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem;
+  /* background-color: #2f4f4f; */
+}
+
+/* Logo */
+.logo {
+  font-size: 1.5rem;
+  /* color: white; */
+  font-weight: bold;
+}
+
+/* Hamburger button */
+.hamburger {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  color: white;
+  cursor: pointer;
+  display: none;
+  z-index: 110;
+}
+
+
+/* Menu (Desktop Default) */
+.menu {
+  display: flex;
+  cursor: pointer;
+}
+
+.menu ul {
+  display: flex;
+  gap: 2rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.menu ul li a {
+  text-decoration: none;
+  color: white;
+  font-size: 1.3rem;
+  transition: color 0.3s ease;
+}
+
+.menu ul li a:hover {
+  color: #00bcd4;
+}
+
+/* Responsive Menu (Mobile) */
+@media (max-width: 768px) {
+  .hamburger {
+    display: block;
+    /* Show hamburger on mobile */
+  }
+
+  .menu {
+    position: fixed;
+    top: 0;
+    right: -100%;
+    height: 100%;
+    width: 60%;
+    background-color: #2f4f4f;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 2rem;
+    transition: right 0.3s ease-in-out;
+    z-index: 100;
+  }
+
+  .menu.active {
+    right: 0;
+  }
+
+  .menu ul {
+    flex-direction: column;
+  }
+}
+
+
+.cinzel500 {
+  font-family: "Cinzel", serif;
+  font-optical-sizing: auto;
+  font-weight: 500;
+  font-style: normal;
+}
+
+
+.carouselContainer {
+  width: 100%;
+  /* Full width of parent container */
+}
+
+.herostart {
+  margin-top: 4rem;
+
+}
+
+.carouselImage {
+  margin: 0 auto;
+  /* Center align */
+  width: 90%;
+  height: auto;
+  /* Maintain aspect ratio */
+  max-height: 650px;
+  border-radius: 8px;
+  /* Optional: Rounded corners */
+}
+@media (max-width:550px){
+  .herostart
+{
+  margin-top: 5rem;
+
+}
+}

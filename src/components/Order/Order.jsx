@@ -1,3 +1,4 @@
+import axios from "axios";
 import { FaTrash, FaEye } from "react-icons/fa";
 import { IoMdArrowRoundBack } from "react-icons/io";
 import React, { useState, useEffect, useRef } from "react";
@@ -39,18 +40,7 @@ const Order = () => {
       fetch(`https://hotelbarkat.com/Apis/dishes_fetch_Api.php?dishCatID=${selectedCategory}`)
         .then((res) => res.json())
         .then((data) => {
-          // if(!data.length){
-          //   setNoDishesMessage("No Dishes Added"); // Show the message
 
-          // }
-
-          // const filteredSubcategories = data.filter(
-          //   (dish) => dish.dishcat_id === selectedCategory
-          // );
-          // if(!data.length){
-          //   setNoDishesMessage("No Dishes Added"); // Show the message
-
-          // }
           setSubcategories(data);
           // console.log(data)
           console.log('sub', subcategories);
@@ -141,57 +131,10 @@ const Order = () => {
     // setIsModalOpen(true); // Open the modal if needed
   };
 
-
-
-  // setCoupon(coupon)
-  // console.log('Coupon:', coupon);
-  //  { activeCouponTable==null ?(
-  //   let orderCoupon = coupon;
-  //  ):(
-  //   let orderCoupon = activeCouponTable;
-  //  )}
-  // const [orderCoupon,setOrderCoupon]=useState(null)
-  // let orderCo = activeCouponTable == null ? coupon : activeCouponTable;
-  //   setOrderCoupon(orderCo)
-
-  // const handlePrint = () => {
-  //   let count = 0
-  //   // addedItems.forEach((item)=>{
-  //   //   console.log('Dish Name:',item.dish_name);
-  //   //   console.log('Dish Rate:',item.dist_rate);
-  //   //   console.log('Dish Quantity:',item.quantity);
-  //   //   console.log('Dish qnty:',item.dish_qnty);
-  //   //   console.log('Dish Subtotal:',item.dist_rate * item.quantity)
-  //   //   // console.log(item.dish_name);
-
-  //   // })
-  //   console.log(addedItems)
-  //   const Total = calculateTotalPrice()
-  //   console.log('Total:', Total);
-  //   // const coupon = Math.floor(Math.random() * 100)
-  //   // setCoupon(coupon)
-  //   // console.log('Coupon:', coupon);
-  //   fetchcoupon();
-  //   console.log('c', coupon);
-
-  // }
   const handleParcel = () => {
     setDineOrParcel('Parcel')
   }
-  // const handlesaveOrder=()=>{
-  //   // console.log(addedItems);
-  //   // Add subtotal to each item
-  //   const updatedItems = addedItems.map((item) => ({
-  //     ...item,
-  //     subtotal: item.quantity * item.dist_rate, // Assuming each item has `quantity` and `price`
-  //   }));
-  //   // {item.dist_rate * item.quantity}
-  //   // Log the updated items
-  //   console.log("Updated Items:", updatedItems);
-  //   // Calculate total price
-  //   const Total = updatedItems.reduce((sum, item) => sum + item.subtotal, 0);
-  //   console.log("Total:", Total); 
-  // }
+
   const [payment, setPayment] = useState('')
   const handleChange = (event) => {
     setPayment(event.target.value); // Update state with selected value
@@ -200,10 +143,7 @@ const Order = () => {
 
 
   const handlesaveOrder = async () => {
-    // if(!payment){
-    //   alert('Please Select Payment Mode')
-    // }
-    // else{
+
 
     try {
       // Ensure tableOcc and addedItems are valid
@@ -274,6 +214,11 @@ const Order = () => {
   const handlesavePrintOrder = async () => {
     if (!payment) {
       alert("Please Select Payment Mode!!!")
+      return
+    }
+    if (!addedItems || addedItems.length === 0) {
+      alert("Please add at least one item before submitting the order.");
+      return;
     } else {
 
       try {
@@ -317,12 +262,12 @@ const Order = () => {
         const result = await response.json();
 
         if (response.ok) {
-          console.log("Order submitted successfully:", result);
-          alert("Order submitted successfully");
-          fetchPendingTable()
-          // fetchPendingTableOrder()
+          // alert("Order submitted successfully");
+          handlePrint(receiptRef)
           setAddedItems([])
           fetchcoupon()
+          fetchPendingTable()
+          // fetchPendingTableOrder()
         } else {
           console.error("Error submitting order:", result.message);
           alert(`Error: ${result.message}`);
@@ -333,58 +278,6 @@ const Order = () => {
       }
     }
   };
-
-
-  // async function handleAddExpense() {
-  //   const formData = new URLSearchParams();
-  //   formData.append("expensCat", expCategory);
-  //   formData.append("expensInfo",expDes);
-  //   formData.append("expnAmount",amountSpent);
-  //   formData.append("expensMethod",paymentMethod);
-  //   formData.append("venderName", venderName);
-  //   formData.append("date", date);
-
-  //   try {
-  //     const response = await fetch("https://letzbim.com/Restaurent/Expenses_Add_Api.php", {
-  //       method: "POST",
-  //       headers: {
-  //         "Content-Type": "application/x-www-form-urlencoded",
-  //       },
-  //       body: formData.toString(),
-  //     });
-
-  //     if (response.ok) {
-  //       const result = await response.json();
-  //       console.log(result);
-  //       if (result.successmessage) {
-  //         // Add the new dish to the state directly
-  //          setExpenses((prevExpenses=[]) => [
-  //           ...prevExpenses,
-  //           {
-  //             expensCat: expCategory,
-  //             expensInfo: expDes,
-  //             expnAmount: amountSpent,
-  //             expensMethod: paymentMethod,
-  //             venderName: venderName,
-  //             date: date,
-  //           },
-  //         ]);
-  //         console.log('success')
-  //       } else {
-  //         alert("Failed to add dish: " + result.errmessage);
-  //         console
-  //       }
-  //     } else {
-  //       alert("API Error: " + response.statusText);
-  //     }
-  //   } catch (error) {
-  //     console.error("Error adding dish:", result.errmessage);
-  //     alert("Failed to add dish. Please try again later.");
-  //   }
-  // }
-
-  // Update the state if needed
-  // setAddedItems(updatedItems);
 
 
 
@@ -471,42 +364,48 @@ const Order = () => {
     setTableOcc(table)
   }
   const handlePendingPrint = async () => {
-    try {
-      // Prepare the payload
-      const payload = new URLSearchParams({
-        dineID: selectedTable, // Replace with the state or variable for the selected table
-        CouponNum: activeCoupon, // Replace with the state or variable for the active coupon
-        paymethod: payment, // Replace with the state or variable for the payment method
-      });
-
-      // Make the API call
-      const response = await fetch("https://hotelbarkat.com/Apis/Pendig_Order_Finish_Api.php", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/x-www-form-urlencoded",
-        },
-        body: payload.toString(), // Convert the payload to a URL-encoded string
-      });
-
-      // Parse the response
-      const result = await response.json();
-
-      if (response.ok) {
-        console.log("Pending order finished successfully:", result);
-        alert("Order finished successfully!");
-        setIsModalOpen(false)
-        fetchcoupon()
-        fetchPendingTable()
-        // PendingTable()
-        // Perform any additional actions like updating the UI
-      } else {
-        console.error("Error finishing order:", result.message);
-        alert(`Error: ${result.message}`);
-      }
-    } catch (error) {
-      console.error("Error in handlePendingPrint:", error);
-      alert("An error occurred while finishing the order.");
+    if (!payment) {
+      alert('Please make payment first')
     }
+    else {
+      try {
+        // Prepare the payload
+        const payload = new URLSearchParams({
+          dineID: selectedTable, // Replace with the state or variable for the selected table
+          CouponNum: activeCoupon, // Replace with the state or variable for the active coupon
+          paymethod: payment, // Replace with the state or variable for the payment method
+        });
+
+        // Make the API call
+        const response = await fetch("https://hotelbarkat.com/Apis/Pendig_Order_Finish_Api.php", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/x-www-form-urlencoded",
+          },
+          body: payload.toString(), // Convert the payload to a URL-encoded string
+        });
+
+        // Parse the response
+        const result = await response.json();
+
+        if (response.ok) {
+          setIsModalOpen(false)
+          handlePrint(receiptRef)
+          fetchcoupon()
+          fetchPendingTable()
+          // alert("Order finished successfully!");
+          // PendingTable()
+          // Perform any additional actions like updating the UI
+        } else {
+          console.error("Error finishing order:", result.message);
+          alert(`Error: ${result.message}`);
+        }
+      } catch (error) {
+        console.error("Error in handlePendingPrint:", error);
+        alert("An error occurred while finishing the order.");
+      }
+    }
+
   };
 
 
@@ -540,40 +439,46 @@ const Order = () => {
   const receiptRef = useRef();
 
   const handlePrint = (ref) => {
-    if (ref.current) {
-      const originalContents = document.body.innerHTML; // Save original page content
-      const printContents = ref.current.innerHTML; // Get the printable content
+    if (!payment) {
+      return
+    }
 
-      // Replace the page's content with the printable content
-      document.body.innerHTML = `
-        <html>
-          <head>
-            <title>Print</title>
-            <style>
-              /* Add styles for your print layout here */
-              body {
-                font-family: Arial, sans-serif;
-                padding: 20px;
-                width: 59mm; /* Set the width for printing */
-              }
-              .table-row {
-                display: flex;
-                justify-content: space-between;
-                margin-bottom: 8px;
-              }
-              .table-container {
-                width: 100%;
-                border-collapse: collapse;
-              }
-            </style>
-          </head>
-          <body>${printContents}</body>
-        </html>
-      `;
+    else {
+      if (ref.current) {
+        const originalContents = document.body.innerHTML; // Save original page content
+        const printContents = ref.current.innerHTML; // Get the printable content
 
-      window.print(); // Trigger the print dialog
-      document.body.innerHTML = originalContents; // Restore the original content
-      window.location.reload(); // Reload to ensure the original state is restored
+        // Replace the page's content with the printable content
+        document.body.innerHTML = `
+          <html>
+            <head>
+              <title>Print</title>
+              <style>
+                /* Add styles for your print layout here */
+                body {
+                  font-family: Arial, sans-serif;
+                  padding: 15px;
+                  width: 59mm; /* Set the width for printing */
+                }
+                .table-row {
+                  display: flex;
+                  justify-content: space-between;
+                  margin-bottom: 8px;
+                }
+                .table-container {
+                  width: 100%;
+                  border-collapse: collapse;
+                }
+              </style>
+            </head>
+            <body>${printContents}</body>
+          </html>
+        `;
+
+        window.print(); // Trigger the print dialog
+        document.body.innerHTML = originalContents; // Restore the original content
+        window.location.reload(); // Reload to ensure the original state is restored
+      }
     }
   };
 
@@ -600,8 +505,39 @@ const Order = () => {
     .getMinutes()
     .toString()
     .padStart(2, "0")}`;
-  return (
 
+  const handleDeletePending = (orderId) => async () => {
+    if (!window.confirm('Are you sure you want to delete this order?')) {
+      return;
+    }
+
+    try {
+      const response = await axios.post(
+        'https://hotelbarkat.com/Apis/Order_Delete_Api.php',
+        new URLSearchParams({ order_id: orderId }),
+        { headers: { 'Content-Type': 'application/x-www-form-urlencoded' } }
+      );
+
+      if (response.data.successmessage === 'success') {
+        // alert('Order deleted successfully!');
+        // Update the PendingTableOrder array to remove the deleted order
+        const updatedOrders = PendingTableOrder.filter(order => order.order_id !== orderId);
+        setPendingTableOrder(updatedOrders); // Ensure to update the state
+        fetchPendingTable()
+        setIsModalOpen(false)
+        // If no orders are left, we will show the "No pending orders" message.
+      } else {
+        alert(`Error: ${response.data.message}`);
+      }
+    } catch (error) {
+      console.error('Error deleting the order:', error);
+      alert('An error occurred while deleting the order.');
+    }
+  };
+
+
+
+  return (
     <div style={{ display: "flex", minHeight: "90vh", }} className={`${style.nunito500} ${style.modall}`}>
       <div>
         {!isOnline && (
@@ -657,54 +593,54 @@ const Order = () => {
                 flexWrap: "wrap"
               }}
             >
+
               <div
                 style={{
-                  width: "100%",
+                  width: "49.5%",
                   overflowY: "scroll",
                   padding: "10px",
-                  borderRight: "1px solid #ddd",
                   height: "100%"
                 }}
               >
-                {/* <h3 style={{ textAlign: "center", color: "#2C3E50", marginTop: '0.5rem' }} className={style.cinzel500}>Half Quantity</h3> */}
-                {/* filter((dish) => dish.dish_qnty === "Half"). */}
-                {subcategories.length > 0 ? (
+
+                <h3 style={{ textAlign: "center", color: "#2C3E50", marginTop: '0.5rem' }} className={style.cinzel500} >Half Quantity</h3>
+                {subcategories.filter((dish) => dish.dish_qnty === "Half").length > 0 ? (
                   <ul
                     style={{
                       listStyleType: "none",
-                      // marginTop: '1.5rem',
                       paddingBottom: "20px",
-                      display: "flex", flexDirection: "row", flexWrap: "wrap", justifyContent: 'flex-start', alignItems: 'flex-start'
+                      marginTop: '1.5rem',
                     }}
                   >
                     {subcategories
+                      .filter((dish) => dish.dish_qnty === "Half")
                       .map((dish) => (
                         <li
                           key={dish.dish_id}
                           style={{
                             cursor: "pointer",
                             backgroundColor: "#2C3E50",
-                            margin: 10,
+                            marginTop: 15,
                             color: "#1A1A1A",
-                            fontSize: 18,
-                            // marginLeft: "auto",
-                            // marginRight: "auto",
+                            fontSize: 15,
+                            marginLeft: "auto",
+                            marginRight: "auto",
                             fontWeight: 400,
-                            width: "30%", height: 60,
+                            width: "90%",
                             display: "flex",
-                            justifyContent: dish.dish_qnty === "Half" ? "flex-start" : "center",
-                            alignItems: dish.dish_qnty === "Half" ? "flex-start" : "center",
+                            justifyContent: "center",
+                            alignItems: "center",
                           }}
                           onClick={() => handleAddItem(dish)}
                         >
                           <div
                             style={{
                               backgroundColor: "#e0e0e0",
-                              height: dish.dish_qnty === "Half" ? "90%" : "80%",
+                              height: "100%",
+                              marginBottom: '3px',
                               width: "100%",
+                              padding: 10,
                               textAlign: "center",
-                              display: 'flex',
-                              justifyContent: "center", alignItems: "center",
                             }}
                           >
                             <h4>{dish.dish_name}</h4>
@@ -724,14 +660,12 @@ const Order = () => {
                     No Half Quantity Dishes.
                   </p>
                 )}
+
               </div>
-
-
-
-              {/* Column for Full Quantity */}
-              {/* <div
+              <hr />
+              <div
                 style={{
-                  width: "50%",
+                  width: "49.5%",
                   overflowY: "scroll",
                   padding: "10px",
                   height: "100%"
@@ -796,7 +730,7 @@ const Order = () => {
                   </p>
                 )}
 
-              </div> */}
+              </div>
 
 
               <div style={{ borderWidth: 1, display: 'flex', flexWrap: 'wrap', height: "20vh", backgroundColor: "#ddd", width: "100%", padding: 30 }}>
@@ -822,11 +756,11 @@ const Order = () => {
 
                   ))
                 ) : (
-                  <tr>
-                    <h3 >
-                      No Pending Orders
-                    </h3>
-                  </tr>
+
+                  <h3 >
+                    No Pending Orders
+                  </h3>
+
                 )}
               </div>
             </div>
@@ -890,16 +824,32 @@ const Order = () => {
               <p className={style.name}>Subtotal</p>
               <p className={style.name}>Dish Rate</p>
               <p className={style.name}>Order Unit</p>
+              <p className={style.name}>Action</p>
             </div>
-            {PendingTableOrder.map((order) => (
-              <div className={style.header} key={order.id}>
-                <p>{order.dish_name}</p>
-                <p>{order.dish_qnty}</p>
-                <p>{order.order_subtotal}</p>
-                <p>{order.dist_rate}</p>
-                <p>{order.order_unit}</p>
-              </div>
-            ))}
+            {PendingTableOrder && PendingTableOrder.length > 0 ? (
+              PendingTableOrder.map((order) => (
+                <div className={style.header} key={order.id}>
+                  <p>{order.dish_name}</p>
+                  <p>{order.dish_qnty}</p>
+                  <p>{order.order_subtotal}</p>
+                  <p>{order.dist_rate}</p>
+                  <p>{order.order_unit}</p>
+                  <p
+                    style={{
+                      backgroundColor: "red",
+                      color: "white",
+                      border: "none",
+                      cursor: "pointer",
+                      padding: "5px",
+                    }} onClick={handleDeletePending(order.order_id)}>                        <FaTrash />
+                  </p>
+                </div>
+              ))
+            ) : (
+              <p style={{ textAlign: 'center', marginBlock: '10px' }}>No pending orders.</p> // Show this if the array is empty
+            )}
+
+
             <div
               style={{
                 textAlign: "end",
@@ -938,7 +888,7 @@ const Order = () => {
 
             <button
               className={style.separatebtn}
-              onClick={() => { handlePendingPrint(); handlePrint(receiptRef) }} // Print content when clicked
+              onClick={() => { handlePendingPrint() }} // Print content when clicked
             >
               Print
             </button>
@@ -1219,15 +1169,7 @@ const Order = () => {
             ) : (
               null
             )}
-            {/* <button className={style.tablebutton} onClick={() => handleaddtable('2')}>2</button>
-              <button className={style.tablebutton} onClick={() => handleaddtable('3')}>3</button>
-              <button className={style.tablebutton} onClick={() => handleaddtable('4')}>4</button>
-              <button className={style.tablebutton} onClick={() => handleaddtable('5')}>5</button>
-              <button className={style.tablebutton} onClick={() => handleaddtable('6')}>6</button>
-              <button className={style.tablebutton} onClick={() => handleaddtable('7')}>7</button>
-              <button className={style.tablebutton} onClick={() => handleaddtable('8')}>8</button>
-              <button className={style.tablebutton} onClick={() => handleaddtable('9')}>9</button>
-              <button className={style.tablebutton} onClick={() => handleaddtable('10')}>10</button> */}
+
 
             {/* Items Section */}
             <div style={{ flex: "1" }}>
@@ -1381,7 +1323,7 @@ const Order = () => {
                 }}
               >
                 {/* <button className={style.separatebtn} onClick={handlesaveOrder}>Save</button> */}
-                {dineOrParcel === 'Dine In' ? (<button className={style.separatebtn} onClick={handlesaveOrder}>Save</button>) : (<button className={style.separatebtn} onClick={() => { handlesavePrintOrder(); handlePrint(receiptRef) }}>Print</button>)}
+                {dineOrParcel === 'Dine In' ? (<button className={style.separatebtn} onClick={handlesaveOrder}>Save</button>) : (<button className={style.separatebtn} onClick={() => { handlesavePrintOrder() }}>Print</button>)}
 
 
 
@@ -1389,15 +1331,17 @@ const Order = () => {
                 <button className={style.separatebtn}>Share</button>
               </div>
               <div ref={receiptRef} className={style.printt}>
-                <h4 style={{ textAlign: 'center', marginBottom: 20 }}>Receipt</h4>
+                <p style={{ textAlign: 'center', paddingTop: 5 }}>Hotel Barkat</p>
+
+                <h4 style={{ textAlign: 'center', marginBottom: 20 }}>Coupon No: {coupon}</h4>
                 <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                   <div>
                     <p>Date: {formattedDate}</p>
                     <p>Time: {formattedTime}</p>
                   </div>
-                  <div  style={{textAlign:'end'}}>
-                    <p>Type: <strong>{dineOrParcel}</strong></p>
-                    <strong>{coupon}</strong>
+                  <div style={{ textAlign: 'end', fontSize: '15px' }}>
+                    <p><strong>{dineOrParcel}</strong></p>
+
                   </div>
                 </div>
 
@@ -1411,49 +1355,58 @@ const Order = () => {
 
                   {/* Table Data */}
                   {dineOrParcel === 'Parcel' ? (
-                    addedItems.map((item, index) => (
-                      <div
-                        className="table-row"
-                        key={index}
-                        style={{
-                          display: 'flex',
-                          justifyContent: 'space-between',
-                          padding: '8px 0',
-                        }}
-                      >
-                        <div style={{ width: '60%' }}>{item.dish_name}</div>
-                        <div style={{ width: '20%' }}>{item.quantity}</div>
-                        <div style={{ width: '20%' }}>₹{item.dist_rate}</div>
-                      </div>
-                    ))
+                    addedItems.length > 0 ? (
+                      addedItems.map((item, index) => (
+                        <div
+                          className="table-row"
+                          key={index}
+                          style={{
+                            display: 'flex',
+                            justifyContent: 'space-between',
+                            padding: '8px 0',
+                          }}
+                        >
+                          <div style={{ width: '60%' }}>{item.dish_name}</div>
+                          <div style={{ width: '20%' }}>{item.quantity}</div>
+                          <div style={{ width: '20%' }}>₹{item.dist_rate}</div>
+                        </div>
+                      ))
+                    ) : (
+                      <div></div>
+                    )
                   ) : (
-                    PendingTableOrder.map((item, index) => (
-                      <div
-                        className="table-row"
-                        key={index}
-                        style={{
-                          display: 'flex',
-                          justifyContent: 'space-between',
-                          padding: '8px 0',
-                        }}
-                      >
-                        <div style={{ width: '60%' }}>{item.dish_name}</div>
-                        <div style={{ width: '20%' }}>{item.order_unit}</div>
-                        <div style={{ width: '20%' }}>₹{item.dist_rate}</div>
-                      </div>
-                    ))
+                    PendingTableOrder.length > 0 ? (
+                      PendingTableOrder.map((item, index) => (
+                        <div
+                          className="table-row"
+                          key={index}
+                          style={{
+                            display: 'flex',
+                            justifyContent: 'space-between',
+                            padding: '8px 0',
+                          }}
+                        >
+                          <div style={{ width: '60%' }}>{item.dish_name}</div>
+                          <div style={{ width: '20%' }}>{item.order_unit}</div>
+                          <div style={{ width: '20%' }}>₹{item.dist_rate}</div>
+                        </div>
+                      ))
+                    ) : (
+                      <></>
+                    )
                   )}
+
 
                 </div>
 
                 <hr />
-                <div style={{ display: 'flex', justifyContent: 'space-around', marginTop: 10 }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: 10 }}>
 
                   <p> Payment: <strong>{payment}</strong></p>
                   <p>Total: <strong>₹{dineOrParcel === 'Parcel' ? totalPricePrint : totalPrice} </strong></p>
 
                 </div>
-                <p style={{ textAlign: 'center', paddingTop: 5 }}>Presented by Barkat</p>
+                <p style={{ textAlign: 'center' }}>(All taxes included)</p>
               </div>
             </div>
           </div>
@@ -1462,174 +1415,6 @@ const Order = () => {
         </div>
       )
       }
-      {/* Selected Items */}
-
-      {/* <div
-        style={{
-          width: "45%",
-          padding: "0 20px",
-          backgroundColor: "#FFF",
-        }}
-      >
-        <div
-          style={{
-            display: "flex",
-            flexDirection: "column",
-            minHeight: "100%", // Ensures content fits naturally
-          }}
-        >
-          <div className={style.firstbuttons}>
-            <button
-              className={`${style.separatebtn} ${dineOrParcel === "Dine In" ? style.active : ""
-                }`}
-              onClick={handleDine}
-            >
-              Dine
-            </button>
-            <button
-              className={`${style.separatebtn} ${dineOrParcel === "Parcel" ? style.active : ""
-                }`}
-              onClick={handleParcel}
-            >
-              Parcel
-            </button>
-            <p>Coupon: {coupon}</p>
-          </div>
-
-          <div style={{ flex: "1" }}>
-            {addedItems.length > 0 ? (
-              <ul style={{ listStyleType: "none", padding: 0 }}>
-                {addedItems.map((item) => (
-                  <li
-                    key={item.dish_id}
-                    style={{
-                      display: "flex",
-                      justifyContent: "space-between",
-                      alignItems: "center",
-                      padding: "10px",
-                      fontSize: "18px",
-                      marginTop: "10px",
-                      borderBottom: "1px solid #ddd",
-                    }}
-                  >
-
-                    <span
-                      style={{
-                        flexBasis: "40%",
-                        overflow: "hidden",
-                        whiteSpace: "nowrap",
-                        textOverflow: "ellipsis",
-                      }}
-                    >
-                      {item.dish_name}
-                    </span>
-
-                    <span style={{ flexBasis: "10%", textAlign: "center" }}>
-                      ₹{item.dist_rate}
-                    </span>
-
-                    <div
-                      style={{
-                        flexBasis: "20%",
-                        display: "flex",
-                        justifyContent: "center",
-                        alignItems: "center",
-                      }}
-                    >
-                      <button
-                        onClick={() => decrementQuantity(item.dish_id)}
-                        style={{
-                          backgroundColor: "#e0e0e0",
-                          border: "none",
-                          cursor: "pointer",
-                          padding: "5px 10px",
-                          marginRight: "5px",
-                        }}
-                      >
-                        -
-                      </button>
-                      <span style={{ margin: "0 10px" }}>{item.quantity}</span>
-                      <button
-                        onClick={() => incrementQuantity(item.dish_id)}
-                        style={{
-                          backgroundColor: "#e0e0e0",
-                          border: "none",
-                          cursor: "pointer",
-                          padding: "5px 10px",
-                        }}
-                      >
-                        +
-                      </button>
-                    </div>
-
-                    <span style={{ flexBasis: "20%", textAlign: "center" }}>
-                      ₹{item.dist_rate * item.quantity}
-                    </span>
-
-                    <button
-                      onClick={() => handleRemoveItem(item.dish_id)}
-                      style={{
-                        flexBasis: "10%",
-                        backgroundColor: "red",
-                        color: "white",
-                        border: "none",
-                        cursor: "pointer",
-                        padding: "5px 10px",
-                        textAlign: "center",
-                      }}
-                    >
-                      Remove
-                    </button>
-                  </li>
-                ))}
-              </ul>
-            ) : (
-              <p style={{ fontSize: 20, textAlign: 'center', marginTop: '1rem' }}>No items added.</p>
-            )}
-          </div>
-
-          <div
-            style={{
-              display: "flex",
-              flexDirection: "column",
-              justifyContent: "flex-end",
-              backgroundColor: "#f9f9f9",
-              borderTop: "1px solid #ddd",
-            }}
-          >
-
-            <h3
-              style={{
-                margin: "0",
-                textAlign: "right",
-                padding: "10px",
-              }}
-            >
-              Total Price: ₹{calculateTotalPrice()}
-            </h3>
-
-            <div
-              className={style.lastbuttons}
-              style={{
-                display: "flex",
-                justifyContent: "flex-end",
-                width: "100%",
-                gap: "10px",
-                padding: "10px",
-              }}
-            >
-              <button className={style.separatebtn} onClick={handlesaveOrder}>Save</button>
-              <button className={style.separatebtn} onClick={handlePrint}><Receipt dineOrParcel={dineOrParcel} addedItems={addedItems} coupon={coupon} /></button>
-
-
-              <button className={style.separatebtn}>Download</button>
-              <button className={style.separatebtn}>Share</button>
-            </div>
-          </div>
-        </div>
-
-
-      </div> */}
 
 
 
